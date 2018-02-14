@@ -1,0 +1,13 @@
+*{ margin: 0px; padding: 0px; font-family: Arial; }
+body{ width: 100%; height: 100vh; overflow-x: hidden; background: #edf2f6 }    
+
+.clear{ clear: both; }
+.clear:after{ display: table; content: ''; clear: both; }
+
+header#page-header{ width: 100%; background: #354052; }
+#page-header li{ list-style: none; float: left; }
+#page-header li a{ padding: 15px 25px; display: inline-block; color: #fff; text-decoration: none; }
+#page-header li a:hover{ background: #30394a; }
+#page-header li a:before{ color: #fff; margin-right: 6px; font-size: 20px; }
+
+

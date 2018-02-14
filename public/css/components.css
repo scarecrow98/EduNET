@@ -1,0 +1,108 @@
+/* ÁLTALÁNOS CLASSOK */
+.clear{ clear: both; }
+.clear:after{ display: table; content: ''; clear: both; }
+.panel{ border: 1px solid var(--theme-grey); box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1); }
+.flex-wrap{ display: flex; flex-wrap: wrap; justify-content: space-between; }
+.flex-row{ display: flex; width: 100%; }
+
+/* MODALOK */
+.page-overlay{ z-index: 999; position: absolute; top: 0px; bottom: 0px; left: 0px; right: 0px; background: rgba(0, 0, 0, 0.2); display: flex; justify-content: center; align-items: center; }
+.modal{ background: #fff; border: 1px solid var(--theme-grey); box-shadow: 2px 2px 36px rgba(0, 0, 0, 0.4); border-radius: 6px; }
+.modal header{ padding: 10px; margin: 0px 10px; border-bottom: 1px solid var(--theme-grey); position: relative;  }
+.modal header h3{ font-weight: 600; color: var(--theme-grey-dark); }
+.modal header i{ position: absolute; right: 6px; top: 11px; cursor: pointer; padding: 4px; }
+.modal header i:before{ color: var(--theme-grey-dark); }
+.modal .section-switcher{ padding: 15px 30px; }
+.modal .section-switcher button{ background: transparent; padding: 6px 0px; margin-right: 16px; text-align: left; border-bottom: 2px solid transparent; }
+.modal .section-switcher button.active-section{ border-bottom: 2px solid var(--theme-grey-dark); }
+.modal .modal-body{ height: calc(100% - 64px); overflow-y: scroll; overflow-x: hidden; margin: 10px; }
+
+
+
+/* TÁBLÁZATOK */
+table.main-table{ background: #fff; width: 100%; border-collapse: collapse; }
+.main-table thead{ background: var(--theme-color-1); }
+.main-table thead td{ padding: 12px 20px; }
+.main-table thead i:before{ color: #fff; font-size: 20px; }
+.main-table td{ padding: 20px; text-align: center; color: #444; }
+.main-table tr:nth-child(even){ background: #f3f3f3; }
+.main-table p{ white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+.main-table .tool-cell{ position: relative; }
+.main-table .tool-cell i{ padding: 3px; cursor: pointer; display: inline-block }
+.main-table .table-menu{ position: absolute; top: calc(50% + 8px); right: calc(50% + 8px); width: 300px; background: #fff; z-index: 888; display: none; }
+.main-table .table-menu li{ padding: 10px 25px; font-size: 14px; list-style: none; text-align: left; font-family: Arial, Helvetica, sans-serif; }
+.main-table .table-menu li:hover{ cursor: pointer; background: var(--theme-color-2); color: #fff; }
+.main-table .table-menu li a{ font-family: Arial, Helvetica, sans-serif; color: #000; text-decoration: none; display: block; }
+.main-table .table-menu li:hover a{ color: #fff; }
+.main-table .table-menu i:before{ font-size: 18px; margin-right: 6px; width: 20px; text-align: center; }
+
+
+/* INPUTOK */
+li.input-container{ list-style: none; display: flex; padding: 20px; }
+.input-container label{ color: var(--theme-grey-dark); font-weight: 400; width: 200px; }
+.input-container input,
+.input-container textarea,
+.input-container select{ border: 1px solid var(--theme-grey); flex: 1; border-radius: 4px; font-size: 14px; color: #444; }
+.input-container input[type="text"],
+.input-container input[type="number"]{ padding: 8px; }
+.input-container input[type="password"]{ padding: 8px; }
+.input-container input[type="email"]{ padding: 8px; }
+.input-container input[type="date"]{ cursor: pointer; padding: 8px; }
+.input-container textarea{ height: 100px; padding: 8px; resize: none; }
+.input-container select{ padding: 8px; -moz-appearance: none; appearance: none; cursor: pointer; }
+
+/* keresés form */
+
+/* CSOPORTBOXOK */
+.group-box{ width: 30%; background: #fff; align-self: flex-start; margin-bottom: 30px; }
+.group-box section{ height: 210px; background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; }
+.group-box section .overlay{ position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; background: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; }
+.group-box section h3{ color: #fff; }
+.group-box .group-buttons{ display: flex; }
+.group-box button{ flex: 1; padding: 15px; font-weight: 600; }
+.group-box button:first-child{ color: #0282bf; background: #fff; }
+.group-box button:first-child:hover{ background: #f6f6f6f6; }
+.group-box button:nth-child(2){ color: #fff; }
+
+/* FŐOLDAL BOXOK */
+.home-box{ background: #fff; width: 100%; padding: 20px; margin-bottom: 30px; }
+.home-box header{ }
+.home-box header h4{ font-weight: 600; color: var(--theme-grey-dark); margin-bottom: 6px; }
+.home-box header h4:before{ font-size: 20px; margin-right: 6px; }
+
+
+/* naptár */
+#event-calendar{ width: 100%; display: flex; flex-wrap: wrap;  }
+#event-calendar .day{ width: calc( 100% / 5 ); height: 70px; background: var(--theme-background); border: 3px #fff solid; padding: 8px; position: relative; }
+#event-calendar .day span.month-name{ font-size: 14px; color: var(--theme-grey-dark); }
+#event-calendar .day i{ position: absolute; top: 25px; right: 15px; color: var(--theme-grey-dark); padding: 5px;  }
+#event-calendar .day i{ display: none; }
+#event-calendar .day i:hover{ cursor: pointer; }
+#event-calendar .day span.month-day{ font-size: 22px; font-weight: 600; color: var(--theme-grey-dark); }
+#event-calendar .has-event{ background: #f4cb42; }
+#event-calendar .has-event i{ display: block; }
+#event-calendar .has-event span{ color: #fff !important; }
+#event-calendar .has-event .event-counter{  }
+#event-calendar .day:hover{ /*box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2);*/ /*border: 3px orange solid;*/ }
+#event-calendar .day .panel{ width: 100%; position: absolute; left: 0px; top: 70px; background: #fff; z-index: 444; display: none; }
+#event-calendar .panel li{ list-style: none; padding: 15px; }
+
+/* GOMBOK */
+button:hover, input[type="submit"]{ cursor: pointer; }
+
+
+.btn-rounded{ color: #fff !important; padding: 10px; border-radius: 30px; font-weight: 600; border: none !important; }
+.btn-rounded i:before{ font-size: 20px; margin-right: 8px; vertical-align: middle; }
+
+.btn-wide{ color: #fff !important; width: 100%; padding: 10px;font-weight: 600; border: none !important; }
+
+.btn-rect{ color: #fff; padding: 8px; border: none !important; border-radius: 3px; }
+
+/* HÁTTÉRSZÍNEK */
+.bg-1{ background: #39a8b1; }
+.bg-1:hover{ background: #2a8891; }
+
+.bg-2{ background: #0282bf; }
+.bg-2:hover{ background: #046796; }
+
+.bg-3{ background: #f49e42; }

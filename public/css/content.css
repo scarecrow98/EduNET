@@ -1,0 +1,56 @@
+header.content-header{
+    width: 100%;
+    padding: 30px 40px;
+    background: #fff;
+    border-bottom: 1px solid var(--theme-grey);
+}
+
+header.content-header h2{
+    font-weight: 600;
+    display: inline-block;
+}
+
+section.content-body{
+    width: 100%;
+    height: calc(100vh - 151px);
+    padding: 30px;
+    overflow-y: scroll;
+}
+
+section.two-col{
+    display: flex;
+}
+
+section.two-col .col-left{
+    flex: 1;
+    margin-right: 15px;
+}
+section.two-col .col-right{
+    flex: 1;
+    margin-left: 15px;
+}
+
+@media(max-width: 1300px){
+    section.two-col{ flex-direction: column; }
+    section.two-col .col-left{ margin-right: 0px; }
+    section.two-col .col-right{ margin-left: 0px; }
+}
+
+/* KISSEBB ELEMEK */
+span.uploaded-file-name{ font-size: 14px; color: var(--theme-grey-dark); margin-left: 8px; display: inline-block; }
+
+/* CSOPORTTAGOK FELVÉTELE - KERESÉSI TALÁLATOK */
+form#add-group-member-form li{ list-style: none; }
+ul.student-results li{ padding: 20px 15px; margin: 0px 20px; list-style: none; border-bottom: 1px solid var(--theme-grey); display: flex; }
+ul.student-results h4{ font-weight: 600; color: var(--theme-grey-dark); margin-left: 6px; flex: 1; }
+ul.student-results img{ width: 40px; height: 40px; }
+
+/* FELADATLAPOK */
+body.test-body{ height: 100vh; width: auto; margin: 15px; overflow-y: scroll; background: var(--theme-background); }
+.test-container{ width: 680px; margin: 0px auto; }
+.test-sheet{ background: #fff; margin-bottom: 30px; } 
+.test-sheet header{ width: 100%; padding: 10px 20px; }
+.test-sheet header h3{ color: #fff;  }
+.test-sheet .section-add-options{ padding-left: 60px; }
+.test-sheet .section-add-options li.input-container{ align-items: center; padding: 10px; }
+.test-sheet .section-add-options label{ width: 100px; font-size: 14px; } 

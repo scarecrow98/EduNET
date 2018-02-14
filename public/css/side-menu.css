@@ -1,0 +1,76 @@
+#profile-container{
+    margin: 30px 0px;
+}
+
+#logo-container img{
+    width: 150px;
+    margin: 0px auto;
+    display: block;
+}
+
+#profile-container #profile-picture{
+    width: 70px;
+    height: 70px;
+    margin: 0px auto;
+    border-radius: 50%;
+    background: #fff;
+    background-size: cover;
+    background-position: center;
+}
+
+#profile-container span{
+    display: block;
+    font-weight: 600;
+    margin-top: 15px;
+    text-align: center;
+    color: #fff;
+}
+
+#profile-container small{
+    display: block;
+    margin-top: 6px;
+    color: #fff;
+    text-align: center;
+}
+
+ul#main-menu *{
+    color: var(--theme-background);
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+ul#main-menu > li{
+    border-left: 3px solid transparent;
+}
+
+ul#main-menu > li:hover,
+ul#main-menu > li.active-item{
+    background: var(--theme-color-1-dark);
+    border-left: 3px solid var(--theme-color-2);
+}
+
+ul#main-menu span{
+    display: block;
+    padding: 12px 0px 12px 30px;  
+    transition: all 0.3s;
+}
+
+ul#main-menu span:before{
+    font-size: 22px;
+    vertical-align: middle;
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+ul#main-menu .submenu a{
+    display: block;
+    padding: 10px 10px 10px 65px;
+    position: relative;
+    transition: all 0.3s;
+}
+
+ul#main-menu .submenu a:hover{
+    padding: 10px 10px 10px 75px;
+}

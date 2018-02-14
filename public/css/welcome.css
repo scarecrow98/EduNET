@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600,700&subset=latin-ext');
+
+*{ padding: 0px; margin: 0px; outline: 0px; border: 0px; font-family: 'Montserrat', sans-serif; box-sizing: border-box }
+body{
+    height: 100vh;
+    overflow: hidden;
+    /*background-image: url('../resources/images/bg1.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;*/
+}
+
+.overlay{
+    position: absolute;
+    top: 0px; left: 0px; right: 0px; bottom: 0px;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	z-index: 10;
+}
+
+#login-window{
+    width: 650px;
+    background: #17a3f8;
+    display: flex;
+    box-shadow: 2px 2px 16px rgba(0, 0, 0, 0.6);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+#login-window .left-col{
+    flex: 1;
+    padding: 30px;
+    background: #fff;
+}
+
+#login-window .right-col{
+    flex: 1;
+    padding: 20px;
+}
+
+.left-col li{
+    list-style: none;
+    margin-bottom: 20px;
+}
+
+.left-col li:last-child{ margin-bottom: 0px; }
+
+.left-col h1{
+    color: #777;
+    font-weight: 300;
+    font-size: 24px;
+}
+
+.left-col small{
+    margin-top: 10px;
+    display: block;
+    font-size: 16px;
+    color: rgb(211, 65, 65);
+}
+
+
+.left-col input.input-field{
+    width: 100%;
+    padding: 14px 14px 14px 36px;
+    background: #edf2f6;
+    border-radius: 3px;
+    font-size: 16px;
+    color: #777;
+    border: 1px solid transparent;
+    transition: all 0.3s;
+
+    background-size: 28px;
+    background-repeat: no-repeat;
+    background-position: 4px 10px;
+}
+
+.left-col input[type="text"]{ background-image: url('../resources/images/user_icon.png'); }
+.left-col input[type="password"]{ background-image: url('../resources/images/lock_icon.png'); }
+
+.left-col input.input-field:focus{ border: 1px solid #17a3f8; }
+
+.left-col input.login-button{
+    padding: 14px;
+    color: #fff;
+    background: #17a3f8;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.left-col input.login-button:hover{
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.right-col #logo-container img{
+    width: 80%;
+    display: block;
+    margin: -30px auto 0px auto;
+}
+
+.right-col p{
+    color: #fff;
+    text-align: center;
+}
+
+.page-bg{ position: absolute; z-index: 1; top: 0px; left: 0px; right: 0px; bottom: 0px; background-size: cover; }
+#p-1{ background-image: url('../resources/images/bg1.jpeg'); }
+#p-2{ background-image: url('../resources/images/bg2.jpeg'); }
+
+
+
+

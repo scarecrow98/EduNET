@@ -1,0 +1,49 @@
+#top-bar #top-bar-buttons-right{
+    float: right;
+    position: relative;
+}
+
+#top-bar button{
+    width: 60px;
+    height: 59px;
+    border-left: 1px solid var(--theme-grey);
+    background: transparent;
+    color: var(--theme-grey-dark);
+    transition: all 0.3s;
+}
+
+#top-bar button:hover{
+    background: var(--theme-color-2);
+    cursor: pointer;
+    color: #fff;    
+}
+
+#top-bar button i:before{
+    font-size: 24px;
+}
+
+
+/* ÜZENETEK POPUP */
+button#btn-messages{ position: relative; }
+button#btn-messages #message-counter{ position: absolute; right: -6px; bottom: -6px; display: inline-block; width: 20px; height: 20px; background: red; line-height: 20px; color: #fff; border-radius: 4px; }
+.messages-popup{ position: absolute; top: 70px; right: 85px; width: 300px; height: 400px; background: #fff; z-index: 888; }
+.messages-popup section{ height: calc(100% - 40px); overflow-x: hidden; overflow-y: scroll; }
+.messages-popup button#create-new-message{ width: 100%; height: 40px; border-top: 1px solid var(--theme-grey); }
+.messages-popup li.message-item{ list-style: none; padding: 15px; border-bottom: 1px solid var(--theme-grey); transition: all 0.2s; }
+.messages-popup .message-item:hover{ cursor: pointer; background: #f6f6f6; }
+.messages-popup .message-item span{ width: 30px; height: 30px; display: inline-block; background-position: center; background-size: cover; vertical-align: middle; border-radius: 15px; }
+.messages-popup .message-item h4{ font-weight: 600; display: inline-block; }
+.messages-popup .message-item time{ font-size: 12px; color: #999; margin: 6px 0px; display: block; }
+.messages-popup .message-item p{ color: var(--theme-grey-dark); width: 250px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; font-style: italic; }
+.messages-popup li.unread-message{ background: #f6f6f6; }
+
+/* KERESÉS FORM */
+button#btn-show-search{ border-right: 1px solid var(--theme-grey); }
+#search-form-container{ display: inline-block; transform: scaleX(0); max-width: 1000px; overflow-x: scroll; overflow-y: hidden; }
+#search-form-container form{ display: flex; }
+#search-form-container .input-container{ padding: 0px 20px; align-items: center; }
+#search-form-container label{ width: auto; margin-right: 15px; }
+#search-form-container input[type="text"],
+#search-form-container input[type="date"]
+#search-form-container select{ vertical-align: middle; width: 180px; }
+

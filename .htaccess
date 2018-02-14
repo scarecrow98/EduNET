@@ -1,0 +1,17 @@
+Options -Indexes
+
+RewriteEngine on
+
+RewriteRule ^home/?$ index.php?page=home [L]
+RewriteRule ^groups/?$ index.php?page=groups [L]
+RewriteRule ^stats/?$ index.php?page=stats [L]
+RewriteRule ^tests/?$ index.php?page=tests [L]
+RewriteRule ^settings/?$ index.php?page=settings [L]
+RewriteRule ^add_task/?$ add-task.php [L]
+RewriteRule ^add_members/?$ add-members.php [L]
+RewriteRule ^login/?$ login.php [L]
+RewriteRule ^view_test/?$ view-test.php [L]
+
+ErrorDocument 404 http://localhost/EduNET/404.php
+
+
