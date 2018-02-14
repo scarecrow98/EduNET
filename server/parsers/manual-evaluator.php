@@ -20,12 +20,11 @@
 
             $data = array(
                 'user_id'           => $user_id,
-                'task_id'           => $task->id,
                 'test_instance_id'  => $test_instance->id,
                 'result'            => $result,
                 'comment'           => $teacher_comment
             );
-            Task::storeResult($data);
+            $task->storeResult($data);
         }
 
         $test_instance->storeEvaluation($user_id, date('Y-m-d H:i:s'));

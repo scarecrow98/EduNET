@@ -12,7 +12,7 @@
     
     if( empty(Session::get('user-id')) ){
         Session::set('error-message', 'Jelentkezz be a folytatáshoz!');
-        header('Location: login.php');
+        header('Location: login');
         exit();
     }
 	

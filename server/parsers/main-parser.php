@@ -80,11 +80,12 @@
     // ===========================
     if( !empty($_POST['create-new-test']) ){
 		
-		if( empty($_POST['title']) ){ exit('A feladatlap címe kötelezően megadandó mező!'); }
-		
+        if( empty($_POST['title']) ){ exit('A feladatlap címe kötelezően megadandó mező!'); }
+        if( empty($_POST['group-id']) ){ exit('A feladatlap csoportja kötelezően megadandó mező!'); }
+        if( empty($_POST['subject-id']) ){ exit('A feladatlap tantárgya kötelezően megadandó mező!'); }
 		if( strlen($_POST['title']) > 100 ){ exit('A feladatlap címe max. 100 karakter lehet!'); }
-		
-		if( strlen($_POST['description']) > 255 ){ exit('A feladatlap leírása max. 255 karakter lehet!'); }
+        if( strlen($_POST['description']) > 255 ){ exit('A feladatlap leírása max. 255 karakter lehet!'); }
+        if( $_POST['task-count'] > 30 || $_POST['task-count'] < 1 ){ exit('A feladatok száma 1 és 30 között kell legyen!'); }
 				
         $data = array(
 			'author_id'		=> Session::get('user-id'),
@@ -111,7 +112,8 @@
 			if( empty($n) ){ exit('Minden mező kitöltése kötelező!'); }
 		}
 		
-		if( strlen($_POST['text']) > 100 ){ exit('Az értesítés címe max. 100 karakter lehet!'); }
+        if( strlen($_POST['text']) > 100 ){ exit('Az értesítés címe max. 100 karakter lehet!'); }
+        if( date('Y-m-d') > $_POST['date'] ){ exit('Érvénytelen kezdési időpontot adtál meg!'); }
 				
         $data = array(
 			'author_id'		=> Session::get('user-id'),
@@ -210,7 +212,8 @@
     if( !empty($_POST['list-group-members']) ){
         $group_id = $_POST['group-id'];
 
-        $members = Group::getMembers($group_id);
+        $group = Group::get($group_id);
+        $members = $group->getMembers();
         exit(json_encode($members));
     }
 

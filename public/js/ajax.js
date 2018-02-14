@@ -446,7 +446,7 @@ $('button.btn-view-members').click((e) => {
     $('#group-members').empty();
 
     let groupId = $(e.currentTarget).attr('data-group-id');
-    console.log('as');
+
     $.ajax({
         type: 'POST',
         url: SERVER_ROOT + 'parsers/main-parser.php',
@@ -460,13 +460,16 @@ $('button.btn-view-members').click((e) => {
             for (member of members) {
                 let li = $('<li>');
                 $('<h4>', { html: member.name }).appendTo(li);
-                $('<img>', { src: SERVER_ROOT+'uploads/avatars/' + member.avatar, width: 100, height: 100 }).appendTo(li);
-                $('<button>', {
-                    class: 'btn-delete-member btn-rounded bg-3',
-                    html: '<i class="ion-checkmark-round"></i> Csoporttag eltávolítása',
-                    'data-user-id': member.id,
-                    'data-group-id': groupId,
-                }).appendTo(li);
+                $('<img>', { src: SERVER_ROOT + 'uploads/avatars/' + member.avatar, width: 100, height: 100 }).appendTo(li);
+                
+                if ( $('#view-members').hasClass('teacher-true') ) {
+                    $('<button>', {
+                        class: 'btn-delete-member btn-rounded bg-3',
+                        html: '<i class="ion-checkmark-round"></i> Csoporttag eltávolítása',
+                        'data-user-id': member.id,
+                        'data-group-id': groupId,
+                    }).appendTo(li);   
+                }
 
                 li.appendTo('#group-members');
             }

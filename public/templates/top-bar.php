@@ -29,7 +29,7 @@
                 ?>
                     <li class="message-item <?php echo $message->is_seen==0?'unread-message':'' ?>" data-message-id="<?php echo $message->id; ?>">
                         <div>   
-                            <span style="background-image: url('<?php echo AVATAR_DIR.$sender->avatar; ?>')"></span>
+                            <span style="background-image: url('<?php echo SERVER_ROOT.'uploads/avatars/'.$sender->avatar; ?>')"></span>
                             <h4 style="inline"><?php echo $sender->name; ?></h4>
                         </div> 
                         <time><?php echo $message->date; ?></time>

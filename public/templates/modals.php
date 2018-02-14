@@ -15,11 +15,11 @@
             <form action="<?php echo SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-test-form">
                 <li class="input-container">
                     <label for="test-title">Feladatlap címe:</label>
-                    <input type="text" placeholder="A feladatlap rövid neve" name="test-title" id="test-title" required>
+                    <input type="text" placeholder="max. 100 karakter *" name="test-title" id="test-title" required>
                 </li>
                 <li class="input-container">
                     <label for="test-description">Feladatlap leírása:</label>
-                    <textarea placeholder="Kiegészítő információ a feladatlaphoz" name="test-description" id="test-description"></textarea>
+                    <textarea placeholder="max. 255 karakter" name="test-description" id="test-description"></textarea>
                 </li>
                 <li class="input-container">
                     <label for="test-text">Feladatlap szövege:</label>
@@ -28,7 +28,7 @@
                 <li class="input-container">
                     <label for="test-group">Csoport:</label>
                     <select name="test-group" id="test-group" required>
-                        <option value="">Válassz csoportot</option>
+                        <option value="">Válassz csoportot *</option>
                         <?php
                             $groups = Group::getAll(Session::get('user-id'), Session::get('user-type'));
                             foreach($groups as $group):
@@ -40,7 +40,7 @@
                 <li class="input-container">
                     <label for="test-subject">Tantárgy:</label>
                     <select name="test-subject" id="test-subject" required>
-                        <option value="">Válassz tantárgyat</option>
+                        <option value="">Válassz tantárgyat *</option>
                         <?php
                             $subjects = Subject::all();
                             foreach($subjects as $subject):
@@ -51,7 +51,7 @@
                 </li>
                 <li class="input-container">
                     <label for="test-tasknumber">Feladatok száma:</label>
-                    <input type="number" name="test-taskcount" id="test-taskcount" placeholder="Ennyi feladatot fog tartalmazni a feladatlap" value="1" min="1" max="30">
+                    <input type="number" name="test-taskcount" id="test-taskcount" placeholder="1 és 30 közé eső szám" value="1" min="1" max="30">
                 </li>
                 <li class="input-container">
                     <input type="submit" value="Feladatlap létrehozása" id="create-test" name="create-test" class="btn-wide bg-1">
@@ -164,12 +164,12 @@
             <form action="<?php echo SERVER_ROOT; ?>parsers/main-parser.php" id="create-notification-form">
                 <li class="input-container">
                     <label for="nt-text">Értesítés szövege:</label>
-                    <input type="text" id="nt-text" required>
+                    <input type="text" id="nt-text" placeholder="max. 100 karakter *" required>
                 </li>
                 <li class="input-container">
                     <label for="nt-group-id">Értesítés csoportja:</label>
                     <select id="nt-group-id" required>
-                        <option value="">Válassz csoportot</option>
+                        <option value="">Válassz csoportot *</option>
                         <?php
                             $groups = Group::getAll(Session::get('user-id'), Session::get('user-type'));
                             foreach($groups as $group):
@@ -181,7 +181,7 @@
                 <li class="input-container">
                     <label for="nt-subject-id">Dolgozat tantárgya:</label>
                     <select id="nt-subject-id" required>
-                        <option value="">Válassz tantárgyat</option>
+                        <option value="">Válassz tantárgyat *</option>
                         <?php
                             $subjects = Subject::all();
                             foreach($subjects as $subject):
@@ -197,7 +197,7 @@
                 <li class="input-container">
                     <label for="nt-type">Dolgozat szint:</label>
                     <select id="nt-type" required>
-                        <option value="">Válassz szintet</option>
+                        <option value="">Válassz szintet *</option>
                             <option value="1">Röpdolgozat</option>
                             <option value="2">Nagydolgozat</option>
                             <option value="3">Témazáró</option>
@@ -306,7 +306,7 @@
     </div>
 
     <!-- CSOPORTTAGOK MODAL -->
-    <div class="modal" style="width: 500px; height: 400px; display: none;" id="view-members">
+    <div class="modal <?= IS_ADMIN?'teacher-true':'' ?>" style="width: 500px; height: 400px; display: none;" id="view-members">
         <header>
             <h3>Csoporttagok</h3>
             <i class="ion-close-round close-modal"></i>

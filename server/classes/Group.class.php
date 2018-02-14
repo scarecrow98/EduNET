@@ -15,7 +15,8 @@
 			$this->description = $data['description'];
 			$this->author_id = $data['author_id'];
 			$this->avatar = $data['avatar'];
-			$this->member_count = $this->getMemberCount($this->id);
+			$this->members = $this->getMembers();
+			$this->member_count = count($this->members);
 		}
 		
 		public static function get($group_id){
@@ -103,7 +104,7 @@
             }
 		}
 
-		public static function getMembers($group_id){
+		public function getMembers(){
 			$db = Database::getInstance();
 			
 			$stmt = $db->prepare(
@@ -111,23 +112,10 @@
 				" INNER JOIN users ON users.id = group_members.user_id".
 				" WHERE group_id = ?"
 			);
-			$stmt->execute(array($group_id));
+			$stmt->execute(array($this->id));
 			return $stmt->fetchAll();
 		}
 		
-		private function getMemberCount(){
-			$db = Database::getInstance();
-			
-			$stmt = $db->prepare(
-				"SELECT COUNT(user_id) AS 'member_count' FROM group_members WHERE group_id = ?"
-			);
-			$stmt->execute(array($this->id));
-			
-			$data = $stmt->fetch();
-			return $data['member_count'];
-			
-		}
-
 		public static function searchUsers($student_name, $group_id){
 			$db = Database::getInstance();
 

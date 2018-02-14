@@ -20,12 +20,12 @@
                     <span><?php echo $group->member_count ?> tag</span>
                 </div>    
             </section>
-            <?php if( IS_ADMIN ): ?>
             <div class="group-buttons">
                 <button class="btn-view-members modal-opener" data-modal-id="view-members" data-group-id="<?php echo $group->id ?>">Csoporttagok megtekintése</button>
+                <?php if( IS_ADMIN ): ?>
                 <button class="btn-add-members bg-2 modal-opener" data-modal-id="add-members" data-group-id="<?php echo $group->id ?>">Csoporttagok felvétele</button>
+                <?php endif; ?>
             </div>
-            <?php endif; ?>
         </div>
         <?php endforeach; ?>
 

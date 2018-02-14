@@ -31,7 +31,7 @@
 		
 		if( $pass_hash != $user->pass_hash ){
 			Session::set('error-message', 'Helytelen belépési adatok!');
-			header('Location: index');
+			header('Location: home');
 			exit();
 		}
 

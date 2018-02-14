@@ -102,7 +102,7 @@
                 <?php if( !$HAS_RESULT ): ?>
                 <div>
                     <input type="number" min="0" max="<?php echo $task->max_points ?>" value="0" name="user-points-<?php echo $task_count; ?>">
-                    <textarea placeholder="Feladathoz kapcsolódó megjegyzés..." style="width: 100%;" name="teacher-comment-<?php echo $task_count; ?>"></textarea>
+                    <textarea placeholder="Feladathoz kapcsolódó, diáknak szánt megjegyzés..." maxlength="10" style="width: 100%;" name="teacher-comment-<?php echo $task_count; ?>"></textarea>
                 </div>
                 <?php else: ?>
                     <label for="">Eredmény: <?php echo $result['result'] ?></label>
