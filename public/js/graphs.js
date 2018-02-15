@@ -147,3 +147,6 @@ window.onload = () => {
         return (deg - 90) * (Math.PI / 180);
     }
 }
+
+
+class Diagram

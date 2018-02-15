@@ -94,7 +94,7 @@
                                 <a href="view_test?test_instance=<?php echo $test_instance->id; ?>" target="_blank"><i class="ion-eye"></i>Megtekintés</a>
                             </li>
                             <li>
-                                <a href="pdf-renderer.php?test_instance=<?php echo $test_instance->id; ?>" target="_blank"><i class="ion-document-text"></i>Konvertálás PDF-be</a>
+                                <a href="pdf-renderer.php?test_instance=<?php echo $test_instance->id; ?>" target="_blank"><i class="ion-printer"></i>Konvertálás PDF-be</a>
                             </li>
                         <?php endif; ?>
 
