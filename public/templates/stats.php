@@ -5,12 +5,32 @@
         legjobban sikerült dolgozat
         legrosszabbul sikerült dolgozat
         általános átlag
+
+
+
     Feladatlap szerinti statisztika
         Hányan írták meg
         Legjobban átlagú feladat
         Legjobban sikerült
         Legrosszabbul sikerült
         Átlag
+
+    $data = array(
+        'average_results'       => 15.6/23,
+        'total_submissions'     => 21,
+        'best_result'           => 23/23, 
+        'worst_result'          => 3/23,
+        'avreage_task_results'  => array(
+            1   => 3.5/4,
+            2   => 1/2,
+            3   => 4.6/8,
+            4   => 4/9
+        )
+    );
+
+
+    
+
     Általános
         legjobb átlagú csoport
         legjobb átlagú feladatlap
@@ -21,7 +41,6 @@
         össz. diák száma
         össz. tanár száma
         össz. csoportok száma
-    
 */ 
 
 ?>

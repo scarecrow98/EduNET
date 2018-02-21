@@ -1,0 +1,6 @@
+Options -Indexes
+
+RewriteEngine on
+RewriteRule ^uploads/?$ index.php?page=uploads [L]
+RewriteRule ^users/?$ index.php?page=users [L]
+RewriteRule ^errors/?$ index.php?page=errors [L]
