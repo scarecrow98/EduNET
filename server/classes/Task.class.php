@@ -101,10 +101,6 @@
 
 			$data = $stmt->fetch();
 
-			if( empty($data['option_count']) ){
-				return 0;
-			}
-
 			return $data['option_count'];
 		}
 

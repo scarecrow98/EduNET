@@ -12,29 +12,39 @@
 			'task_image'	=> '../../server/uploads/images/',
 			'solution_file'	=> '../../server/uploads/files/'
 		);
-		
-		private $allowed_extensions = array(
+		private $allowed_mime_types = array(
 			'image' => array(
-				'image/jpeg'    =>  'jpg',
-                'image/png'     =>  'png',
-                'image/gif'     =>  'gif'
+				'image/jpeg',
+				'image/jpg',
+                'image/png',
+                'image/gif'
+			),
+			//csak zip és rar fájlok
+			'file'	=> array(
+				'application/x-zip-compressed',
+				'application/x-rar-compressed',
+				'application/zip',
+				'application/octet-stream'
 			)
 		);
+		private $allowed_extensions = array(
+			'image'	=> array('jpeg', 'jpg', 'png', 'gif'),
+			'file'	=> array('rar', 'zip')
+		);
 		
-		public function __construct($file, $file_type, $file_role){
-			$this->file 		= $file;
-			$this->file_type 	= $file_type;
-			$this->file_role	= $file_role;
+		public function __construct($_file, $_file_type, $_file_role){
+			$this->file 		= $_file;
+			$this->file_type 	= $_file_type;
+			$this->file_role	= $_file_role;
 		}
 		
-		
-		
+
 		public function checkFile(){
 			$size = $this->file['size'];
 			$name = $this->file['name'];
 			$tmp = $this->file['tmp_name'];
 			$extension = strtolower( pathinfo($name)['extension'] );
-			$mime = getimagesize($tmp)['mime'];
+			$mime = $this->file['type'];
 			
 			if( !is_uploaded_file($tmp) ){ exit('Hiba történt a feltöltés közben!'); }
 			
@@ -42,7 +52,7 @@
 			
 			if( !in_array($extension, $this->allowed_extensions[$this->file_type] ) ){ exit('A fájl kiterjesztése nem megengedett!'); }
 			
-			if( empty($this->allowed_extensions[$this->file_type][$mime]) ){ exit('A fájl kiterjesztése nem megengedett!'); }
+			if( !in_array($mime, $this->allowed_mime_types[$this->file_type]) ){ exit('A fájl kiterjesztése nem megengedett!'); }
 			
 			$new_base_name = hash('md5', $tmp.microtime(true) );
 			$new_file_name = $new_base_name.'.'.$extension;

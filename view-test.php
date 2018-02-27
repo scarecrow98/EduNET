@@ -70,18 +70,28 @@
                         <table>
                         <?php
                             $options = $task->getTaskOptions();
-                            //ha ütartoznak opciók a feladatlaphoz, megjelenítjük őket
+                            //ha tartoznak opciók a feladatlaphoz, megjelenítjük őket
                             if( !empty( $options ) ): 
                         ?>
-                            <?php foreach( $options as $option ): ?>
+                            <?php
+                            foreach( $options as $option ): 
+                                $answer = Answer::getByOptionId(Session::get('user-id'), $test_instance->id, $option->id);
+                                $html = $answer->is_correct==1?'<i style="color: green;">'.$answer->answer.'</i>':'<i style="color: red;">'.$answer->answer.'</i>';
+                            ?>
                             <tr>
                                 <td>
                                     <li>
                                         <label class="label-small" style="display: inline-block; width: auto;"><?= $option->text; ?></label>
+                                        <span style="width: 20px; height: 20px; border: 1px solid #000; display: inline-block;"><?= $html; ?></span>
                                     </li>
                                 </td>
                             </tr>
                             <?php endforeach; /* options foreach vége */ ?>                           
+                            <?php
+                            else:
+                                $text_answer = Answer::getTextAnswer(Session::get('user-id'), $test_instance->id, $task->id);
+                            ?>
+                            <p><?= empty($text_answer->answer)?'<span style="color: red;">'.$text_answer->answer.'</p>':$text_answer->answer ?></span>
                             <?php endif; ?>
                         </table>
                     </section>

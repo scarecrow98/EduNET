@@ -1,5 +1,6 @@
 $(document).ready(function() {
 
+    //jelszó generátor
     $('button#btn-generate-pass').click((e) => {
         e.preventDefault();
 
@@ -12,6 +13,7 @@ $(document).ready(function() {
         $('input[name="user-password"]').val(pass);
     });
 
+    //felhasználó keresése
     $('input#search-user').keyup((e) => {
         let q = $(e.currentTarget).val().trim();
 

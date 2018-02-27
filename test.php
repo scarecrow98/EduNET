@@ -66,7 +66,7 @@
     <body class="test-body">
         <div class="test-container">
             <h1><?= $test->title; ?></h1>
-            <form action="<?= SERVER_ROOT ?>parsers/test-evaluator.php" method="POST" id="submit-test-form">  
+            <form action="<?= SERVER_ROOT ?>parsers/test-evaluator.php" method="POST" id="submit-test-form" enctype="multipart/form-data">  
 
             <?php
                 $tasks = $test->getTasks();
@@ -80,7 +80,9 @@
                         <label for="" style="width: auto;"><?= $task->question; ?></label>
                         <small>( <?= $task->max_points; ?> pont )</small>
 
-                        <pre style="white-space: pre-wrap; color: #b2b2b2; font-style: italic; padding: 15px;"><?php if( !empty($task->text) ) echo $task->text; ?></pre>
+                        <?php if( !empty($task->text) ): ?>
+                        <pre style="white-space: pre-wrap; color: #b2b2b2; font-style: italic; padding: 15px;"><? $task->text ?></pre>
+                        <?php endif; ?>
 
                         <?php if( !empty($task->image) ): ?>
                             <a href="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" target="_blank">
@@ -95,9 +97,6 @@
                             $task_data['task-id'] = $task->id;
 
                             $options = $task->getTaskOptions();
-
-                            //ha vannak opciók, megjelenítjük őket
-                            if( !empty($options) ):
                         ?>
                             <?php
                                 foreach( $options as $option ): /* options foreach kezdete */  
@@ -124,11 +123,20 @@
                                     <?php endif; ?>
                             </tr>
                             <?php endforeach; /* options foreach vége */ ?> 
+                            
                             <?php
-                                else: /* ha nincsenek opciók, akkor szöveges válaszhoz textareat mutatunk */
+                                if( $task->type == 2 ):
                                 array_push( $task_data, $task->id ); /* ha szövegesválasz típusú a feladat, akkor a feladat id-jét adjuk a tömbhöz */
                             ?>
                                 <textarea placeholder="Ide írd a válaszod..." style="width: 100%;" name="textarea-<?= $task->id; ?>"></textarea>
+                            <?php
+                                elseif( $task->type == 5 ):
+                                array_push( $task_data, $task->id ); /* ha fájl típusú a feladat, akkor a feladat id-jét adjuk a tömbhöz */
+                            ?>
+                                <td>
+                                    Fájl feltöltése:
+                                    <input type="file" name="file-<?= $task->id ?>">
+                                </td>
                             <?php endif; ?>
                             </table>
                     </section>
@@ -137,7 +145,7 @@
                     array_push($_SESSION['task-data'], $task_data); /* a tömböket tároló sessionbe eltároljuk a feladat adatai tároló tömböt */
                     endforeach; /* tasks foreach vége */
                 ?>
-                <input type="submit" class="btn-wide bg-1" value="Feladatlap beküldése" onclick="return confirm('Biztosan be akarod küldeni a megoldásodat?');">
+                <input type="submit" class="btn-wide bg-1" value="Feladatlap beküldése" onclick="return confirm('Biztosan be akarod küldeni a megoldásodat? Ellenőrizd a feltöltött fájlokat is, most még van lehetőséged javítani őket!');">
             </form>
         </div>
     </body>

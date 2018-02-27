@@ -14,7 +14,8 @@ header#page-header{ width: 100%; background: #354052; }
 #page{ display: flex; padding: 30px; }
 #right, #left{ flex: 1; background: #fff; border: 1px solid #b2b2b2; padding: 25px; }
 #right{ margin-left: 15px; }
-#left{ margin-right: 15px; }
+#left{ margin-right: 15px; display: flex; }
+#left section{ flex: 1; }
 
 #registrate-user-form li{ padding: 10px 0px; }
 #registrate-user-form label{ display: block; }

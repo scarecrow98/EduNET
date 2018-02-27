@@ -16,7 +16,7 @@
     $test_instance = TestInstance::get($test_instance_id);
 
     $test = Test::get($test_instance->test_id);
-    $answers = Answer::getTextAnswer($user_id, $test_instance_id);
+    $answers = Answer::getTextAnswers($user_id, $test_instance_id);
     $students = $test_instance->getStudents();
 
     //létező eredmények ellenőrzése

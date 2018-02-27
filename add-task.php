@@ -1,15 +1,19 @@
 <?php
     require_once 'config.php';
 	Session::start();
+
+	if( Session::get('user-type') != 1 ){
+		errorRedirect('Nincs jogosultságod az oldal megtekintéséhez!');
+	}
 ?>
 <html>
     <head>
         <title>Feladatok létrehozása</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-        <link rel="stylesheet" href="<?php echo PUBLIC_ROOT; ?>css/main.css">
-        <link rel="stylesheet" href="<?php echo PUBLIC_ROOT; ?>css/components.css">
-		<link rel="stylesheet" href="<?php echo PUBLIC_ROOT; ?>css/content.css">
+        <link rel="stylesheet" href="<?= PUBLIC_ROOT; ?>css/main.css">
+        <link rel="stylesheet" href="<?= PUBLIC_ROOT; ?>css/components.css">
+		<link rel="stylesheet" href="<?= PUBLIC_ROOT; ?>css/content.css">
     </head>
     <body class="test-body">
 
@@ -17,13 +21,13 @@
 
 			<div class="test-sheet panel">
 				<header class="bg-1">
-					<h3><?php echo Session::get('current-task-number') ?>. feladat</h3>	
+					<h3><?= Session::get('current-task-number') ?>. feladat</h3>	
 				</header>
 				
-				<form action="<?php echo SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-task-form" enctype="multipart/form-data">
+				<form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-task-form" enctype="multipart/form-data">
 					<li class="input-container">
 						<label for="">Feladat kérdése:</label>
-						<input type="text" name="task-question" id="task-question" placeholder="A feladathoz tartozó kérdés, utasítás">
+						<input type="text" name="task-question" id="task-question" placeholder="A feladathoz tartozó kérdés, utasítás *" required>
 					</li>
 					<li class="input-container">
 						<label for="">Feladat szövege:</label>
@@ -37,12 +41,13 @@
 					</li>
 					<li class="input-container">
 						<label for="">Feladat típusa:</label>
-						<select name="task-type" id="task-type">
-							<option value="0">Válassz feladattípust</option>
+						<select name="task-type" id="task-type" required>
+							<option value="">Válassz feladattípust *</option>
 							<option value="1">Kvíz</option>
 							<option value="2">Szöveges válasz</option>
 							<option value="3">Párosítás</option>
 							<option value="4">Igaz/hamis</option>
+							<option value="5">Fájlfeltöltés</option>
 						</select>
 					</li>
 					<!-- ide jön a szekció, amiben a feladatopciókat lehet kezelni  -->
@@ -62,6 +67,6 @@
 		</div>		
     </body>
 </html>
-<script src="<?php echo PUBLIC_ROOT; ?>js/jquery.js"></script>
-<script src="<?php echo PUBLIC_ROOT; ?>js/main.js"></script>
-<script src="<?php echo PUBLIC_ROOT; ?>js/ajax.js"></script>
+<script src="<?= PUBLIC_ROOT; ?>js/jquery.js"></script>
+<script src="<?= PUBLIC_ROOT; ?>js/main.js"></script>
+<script src="<?= PUBLIC_ROOT; ?>js/ajax.js"></script>

@@ -240,7 +240,23 @@
     }
 
 
+    // ===========================
+    // FELHASZNÁLÓI ADATOK FRISSÍTÉSE
+    // =========================== 
+    if( !empty($_POST['update-user-settings']) ){
 
+        if( !empty($_POST['new-password1']) && !empty($_POST['new-password2']) ){
+            $pass1 = $_POST['new-password1'];
+            $pass2 = $_POST['new-password2'];
+
+            if( $pass1 !== $pass2 ) exit('A két jelszó nem egyezik!'); 
+            if( strlen($pass1) < 8 ) exit('A jelszónak legalabb 8 karakter hosszúságúnak kell lennie!');
+
+            User::updatePassword(Session::get('user-id'), $pass1);
+        }
+
+        print_r($_POST);
+    }
 
 
 
@@ -261,20 +277,4 @@
         TestInstance::duplicate();
     }
 
-
-    // ===========================
-    // PROFILKÉP FELTÖLTÉSE
-    // =========================== 
-    if( !empty($_FILES['new-avatar']) && $_FILES['new-avatar']['name'] != '' ){
-        $admin->updateUserAvatar($_FILES['new-avatar']);
-    }
-
-    // ===========================
-    // JELSZÓ MEGVÁLTOZTATÁSA
-    // =========================== 
-    if( !empty($_POST['new-password1']) && !empty($_POST['new-password2']) ){
-        $pass1 = $_POST['new-password1'];
-        $pass2 = $_POST['new-password2'];
-        $admin->updateUserPassword($pass1, $pass2);
-    }
 ?>

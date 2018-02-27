@@ -278,14 +278,14 @@
             <i class="ion-close-round close-modal"></i>
         </header>
         <section class="modal-body">
-            <form action="parsers/main-parser.php" method="POST" enctype="multipart/form-data" id="user-settings-form">
+            <form action="<?= SERVER_ROOT ?>parsers/main-parser.php" method="POST" enctype="multipart/form-data" id="user-settings-form">
                 <li class="input-container">
                     <label for="select-profile-pic">Új profilkép:</label>
                     <button class="btn-rounded bg-2" id="select-profile-pic"><i class="ion-upload"></i>Profilkép kiválasztása</button>
                     <span class="uploaded-file-name"></span>
                     <input type="file" name="new-avatar" id="new-avatar" style="display: none;">                    
                 </li>
-                <li class="input-container">
+                <li class="input-container" style="border-top: 1px solid var(--theme-grey);">
                     <label for="new-password1">Új jelszó:</label>
                     <input type="password" name="new-password1" id="new-password1" placeholder="Új jelszó">
                 </li>
@@ -293,7 +293,7 @@
                     <label for="new-password2">Jelsző megerősítése:</label>
                     <input type="password" name="new-password2" id="new-password2" placeholder="Új jelszó megerősítése">
                 </li>
-                <li class="input-container">
+                <li class="input-container" style="border-top: 1px solid var(--theme-grey);">
                     <label for="new-email">Email megváltoztatása:</label>
                     <input type="email" name="new-email" id="new-email" placeholder="Új email cím">
                 </li>

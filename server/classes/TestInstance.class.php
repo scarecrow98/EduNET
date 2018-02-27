@@ -37,11 +37,11 @@
 
             if( $user_type == 1 ){
                 $stmt = $db->prepare(
-                    "SELECT * FROM test_instances WHERE current_author_id = ?"
+                    "SELECT * FROM test_instances WHERE current_author_id = ? ORDER BY creation_date DESC"
                 );
-            }else{
+            } else {
                 $stmt = $db->prepare(
-                    "SELECT * FROM test_instances WHERE group_id IN (SELECT group_id FROM group_members WHERE user_id = ?)"
+                    "SELECT * FROM test_instances WHERE group_id IN (SELECT group_id FROM group_members WHERE user_id = ?) ORDER BY creation_date DESC"
                 );
             }
 
@@ -55,7 +55,7 @@
 
             return $list;
         }
-		
+        
 		public static function create($data){
 			$db = Database::getInstance();
 			
@@ -71,6 +71,50 @@
 				$data['creation_date'],
 				$data['description'],
 			));
+        }
+
+        public static function filter($data, $user_type){
+            $db = Database::getInstance();
+            $stmt;
+
+            if( $user_type == 1 ){
+                $stmt = $db->prepare(
+                    "SELECT * FROM test_instances INNER JOIN tests ON test_instances.test_id = tests.id WHERE".
+                    " (tests.title LIKE :title OR :title IS NULL) AND".
+                    " (tests.subject_id = :subjectid OR :subjectid IS NULL) AND".
+                    " (test_instances.group_id = :groupid OR :groupid IS NULL) AND".
+                    " (test_instances.creation_date LIKE :date OR :date IS NULL) AND".
+                    " test_instances.current_author_id = :uid".
+                    " ORDER BY creation_date DESC"
+                );
+            } else {
+                $stmt = $db->prepare(
+                    "SELECT * FROM test_instances INNER JOIN tests ON test_instances.test_id = tests.id WHERE".
+                    " (tests.title LIKE :title OR :title IS NULL) AND".
+                    " (tests.subject_id = :subjectid OR :subjectid IS NULL) AND".
+                    " (test_instances.group_id = :groupid OR :groupid IS NULL) AND".
+                    " (test_instances.creation_date LIKE :date OR :date IS NULL) AND".
+                    " test_instances.group_id IN (SELECT group_id FROM group_members WHERE user_id = :uid)".
+                    " ORDER BY creation_date DESC"
+                );
+            }
+            $stmt->execute(array(
+                ':title'        => '%'.$data['title'].'%',
+                ':subjectid'    => $data['subject_id'],
+                ':groupid'      => $data['group_id'],
+                ':date'         => '%'.$data['date'].'%',
+                ':uid'          => $data['user_id']
+            ));
+            
+            $data = $stmt->fetchAll();
+
+            $list = array();
+            foreach( $data as $d ){
+                array_push($list, new TestInstance($d));
+            }
+
+            return $list;
+			
         }
 
         public static function setStatus($test_instance_id, $status){

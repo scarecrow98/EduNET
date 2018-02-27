@@ -526,20 +526,24 @@ $('button#btn-save-settings').click((e) => {
 
     let formData = new FormData();
 
+    formData.append('update-user-settings', true);
+
     if ( $('#new-avatar').get(0).files[0] ) {
         formData.append('new-avatar', $('#new-avatar').get(0).files[0]);        
     }
+
     if ( $('#new-password1').val() && $('#new-password2').val() ) {
         formData.append('new-password1', $('#new-password1').val());
         formData.append('new-password2', $('#new-password2').val());
     }
+
     if ( $('#new-email').val() ) {
         formData.append('new-email', $('#new-email').val());
     }
 
     $.ajax({
         type: 'POST',
-        url: 'parsers/main-parser.php',
+        url: SERVER_ROOT+'parsers/main-parser.php',
         data: formData,
         processData: false,
         contentType: false,
@@ -552,7 +556,7 @@ $('button#btn-save-settings').click((e) => {
             }
         },
         error: (status, xhr, error) => {
-            alert(error);
+            //hiba
         }
     });
 });

@@ -3,10 +3,9 @@
     require_once '../../config.php';
     Session::start();
 
-    // if( empty( $_SESSION['task-data'] ) ){
-    //     header('Location: 404.php');
-    //     exit();
-    // }
+    if( empty( Session::get('task-data') ) ){
+        exit();
+    }
     
     $user_id = Session::get('user-id');
     $test_instance_id = Session::get('test-instance-id');
@@ -15,21 +14,14 @@
 
     
     //SESSIONBŐL átvesszük a feladatokat és adataikat tároló tömböt
-    $answers = $_SESSION['task-data'];
-
-
-    //ha már tartoznak eredmények a feladatlaphoz, nem lehet újra megoldani
-    // $has_results = $ev->hasTestResults();
-    // if( !empty($has_results) ){
-    //     exit('Ezt a tesztet már megoldottad! Jelenleg nincs lehetőséged javítani.');
-    // }
+    $answers = Session::get('task-data');
 
     foreach( $answers as $answer ){
         $user_answer = ''; /* diák válasza ebben a változóban lesz eltárolva */
         $task= Task::get($answer['task-id']);
         $user_task_points = 0; /* ebben lesz tárolva, hogy a diák hány pontot ért el egy feladatban */
 
-        //h a feladat szöveges válasz típusú
+        //ha a feladat szöveges válasz típusú
         if( $task->type == 2 ){
             $user_answer = !empty($_POST['textarea-'.$task->id])?$_POST['textarea-'.$task->id]:null;
 
@@ -40,6 +32,25 @@
                 'answer'            => $user_answer
             );
             Answer::storeText($data); //szöveges válasz eltárolása
+        }
+        //ha a feladat fájl típusú
+        elseif( $task->type == 5 ){
+            $file_index = 'file-'.$answer['task-id'];
+            $file = $_FILES[$file_index];
+            $file_name = null;
+
+            if( !empty($file) ){
+                $fu = new FileUploader($file, 'file', 'solution_file');
+                $file_name = $fu->checkFile();
+            }
+
+            $data = array(
+                'user_id'           => Session::get('user-id'),
+                'task_id'           => $task->id,
+                'test_instance_id'  => $test_instance_id,
+                'file_name'         => $file_name
+            );
+            Answer::storeFile($data); //fájl válasz eltárolása
         }
         //ha opciós típusú a feladat
         else{
@@ -53,7 +64,6 @@
 
                 //feladattíustól függően diák válaszainak kialakítása
                 //pl.: a nem bepipált checkboxoknak 0 lesz az értéke, a bebipáltnak 1
-                //az üresen hagyott radio és text inputok értéke # lesz --> ez jelzi, hogy a diák nem válaszolt az adott opcióra
                 switch( $task->type ){
                     case 1:
                         $user_answer = !empty($_POST['option-'.$option->id])?'1':'0';
@@ -71,7 +81,6 @@
 
                 //kvíz feladatok értkélelése eltér az igaz/hamis és a párosítós feladatoktól
                 //kvíznél változó lehet a maximális helyes megoldások száma, míg a többinél akár az összes opció lehet helyes
-                
                 
                 $is_correct = 0;/* ebben tároljuk, hogy a diák jól válaszolt-e az opcióra */
                 if( $option->correct_ans == $user_answer ){
@@ -95,7 +104,7 @@
                     'is_correct'        => $is_correct
                 );
                 Answer::store($data); /* a diák válaszának eltárolása */
-            }
+            } //options for vége
 
             $points_per_options = $task->max_points / $total_correct_answers; /* egy opcióra járó pont --> feladatra járó max pont / összes lehetséges jó válasz */
             
@@ -120,11 +129,10 @@
 
     if( !$test->hasTextTypeTask() ){
         $test_instance->storeEvaluation($user_id, date('Y-m-d H:i:s'));
-        $mailer = new Mailer($user_id, $test_instance_id);
     }
-
-    echo 'a feladatod elmentve. amint kész az értékelés, meg fog jelenni a főoldaladon';
 
     Session::unset('task-data');
     Session::unset('test-instance-id');
+
+    echo 'a feladatod elmentve. amint kész az értékelés, meg fog jelenni a főoldaladon';
 ?>

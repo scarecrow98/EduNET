@@ -1,8 +1,9 @@
 <?php
-    session_start();
+    require_once 'config.php';
+    Session::start();
+
     if( empty($_SESSION['error-message']) ) exit();
 
-    require_once 'config.php';
 ?>
 <html>
     <head>
@@ -29,3 +30,4 @@
         </div>
     </body>
 </html>
+<?php Session::unset('error-message'); ?>

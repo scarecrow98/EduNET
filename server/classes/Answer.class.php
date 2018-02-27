@@ -21,7 +21,29 @@
             $this->task_option_id   = empty($data['task_option_id'])?null:$data['task_option_id'];
         }
 
-        public static function getTextAnswer($user_id, $test_instance_id){
+        public static function getByOptionId($user_id, $test_instance_id, $option_id){
+            $db = Database::getInstance();
+
+            $stmt = $db->prepare(
+                "SELECT * FROM user_answers WHERE user_id = ? AND test_instance_id = ? AND task_option_id = ?"
+            );
+            $stmt->execute(array($user_id, $test_instance_id, $option_id));
+
+            return new Answer($stmt->fetch());     
+        }
+
+        public static function getTextAnswer($user_id, $test_instance_id, $task_id){
+            $db = Database::getInstance();
+
+            $stmt = $db->prepare(
+                "SELECT * FROM user_text_answers WHERE user_id = ? AND test_instance_id = ? AND task_id = ?"
+            );
+            $stmt->execute(array($user_id, $test_instance_id, $task_id));
+
+            return new Answer($stmt->fetch());
+        }
+
+        public static function getTextAnswers($user_id, $test_instance_id){
             $db = Database::getInstance();
 
             $stmt = $db->prepare(
@@ -67,6 +89,21 @@
 				$data['task_id'],
                 $data['test_instance_id'],
                 $data['answer']
+			));
+        }
+
+        public static function storeFile($data){
+			$db = Database::getInstance();
+			
+			$stmt = $db->prepare(
+				"INSERT IGNORE INTO user_file_answers(user_id, task_id, test_instance_id, file_name)".
+				" VALUES(?, ?, ?, ?)"
+			);
+			$stmt->execute(array(
+				$data['user_id'],
+				$data['task_id'],
+                $data['test_instance_id'],
+                $data['file_name']
 			));
         }
 

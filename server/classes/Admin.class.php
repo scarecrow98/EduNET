@@ -62,7 +62,7 @@
                     $data['type']
                 ));
                 
-                Mailer::sendPassword($data['name'], $login_id, $data['password'], $data['email']);
+                //Mailer::sendPassword($data['name'], $login_id, $data['password'], $data['email']);
             }
         }
 

@@ -10,5 +10,5 @@
 
 ?>
 <pre>
-    <?php print_r(StatX::resultsByTestInstance(11)); ?>
+    <?php print_r(StatX::resultsByTestInstance(14)); ?>
 </pre>

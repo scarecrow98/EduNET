@@ -22,6 +22,14 @@
         'task_comment'  => 255
     );
 
+    //dolgozattípusok + classok
+    $test_types = array(
+        'Házi feladat',
+        'Dolgozat',
+        'Témazáró dolgozat',
+        'Szóbeli felelet',
+    );
+
     //osztály autoloader
     spl_autoload_register(function($class_name){
         $file = $_SERVER['DOCUMENT_ROOT'].'/EduNET/server/classes/'.$class_name.'.class.php';

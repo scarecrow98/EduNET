@@ -1,16 +1,15 @@
 <?php
 
 if( isset($_POST['tst-view']) ){
-    $view = $_POST['tst-view'];
-    $title = empty($_POST['tst-title'])?null:$_POST['tst-title'];
-    $group = empty($_POST['tst-group'])?null:$_POST['tst-group'];
-    $subject = empty($_POST['tst-subject'])?null:$_POST['tst-subject'];
-    $date = empty($_POST['tst-date'])?null:$_POST['tst-date'];
-
-    /*if( $is_admin )
-        $search_results = $user->getTestsByTeacherSearch($title, $group, $subject, $date);
-    else
-        $search_results = $user->getTestsByStudentSearch($title, $group, $subject, $date);*/
+    $data = array(
+        'title'         => empty($_POST['tst-title'])?null:$_POST['tst-title'],
+        'group_id'      => empty($_POST['tst-group'])?null:$_POST['tst-group'],
+        'subject_id'    => empty($_POST['tst-subject'])?null:$_POST['tst-subject'],
+        'date'          => empty($_POST['tst-date'])?null:$_POST['tst-date'],
+        'user_id'       => Session::get('user-id')
+    );
+    
+    $search_results = TestInstance::filter($data, Session::get('user-type'));
 }
 
 ?>
