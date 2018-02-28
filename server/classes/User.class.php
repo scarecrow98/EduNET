@@ -88,7 +88,46 @@
             $stmt->execute(array($hash, $salt, $user_id));
 
             session_regenerate_id();
-        }
+		}
+
+        public static function updateEmail($user_id, $email){
+            $db = Database::getInstance();
+
+            $stmt = $db->prepare(
+                "UPDATE users SET email = ? WHERE id = ?"
+            );
+            $stmt->execute(array($email, $user_id));
+		}
+
+				
+		public static function updateAvatar($user_id, $file_name){
+            $db = Database::getInstance();
+
+            $stmt = $db->prepare(
+                "UPDATE users SET avatar = ? WHERE id = ?"
+            );
+            $stmt->execute(array($file_name, $user_id));
+		}
+
+		public static function updateSubscription($user_id, $status){
+            $db = Database::getInstance();
+
+            $stmt = $db->prepare(
+                "UPDATE users SET is_subscribed = ? WHERE id = ?"
+            );
+            $stmt->execute(array($status, $user_id));
+		}
+		
+		public static function emailExists($email){
+			$db = Database::getInstance();
+
+			$stmt = $db->prepare(
+				"SELECT id FROM users WHERE email = ?"
+			);
+			$stmt->execute(array($email));
+			
+			return ($stmt->rowCount() > 0);
+		}
 
 
     }

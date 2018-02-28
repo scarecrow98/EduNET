@@ -181,9 +181,11 @@
             $stmt = $db->prepare(
                 "SELECT id FROM user_answers WHERE test_instance_id = ? AND user_id = ?".
                 " UNION".
-                " SELECT id FROM user_text_answers WHERE test_instance_id = ? AND user_id = ?"
+                " SELECT id FROM user_text_answers WHERE test_instance_id = ? AND user_id = ?".
+                " UNION".
+                " SELECT id FROM user_file_answers WHERE test_instance_id = ? AND user_id = ?"
             );
-            $stmt->execute(array($this->id, $user_id, $this->id, $user_id));
+            $stmt->execute(array($this->id, $user_id, $this->id, $user_id, $this->id, $user_id));
 
             return !empty($stmt->fetchAll());
         }

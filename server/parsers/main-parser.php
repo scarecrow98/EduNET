@@ -245,6 +245,8 @@
     // =========================== 
     if( !empty($_POST['update-user-settings']) ){
 
+        $modification = false;
+
         if( !empty($_POST['new-password1']) && !empty($_POST['new-password2']) ){
             $pass1 = $_POST['new-password1'];
             $pass2 = $_POST['new-password2'];
@@ -253,9 +255,48 @@
             if( strlen($pass1) < 8 ) exit('A jelszónak legalabb 8 karakter hosszúságúnak kell lennie!');
 
             User::updatePassword(Session::get('user-id'), $pass1);
+            $modification = true;
         }
 
-        print_r($_POST);
+        if( !empty($_POST['new-email']) ){
+            $regex = '/^[a-zA-Z0-9.!#$%&’*+\/\=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/';
+            $email = $_POST['new-email'];
+
+
+            if( User::emailExists($email) ) exit('A megadott email már használatban van!');
+            if( strlen($email) > 255 ) exit('Az email hossza nem lehet több mint 255 karakter!');
+            if( !preg_match($regex, $email) ) exit('Az email formátuma nem megfelelő!');
+
+            User::updateEmail(Session::get('user-id'), $email);
+            $modification = true;
+        }
+
+        if( !empty($_FILES['new-avatar']) ){
+            $fu = new FileUploader($_FILES['new-avatar'], 'image', 'avatar');
+            $file_name = $fu->checkFile();
+
+            User::updateAvatar(Session::get('user-id'), $file_name);
+
+            $current_avatar = Session::get('user-avatar');
+            unlink('C:/xampp/htdocs/EduNET/server/uploads/avatars/'.$current_avatar);
+            Session::set('user-avatar', $file_name);
+
+            $modification = true;
+        }
+
+        if( isset($_POST['new-email-subscription']) ){
+            $status = (int)$_POST['new-email-subscription'];
+
+            User::updateSubscription(Session::get('user-id'), $status);
+            Session::set('user-subscription', $status);
+            $modification = true;
+        }
+
+        if( $modification ){
+            exit('success');
+        } else{
+            exit('Nem változtattál semmin!');
+        }
     }
 
 

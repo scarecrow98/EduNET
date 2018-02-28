@@ -137,6 +137,17 @@ $(document).ready(() => {
         }
     });
 
+    //beállításoknál email feliratkozás státuszának változtatása checkbox kattintáskor
+    $('input#new-email-subscription').change((e) => {
+        let status = $(e.currentTarget).is(':checked');
+        localStorage.setItem('subscription-changed', true);
+
+        if (status)
+            $('span#email-subscription-status').html('Értesítések bekapcsolva');
+        else
+            $('span#email-subscription-status').html('Értesítések kikapcsolva');     
+    });
+
     //billentyűlenyomások
     $(window).keydown((e) => {
         if( e.keyCode == 27 ){

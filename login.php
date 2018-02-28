@@ -44,7 +44,8 @@
 		Session::set('user-name', $user->name);
 		Session::set('user-type', $user->type);
 		Session::set('user-avatar', $user->avatar);
-		Session::set('user-email', $user->email);
+        Session::set('user-email', $user->email);
+        Session::set('user-subscription', $user->is_subscribed);
 		
 		header('Location: home');
         exit();

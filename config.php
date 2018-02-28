@@ -48,10 +48,4 @@
         $_SESSION['error-message'] = $message;
         header('Location: http://'.$_SERVER['SERVER_NAME'].'/EduNET/error.php');
     }
-
-    //biztonsági token generáló formokhoz
-    function generateToken(){
-        $string = bin2hex( random_bytes(16) ).microtime(true);
-        return hash('sha1', $string);
-    }
 ?>

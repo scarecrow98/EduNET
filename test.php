@@ -145,11 +145,11 @@
                     array_push($_SESSION['task-data'], $task_data); /* a tömböket tároló sessionbe eltároljuk a feladat adatai tároló tömböt */
                     endforeach; /* tasks foreach vége */
                 ?>
-                <input type="submit" class="btn-wide bg-1" value="Feladatlap beküldése" onclick="return confirm('Biztosan be akarod küldeni a megoldásodat? Ellenőrizd a feltöltött fájlokat is, most még van lehetőséged javítani őket!');">
+                <input type="submit" class="btn-wide bg-1" value="Feladatlap beküldése" id="btn-submit-test">
             </form>
         </div>
     </body>
 </html>
-<script src="js/jquery.js"></script>
-<script src="js/main.js"></script>
-<script src="js/ajax.js"></script>
+<script src="<?= PUBLIC_ROOT ?>js/jquery.js"></script>
+<script src="<?= PUBLIC_ROOT ?>js/main.js"></script>
+<script src="<?= PUBLIC_ROOT ?>js/ajax.js"></script>

@@ -42,7 +42,10 @@ li.input-container{ list-style: none; display: flex; padding: 20px; }
 .input-container label{ color: var(--theme-grey-dark); font-weight: 400; width: 200px; }
 .input-container input,
 .input-container textarea,
-.input-container select{ border: 1px solid var(--theme-grey); flex: 1; border-radius: 4px; font-size: 14px; color: #444; }
+.input-container select{ border: 1px solid var(--theme-grey); flex: 1; border-radius: 4px; font-size: 14px; color: #444; box-shadow: none; transition: all 0.3s; }
+.input-container input:focus,
+.input-container textarea:focus,
+.input-container select:focus{ box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2); }
 .input-container input[type="text"],
 .input-container input[type="number"]{ padding: 8px; }
 .input-container input[type="password"]{ padding: 8px; }

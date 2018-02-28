@@ -5,7 +5,6 @@
         exit('Sajnos az alkalmazás nem támogatott Internet Explorer böngészőben. Kérlek látogass vissza Mozzila vagy Chrome böngészőből! ');
     }
 
-
     require_once 'config.php';
 
     Session::start();
@@ -19,22 +18,22 @@
     DEFINE('IS_ADMIN', Session::get('user-type'));
     
     //biztonsági token generálása az oldaolon található formokhoz
-    $token = generateToken();
+    $token = Security::formToken();
     Session::set('security-token', $token);
 ?>
 <html>
     <head>
         <meta charset="utf-8">
         <title>EduNET</title>
-        <link rel="icon" href="<?php echo PUBLIC_ROOT; ?>resources/images/favicon.ico">
+        <link rel="icon" href="<?= PUBLIC_ROOT ?>resources/images/favicon.ico">
         <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-        <link rel="stylesheet" href="<?php echo PUBLIC_ROOT; ?>css/main.css">
-        <link rel="stylesheet" href="<?php echo PUBLIC_ROOT; ?>css/base.css">
-        <link rel="stylesheet" href="<?php echo PUBLIC_ROOT; ?>css/content.css">
-        <link rel="stylesheet" href="<?php echo PUBLIC_ROOT; ?>css/side-menu.css">
-        <link rel="stylesheet" href="<?php echo PUBLIC_ROOT; ?>css/top-bar.css">
-        <link rel="stylesheet" href="<?php echo PUBLIC_ROOT; ?>css/components.css">
-        <link rel="stylesheet" href="<?php echo PUBLIC_ROOT; ?>css/animations.css">
+        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/main.css">
+        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/base.css">
+        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/content.css">
+        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/side-menu.css">
+        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/top-bar.css">
+        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/components.css">
+        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/animations.css">
     </head>
     <body>
 
@@ -64,10 +63,8 @@
 
     </body>
 </html>
-<script src="<?php echo PUBLIC_ROOT; ?>/js/jquery.js"></script>
-<script src="<?php echo PUBLIC_ROOT; ?>/js/main.js"></script>
-<script src="<?php echo PUBLIC_ROOT; ?>/js/ajax.js"></script>
-
-<?php if( $_GET['page'] == 'stats' ): ?>
-    <script src="<?php echo PUBLIC_ROOT; ?>/js/graphs.js"></script>
-<?php endif; ?>
+<script src="<?= PUBLIC_ROOT ?>js/jquery.js"></script>
+<script src="<?= PUBLIC_ROOT ?>js/main.js"></script>
+<script src="<?= PUBLIC_ROOT ?>js/ajax.js"></script>
+<script src="<?= PUBLIC_ROOT ?>js/message-ajax.js"></script>
+<?= IS_ADMIN ? '<script src="'.PUBLIC_ROOT.'js/teacher-ajax.js"></script>' : '' ?>

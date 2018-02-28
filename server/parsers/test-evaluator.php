@@ -1,5 +1,12 @@
 <?php
 
+
+    if( !empty($_POST['test-submission']) ){
+        $data = json_decode($_POST['test-submission']);
+        print_r($data[0]);
+        exit();
+    }
+
     require_once '../../config.php';
     Session::start();
 

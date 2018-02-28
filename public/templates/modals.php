@@ -298,6 +298,13 @@
                     <input type="email" name="new-email" id="new-email" placeholder="Új email cím">
                 </li>
                 <li class="input-container">
+                    <label for="new-email-subscription">Email értesítések:</label>
+                    <div>
+                        <input type="checkbox" name="new-email-subscription" id="new-email-subscription" <?= Session::get('user-subscription')?'checked':'' ?>>
+                        <span id="email-subscription-status" style="font-size: 14px;">Értesítések <?= Session::get('user-subscription')?' bekapcsolva':' kikapcsolva' ?></span>
+                    </div>
+                </li>
+                <li class="input-container">
                     <button id="btn-reset-settings" class="btn-rounded bg-2" style="margin-right: 6px;">Mégse</button>
                     <button id="btn-save-settings" class="btn-rounded bg-2">Beállítások mentése</button>
                 </li>
