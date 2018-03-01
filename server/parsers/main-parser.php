@@ -11,16 +11,16 @@
     // ÜZENET KÜLDÉSE
     // ===========================
 	if( isset($_POST['new-message']) ){
-		$receiver_id = $_POST['receiver-id'];
+		$partner_id = $_POST['partner-id'];
 		$text = $_POST['text'];
 		
-		if( empty($receiver_id) ){	exit('Az üzenet címzettje nincs kiválasztva!'); }
-		if( !is_numeric($receiver_id) ){ exit('A megadott címzett nem található!'); }
+		if( empty($partner_id) ){	exit('Az üzenet címzettje nincs kiválasztva!'); }
+		if( !is_numeric($partner_id) ){ exit('A megadott címzett nem található!'); }
 		if( empty($text) ){	exit('Az üzenet szövege nincs megadva!'); }
 		
 		$data = array(
 			'sender_id'		=> Session::get('user-id'),
-			'receiver_id'	=> $receiver_id,
+			'receiver_id'	=> $partner_id,
             'text'			=> $text,
             'date'          => date('Y-m-d H:i:s')
 		);
@@ -42,7 +42,8 @@
 			
 			$resp[] = array(
 				'sender_name'	=> $sender->name,
-				'sender_avatar'	=> $sender->avatar,
+                'sender_avatar'	=> $sender->avatar,
+                'sender_id'     => $sender->id,
 				'text'			=> $message->text,
 				'id'			=> $message->id,
 				'date'			=> $message->date

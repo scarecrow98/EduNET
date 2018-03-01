@@ -26,18 +26,18 @@
         <div class="messages-popup panel" style="display: none;">
             <section>
                 <?php 
-					foreach( $messages as $message ):
-                    $sender = User::get($message->sender_id);
+                    foreach( $messages as $message ):
                     $partner_id = $message->sender_id==Session::get('user-id') ? $message->receiver_id : $message->sender_id;
-                    $sender_name = explode(' ', $sender->name)[1];
+                    $partner = User::get($partner_id);
+                    $partner_name = explode(' ', $partner->name)[1];
                 ?>
                     <li class="message-item <?= $message->is_seen==0?'unread-message':'' ?>" data-message-id="<?=  $message->id; ?>" data-partner-id="<?= $partner_id ?>">
                         <div>   
-                            <span style="background-image: url('<?= SERVER_ROOT.'uploads/avatars/'.$sender->avatar; ?>')"></span>
-                            <h4 style="inline"><?= $sender->name; ?></h4>
+                            <span style="background-image: url('<?= SERVER_ROOT.'uploads/avatars/'.$partner->avatar; ?>')"></span>
+                            <h4 style="inline"><?= $partner->name; ?></h4>
                         </div> 
                         <time><?= $message->date; ?></time>
-                        <p><?= $sender->id == Session::get('user-id') ? 'én: ' : $sender_name.':'; ?> <?= $message->text; ?></p>
+                        <p><?= $partner->id == Session::get('user-id') ? 'én: ' : $partner_name.':'; ?> <?= $message->text; ?></p>
                     </li>
                 <?php endforeach; ?>
             </section>
