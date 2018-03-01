@@ -181,7 +181,7 @@ function createNewTaskOption(parentContainer, inputTextName, inputAnsName, input
     label.appendTo(li);
 
     //opciók szövegét tartó textinput létrehozása
-    let inputText = $('<input>', { type: 'text', name: inputTextName+optionNumber });
+    let inputText = $('<input>', { type: 'text', name: inputTextName+optionNumber, required: true });
     inputText.appendTo(li);
 
     //ha rádiógomb típusú az elem, akkor 2 rádiógombot hozunk létre (egyiket 1, másikat 0-ás értékkel --> igaz/hamis)

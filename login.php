@@ -46,6 +46,8 @@
 		Session::set('user-avatar', $user->avatar);
         Session::set('user-email', $user->email);
         Session::set('user-subscription', $user->is_subscribed);
+        
+        Security::setAccessToken();
 		
 		header('Location: home');
         exit();

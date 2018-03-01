@@ -1,7 +1,9 @@
 <?php
     //üzenetek lekérése
-    $messages = Message::getAll(Session::get('user-id'));
-	
+    $messages = Message::getPreviews(Session::get('user-id'));
+    
+    
+
     //megsázmoljuk hány olvasatlan üzenet van
     $unread_messages = 0;
     foreach( $messages as $message ){
@@ -20,20 +22,22 @@
     </div>
 	<?php endif; ?>
     <div id="top-bar-buttons-right">
-        <button id="btn-settings" data-modal-id="user-settings" class="modal-opener"><i class="ion-gear-a"></i></button><button id="btn-messages"><i class="ion-ios-chatboxes-outline"></i><span id="message-counter"><?php echo $unread_messages; ?></span></button><a href="logout.php"><button id="btn-logout"><i class="ion-log-out"></i></button></a>
+        <button id="btn-settings" data-modal-id="user-settings" class="modal-opener"><i class="ion-gear-a"></i></button><button id="btn-messages"><i class="ion-ios-chatboxes-outline"></i><span id="message-counter"><?= $unread_messages; ?></span></button><a href="logout.php"><button id="btn-logout"><i class="ion-log-out"></i></button></a>
         <div class="messages-popup panel" style="display: none;">
             <section>
                 <?php 
 					foreach( $messages as $message ):
-					$sender = User::get($message->sender_id);
+                    $sender = User::get($message->sender_id);
+                    $partner_id = $message->sender_id==Session::get('user-id') ? $message->receiver_id : $message->sender_id;
+                    $sender_name = explode(' ', $sender->name)[1];
                 ?>
-                    <li class="message-item <?php echo $message->is_seen==0?'unread-message':'' ?>" data-message-id="<?php echo $message->id; ?>">
+                    <li class="message-item <?= $message->is_seen==0?'unread-message':'' ?>" data-message-id="<?=  $message->id; ?>" data-partner-id="<?= $partner_id ?>">
                         <div>   
-                            <span style="background-image: url('<?php echo SERVER_ROOT.'uploads/avatars/'.$sender->avatar; ?>')"></span>
-                            <h4 style="inline"><?php echo $sender->name; ?></h4>
+                            <span style="background-image: url('<?= SERVER_ROOT.'uploads/avatars/'.$sender->avatar; ?>')"></span>
+                            <h4 style="inline"><?= $sender->name; ?></h4>
                         </div> 
-                        <time><?php echo $message->date; ?></time>
-                        <p><?php echo $message->text; ?></p>
+                        <time><?= $message->date; ?></time>
+                        <p><?= $sender->id == Session::get('user-id') ? 'én: ' : $sender_name.':'; ?> <?= $message->text; ?></p>
                     </li>
                 <?php endforeach; ?>
             </section>

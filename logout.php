@@ -5,6 +5,8 @@
 	
 	Session::start();
     Session::destroy();
-	
-    header('Location: login.php');
+    
+    Security::destroyAccessToken();
+
+    header('Location: login');
 ?>

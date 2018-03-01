@@ -261,13 +261,12 @@
     <!-- MEGNYITOTT ÜZENET -->
     <div class="modal" style="width: 500px; height: 400px; display: none;" id="read-message">
         <header>
-            <h3>Üzenet megtekintése</h3>
+            <h3>Beszélgetés</h3>
             <i class="ion-close-round close-modal"></i>
         </header>
         <section class="modal-body">
-            <h4></h4>
-            <small></small>
-            <p></p>
+            <section id="conversation">
+            </section>
         </section>
     </div>
 

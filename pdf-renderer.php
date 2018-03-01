@@ -9,6 +9,17 @@
 
     Session::start();
 
+    if( Security::checkAccessToken() === false ){
+        header('Location: logout');
+        exit();
+    }
+
+    Security::setAccessToken();
+
+    if( Session::get('user-type') != 1 ){
+        exit();
+    }
+
     $html = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body style="font-family: DejaVu Sans, sans-serif;" >';
     $test_instance = TestInstance::get($_GET['test_instance']); 
     $lines = 15;

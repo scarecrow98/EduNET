@@ -1,16 +1,18 @@
 <?php
 
 
-    if( !empty($_POST['test-submission']) ){
-        $data = json_decode($_POST['test-submission']);
-        print_r($data[0]);
-        exit();
-    }
+    // if( !empty($_POST['test-submission']) ){
+    //     $answers = json_decode($_POST['answers'], true);
+    //     print_r($answers[0]);
+    //     print_r($_FILES);
+
+    //     exit();
+    // }
 
     require_once '../../config.php';
     Session::start();
 
-    if( empty( Session::get('task-data') ) ){
+    if( empty( $_POST['test-submission'] ) ){
         exit();
     }
     
@@ -21,16 +23,15 @@
 
     
     //SESSIONBŐL átvesszük a feladatokat és adataikat tároló tömböt
-    $answers = Session::get('task-data');
+    $answers = json_decode($_POST['answers'], true);
 
     foreach( $answers as $answer ){
-        $user_answer = ''; /* diák válasza ebben a változóban lesz eltárolva */
         $task= Task::get($answer['task-id']);
         $user_task_points = 0; /* ebben lesz tárolva, hogy a diák hány pontot ért el egy feladatban */
 
         //ha a feladat szöveges válasz típusú
         if( $task->type == 2 ){
-            $user_answer = !empty($_POST['textarea-'.$task->id])?$_POST['textarea-'.$task->id]:null;
+            $user_answer = empty($answer['text-answer']) ? null : $answer['text-answer'];
 
             $data = array(
                 'user_id'           => Session::get('user-id'),
@@ -42,7 +43,7 @@
         }
         //ha a feladat fájl típusú
         elseif( $task->type == 5 ){
-            $file_index = 'file-'.$answer['task-id'];
+            $file_index = $answer['file-name'];
             $file = $_FILES[$file_index];
             $file_name = null;
 
@@ -66,22 +67,22 @@
             $quiz_correct_user_answers = 0; /* ebbe tároljuk, hogy a kvízfeladatban mennyit talált el a diák */
             $correct_user_answers = 0; /* ebbe tároljuk, hogy igaz/hamis vagy párosítás feladatokban mennyit talált el a diák */
 
-            for( $i = 0; $i < $task->option_count; $i++ ){
-                $option = TaskOption::get($answer[$i]); /* az opció helyes válaszának lekérése */
+            for( $i = 0; $i < count($answer['task-options']); $i++ ){
+                $option = TaskOption::get($answer['task-options'][$i]['option-id']); /* az opció helyes válaszának lekérése */
 
                 //feladattíustól függően diák válaszainak kialakítása
                 //pl.: a nem bepipált checkboxoknak 0 lesz az értéke, a bebipáltnak 1
                 switch( $task->type ){
                     case 1:
-                        $user_answer = !empty($_POST['option-'.$option->id])?'1':'0';
+                        $user_answer = $answer['task-options'][$i]['value'];
                         if( $option->correct_ans == 1 ){ $total_correct_answers++; }
                     break;
                     case 3:
-                        $user_answer = !empty($_POST['option-'.$option->id])?$_POST['option-'.$option->id]:null;
+                        $user_answer = !empty($answer['task-options'][$i]['option-id']) ? $answer['task-options'][$i]['value'] : null;
                         $total_correct_answers++;
                     break;
                     case 4:
-                        $user_answer = isset($_POST['option-'.$option->id])?$_POST['option-'.$option->id]:null;
+                        $user_answer = isset($answer['task-options'][$i]['option-id']) ? $answer['task-options'][$i]['value'] : null;
                         $total_correct_answers++;
                     break;
                 }
@@ -101,7 +102,7 @@
                     }
                 }
 
-                $is_correct = $option->correct_ans == $user_answer?1:0; /* ellenőrízzük, hogy jó-e a diák válasza */
+                $is_correct = $option->correct_ans == $user_answer ? 1 : 0; /* ellenőrízzük, hogy jó-e a diák válasza */
 
                 $data = array(
                     'user_id'           => Session::get('user-id'),
@@ -141,5 +142,5 @@
     Session::unset('task-data');
     Session::unset('test-instance-id');
 
-    echo 'a feladatod elmentve. amint kész az értékelés, meg fog jelenni a főoldaladon';
+    echo 'success';
 ?>

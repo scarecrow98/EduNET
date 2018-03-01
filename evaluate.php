@@ -3,6 +3,13 @@
     require_once('config.php');
     Session::start();
     
+    if( Security::checkAccessToken() === false ){
+        header('Location: logout');
+        exit();
+    }
+
+    Security::setAccessToken();
+
 
     //helyes URL paraméterek ellenőrzése
     if( empty($_GET['test_instance']) || empty($_GET['user'])  ){

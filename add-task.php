@@ -2,6 +2,13 @@
     require_once 'config.php';
 	Session::start();
 
+    if( Security::checkAccessToken() === false ){
+        header('Location: logout');
+        exit();
+    }
+
+    Security::setAccessToken();
+
 	if( Session::get('user-type') != 1 ){
 		errorRedirect('Nincs jogosultságod az oldal megtekintéséhez!');
 	}
@@ -70,3 +77,4 @@
 <script src="<?= PUBLIC_ROOT; ?>js/jquery.js"></script>
 <script src="<?= PUBLIC_ROOT; ?>js/main.js"></script>
 <script src="<?= PUBLIC_ROOT; ?>js/ajax.js"></script>
+<script src="<?= PUBLIC_ROOT; ?>js/teacher-ajax.js"></script>

@@ -3,6 +3,13 @@
 
     Session::start();
     
+    if( Security::checkAccessToken() === false ){
+        header('Location: logout');
+        exit();
+    }
+
+    Security::setAccessToken();
+
     //hiányzó paraméter
     if( empty($_GET['test_instance']) ){
         errorRedirect('Érvénytelen paraméterek!');

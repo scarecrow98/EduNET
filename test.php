@@ -9,6 +9,13 @@
 
     Session::start();
     
+    if( Security::checkAccessToken() === false ){
+        header('Location: logout');
+        exit();
+    }
+
+    Security::setAccessToken();
+
     //tanár fiókból nem lehet megoldani a tesztet
     if( Session::get('user-type') == 1 ){
         errorRedirect('A feladatlap megoldása csak diákok számára elérhető!');
@@ -46,9 +53,8 @@
     Session::set('test-instance-id', $test_instance_id);
 
     $test = Test::get($test_instance->test_id);
-
-    //diák válaszait tároló tömb inicializálása
-    $_SESSION['task-data'] = array();
+    $tasks = $test->getTasks();
+    
 ?>
 <html>
     <head>
@@ -68,10 +74,25 @@
             <h1><?= $test->title; ?></h1>
             <form action="<?= SERVER_ROOT ?>parsers/test-evaluator.php" method="POST" id="submit-test-form" enctype="multipart/form-data">  
 
+            <input type="hidden" name="task-count" id="task-count" value="<?= count($tasks) ?>">
+            
             <?php
-                $tasks = $test->getTasks();
+                $task_counter = 0;
                 foreach( $tasks as $task ): /* tasks foreach kezdete */ 
+                    $task_counter++;
+
+                    $options = $task->getTaskOptions();
+                    $option_data = array();
+                    foreach( $options as $option ){ $option_data[] = $option->id; }
+
+                    $task_data = array(
+                        'task-id'       => $task->id,
+                        'task-type'     => $task->type,
+                        'task-options'  => $option_data
+                    );
             ?>
+                <input type="hidden" name="task-<?= $task_counter ?>-data" id="task-<?= $task_counter ?>-data" value='<?= json_encode($task_data) ?>'>
+                
                 <div class="test-sheet panel">   
                     <header class="bg-1">
                         <h3 class="ion-compose"><?= $task->task_number; ?>. feladat</h3>
@@ -81,7 +102,7 @@
                         <small>( <?= $task->max_points; ?> pont )</small>
 
                         <?php if( !empty($task->text) ): ?>
-                        <pre style="white-space: pre-wrap; color: #b2b2b2; font-style: italic; padding: 15px;"><? $task->text ?></pre>
+                        <pre style="white-space: pre-wrap; color: #b2b2b2; font-style: italic; padding: 15px;"><?= $task->text ?></pre>
                         <?php endif; ?>
 
                         <?php if( !empty($task->image) ): ?>
@@ -91,18 +112,8 @@
                         <?php endif; ?>
                         <table>
                         <?php
-                            $task_data = array(); /* tömb létrehozása, ami az aktuális feladat adatátit tárolja (típus, opciok száma, opciók id-je) */
-                            $task_data['task-type'] = $task->type; /* előbbi tömbbe megadjuk, hogy milyen típusú az adott feladat */
-                            $task_data['option-count'] = 0;
-                            $task_data['task-id'] = $task->id;
-
-                            $options = $task->getTaskOptions();
+                            foreach( $options as $option ): /* options foreach kezdete */  
                         ?>
-                            <?php
-                                foreach( $options as $option ): /* options foreach kezdete */  
-                                    array_push( $task_data, $option->id ); /* tömbhöz hozzáadjuk a feladathoz tartozó opció id-jét */
-                                    $task_data['option-count']++; /* opciószámlálót növeljük */
-                            ?>
                             <tr>
                                 <td>
                                     <label class="label-small" style="display: inline-block; width: auto;" for="option-<?= $option->id ?>"><?= $option->text; /* opció szövege */ ?></label>
@@ -126,23 +137,20 @@
                             
                             <?php
                                 if( $task->type == 2 ):
-                                array_push( $task_data, $task->id ); /* ha szövegesválasz típusú a feladat, akkor a feladat id-jét adjuk a tömbhöz */
                             ?>
                                 <textarea placeholder="Ide írd a válaszod..." style="width: 100%;" name="textarea-<?= $task->id; ?>"></textarea>
                             <?php
                                 elseif( $task->type == 5 ):
-                                array_push( $task_data, $task->id ); /* ha fájl típusú a feladat, akkor a feladat id-jét adjuk a tömbhöz */
                             ?>
                                 <td>
                                     Fájl feltöltése:
-                                    <input type="file" name="file-<?= $task->id ?>">
+                                    <input type="file" name="file-<?= $task->id ?>"  id="file-<?= $task->id ?>">
                                 </td>
                             <?php endif; ?>
-                            </table>
+                        </table>
                     </section>
                 </div> 
                 <?php
-                    array_push($_SESSION['task-data'], $task_data); /* a tömböket tároló sessionbe eltároljuk a feladat adatai tároló tömböt */
                     endforeach; /* tasks foreach vége */
                 ?>
                 <input type="submit" class="btn-wide bg-1" value="Feladatlap beküldése" id="btn-submit-test">

@@ -8,17 +8,18 @@
     require_once 'config.php';
 
     Session::start();
-    
-    if( empty(Session::get('user-id')) ){
-        Session::set('error-message', 'Jelentkezz be a folytatáshoz!');
-        header('Location: login');
+
+    if( Security::checkAccessToken() === false ){
+        header('Location: logout');
         exit();
     }
-	
+
+    Security::setAccessToken();
+
     DEFINE('IS_ADMIN', Session::get('user-type'));
     
     //biztonsági token generálása az oldaolon található formokhoz
-    $token = Security::formToken();
+    $token = Security::securityToken();
     Session::set('security-token', $token);
 ?>
 <html>

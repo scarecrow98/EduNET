@@ -71,7 +71,7 @@ window.setInterval(getNewMessages, 5000);
 
 
 // ====================
-// üzenet megnyitása
+// párbeszéd megnyitása
 // ===================
 $('body').on('click', 'li.message-item', (e) => {
 
@@ -81,22 +81,25 @@ $('body').on('click', 'li.message-item', (e) => {
     let message = $(e.currentTarget);
     let modal = $('.page-overlay #read-message');
     let messageId = message.attr('data-message-id');
+    let parnterId = message.attr('data-partner-id')
 
     $(e.currentTarget).removeClass('unread-message');
-
-    modal.find('h4').html(message.find('h4').html());
-    modal.find('small').html(message.find('small').html());
-    modal.find('p').html(message.find('p').html());
 
     $.ajax({
         type: 'POST',
         url: SERVER_ROOT + 'parsers/main-parser.php',
-        data: { 'message-seen': true, 'message-id': messageId },
+        data: { 'message-seen': true, 'message-id': messageId, 'partner-id': parnterId },
         success: (resp, xhr, status) => {
+            let messages = JSON.parse(resp);
 
-            if (resp == 'success') {
-                let unreadCounter = parseInt($('span#message-counter').html()) - 1;
-                $('span#message-counter').html(unreadCounter);
+            if (messages.length < 1) { return; }
+
+            for (message of messages) {
+                let msgBubble = $('<div>', {
+                    class: 'msg-bubble',
+                    html: message.text
+                }); 
+                msgBubble.appendTo('#read-message #conversation');
             }
         }
     });

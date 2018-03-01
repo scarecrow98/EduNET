@@ -24,14 +24,27 @@
 			}
 		}
 		
-		public static function getAll($user_id){
+		public static function getPreviews($user_id){
+			$ids = Message::getPartnerIds($user_id);
+			
+			$msgs = array();
+			foreach( $ids as $partner_id ){
+				$msgs[] = Message::getLastConversationMessage($user_id, $partner_id);
+			}
+
+			$list = Message::orderByDate($msgs);
+
+            return $list;
+		}
+		
+		public static function getConversation($user_id, $partner_id){
 			$db = Database::getInstance();
 			
 			$stmt = $db->prepare(
-				"SELECT * FROM messages WHERE receiver_id = ? ORDER BY date DESC"
+				"SELECT * FROM messages WHERE receiver_id IN (:uid, :pid) AND sender_id IN (:uid, :pid) ORDER BY date ASC"
 			);
-			$stmt->execute(array($user_id));
-			
+			$stmt->execute(array(':uid' => $user_id, ':pid' => $partner_id));
+								
 			$data = $stmt->fetchAll();
 
             $list = array();
@@ -42,6 +55,7 @@
             return $list;
 		}
 		
+
 		public static function getNews($user_id){
 			$db = Database::getInstance();
 			
@@ -103,6 +117,54 @@
 				':t'	=> $data['text'],
 				':d'	=> $data['date']
 			));
+		}
+
+		public static function getPartnerIds($user_id){
+			$db = Database::getInstance();
+
+			$stmt = $db->prepare(
+				"SELECT sender_id AS 'partner' FROM messages where receiver_id = :uid".
+				" UNION".
+				" SELECT receiver_id AS 'partner' FROM messages where sender_id = :uid"
+			);
+			$stmt->execute(array(':uid' => $user_id));
+
+			$data = $stmt->fetchAll();
+			$arr = array();
+			foreach( $data as $d ){
+				$arr[] = $d['partner'];
+			}
+
+			return $arr;
+		}
+		
+		public static function getLastConversationMessage($user_id, $partner_id){
+			$db = Database::getInstance();
+
+			$stmt = $db->prepare(
+				"SELECT * FROM messages WHERE".
+				" receiver_id IN (:uid, :pid) AND sender_id IN (:uid, :pid)".
+				" ORDER BY date DESC LIMIT 1"
+			);
+			$stmt->execute(array(':uid' => $user_id, ':pid' => $partner_id));
+
+			return new Message($stmt->fetch());	
+		}
+
+		public static function orderByDate($arr){
+			for($i = 0; $i < count($arr) - 1; $i++){
+				for($j = $i + 1; $j < count($arr); $j++){
+					$date1 = strtotime($arr[$i]->date);
+					$date2 = strtotime($arr[$j]->date);
+					if( $date1 < $date2 ){
+						$x = $arr[$i];
+						$arr[$i] = $arr[$j];
+						$arr[$j] = $x;
+					}
+				}
+			}
+
+			return $arr;
 		}
 			
 	}

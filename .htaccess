@@ -10,6 +10,7 @@ RewriteRule ^settings/?$ index.php?page=settings [L]
 RewriteRule ^add_task/?$ add-task.php [L]
 RewriteRule ^add_members/?$ add-members.php [L]
 RewriteRule ^login/?$ login.php [L]
+RewriteRule ^logout/?$ logout.php [L]
 RewriteRule ^view_test/?$ view-test.php [L]
 
 ErrorDocument 404 http://localhost/EduNET/404.php

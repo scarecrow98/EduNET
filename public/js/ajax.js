@@ -108,30 +108,83 @@ $('input#btn-submit-test').click((e) => {
     e.preventDefault();
 
     if (!confirm('Biztosan be akarod küldeni a feladatlapot?')) return false;
-    
-    // let answers = [
-    //     {
-    //         "task-id": 1,
-    //         "task-type": 2,
-    //         "answer": "Lorem ipsum dolor sit amet",
-    //     },
-    //     {
-    //         "task-id": 3,
-    //         "task-type": 2,
-    //         "answer": "",    
-    //     }
-    // ];
 
-    for (let i = 1; i < 10; i++ ){
-        
+    let taskCount = $('input#task-count').val();
+    let formData = new FormData();
+    let answers = [];
+
+    for ( let i = 1; i <= taskCount; i++ ){
+        let data = $('input#task-' + i + '-data').val();
+        let taskData = JSON.parse(data);
+        let answer = new Object();
+
+        answer['task-id'] = taskData['task-id'];
+
+        if (taskData['task-options'].length > 0) {
+            let options = [];
+
+            for (x of taskData['task-options']) {
+                let opt;
+                switch (taskData['task-type']) {
+                    //kvíz
+                    case '1':
+                        opt = {
+                            'option-id': x,
+                            'value': +$('input[name=option-' + x + ']').is(':checked')
+                        }    
+                        break; 
+                    //párosítás
+                    case '3':
+                        opt = {
+                            'option-id': x,
+                            'value': $('input[name=option-' + x + ']').val()
+                        }    
+                        break; 
+                    //igaz-hamis
+                    case '4':
+                        opt = {
+                            'option-id': x,
+                            'value': $('input[name=option-' + x + ']:checked').val()
+                        }      
+                        break; 
+                }
+                options.push(opt);
+            }
+            answer['task-options'] = options;
+
+        } else {
+            switch (taskData['task-type']) {
+                //szöveges válasz
+                case '2':
+                    answer['text-answer'] = $('textarea[name=textarea-' + taskData['task-id'] + ']').val();
+                    break;
+                //fájlfeltöltés
+                case '5':  
+                    answer['file-name'] = 'file-' + taskData['task-id'];   
+                    formData.append(answer['file-name'], $('input#'+answer['file-name']).get(0).files[0]);
+                    break;
+            }
+        }
+
+        answers.push(answer);
     }
+
+    formData.append('answers', JSON.stringify(answers));
+    formData.append('test-submission', true);
 
     $.ajax({
         type: 'POST',
         url: SERVER_ROOT + 'parsers/test-evaluator.php',
-        data: { 'test-submission': JSON.stringify(answers) },
+        processData: false,
+        contentType: false,
+        data: formData,
         success: (resp, xhr, status) => {
-            alert(resp);
+            if ( resp == 'success' ) {
+                alert('A feladatlapod megoldásait sikeresen mentettük, ezennel nincs más dolgod ezzel a dolgozattal!');
+                window.location.assign('home');
+            } else {
+                alert(resp);
+            }
         }
     });
 });

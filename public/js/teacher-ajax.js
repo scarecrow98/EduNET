@@ -51,7 +51,7 @@ $('form#create-task-form').submit((e) => {
     formData.append('max_points', $('#task-points').val());
 
     //választott feladattípushoz tartozó opciók begyűjtése
-    switch (taskType) {
+    switch ( taskType ) {
         case '1':
             optionNumber = $('section.quiz-options').children().length;
             for (let i = 1; i <= optionNumber; i++) {
@@ -75,12 +75,14 @@ $('form#create-task-form').submit((e) => {
             break;
     }
     //formData.append('task-option-number', optionNumber);
+    // console.log(optionTexts);
+    // console.log(optionAnswers);
     formData.append('option_texts', JSON.stringify(optionTexts));
     formData.append('option_answers', JSON.stringify(optionAnswers));
 
-    // for (val of formData.entries()) {
-    //     console.table(val[0] + " - " + val[1]);
-    // }
+    for (val of formData.entries()) {
+        console.table(val[0] + " - " + val[1]);
+    }
 
     $.ajax({
         type: 'POST',

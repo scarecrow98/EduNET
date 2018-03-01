@@ -3,12 +3,9 @@
 	require_once '../../config.php';
     Session::start();
     
-    //biztonsági token ellenőrzése minden ideérkező request esetén
-    $headers = getallheaders();
-
-    // if( $headers['Security-Token'] != Session::get('security-token') ){
-    //     exit('Adatfeldolgozás megtagadva!');
-    // }
+    if( Security::checkAccessToken() === false ){
+        exit();
+    }
     
     // ===========================
     // ÜZENET KÜLDÉSE
@@ -43,13 +40,13 @@
 		foreach( $messages as $message ){
 			$sender = User::get($message->sender_id);
 			
-			array_push($resp, array(
+			$resp[] = array(
 				'sender_name'	=> $sender->name,
 				'sender_avatar'	=> $sender->avatar,
 				'text'			=> $message->text,
 				'id'			=> $message->id,
 				'date'			=> $message->date
-			));
+			);
 		}
 		
 		exit(json_encode($resp));
@@ -57,21 +54,29 @@
 	}
 	
 	// ===========================
-    // ÜZENET 'OLVASOTTÁ' ÁLLÍTÁSA
+    // ÜZENET 'OLVASOTTÁ' ÁLLÍTÁSA, ÉS ÜPÁRBESZÉD LEKÉRÉSE
     // ===========================
 	if( isset($_POST['message-seen']) ){
-		$message_id = $_POST['message-id'];
+        $message_id = $_POST['message-id'];
+        $partner_id = $_POST['partner-id'];
 				
 		if( empty($message_id) ){ exit('Hiba történt!'); }
 		if( !is_numeric($message_id) ){ exit('Hiba történt!'); }
 		
-		$result = Message::setToSeen($message_id);
-		
-		if( !$result ){
-			exit('already-seen');
-		}else{
-			exit('success');
+		Message::setToSeen($message_id);
+        
+        $messages = Message::getConversation(Session::get('user-id'), $partner_id);
+
+        $resp = array();
+        foreach( $messages as $message ){
+            $resp[] = array(
+                'is_own'    => $message->sender_id == Session::get('user-id') ? 1 : 0,
+                'text'      => $message->text,
+                'date'      => $message->date
+            );
 		}
+
+        exit(json_encode($resp));
 		
 	}
 	
