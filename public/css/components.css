@@ -90,7 +90,7 @@ li.input-container{ list-style: none; display: flex; padding: 20px; }
 
 /* üzenetek */
 #read-message .msg-bubble{ width: 100%; padding: 5px 15px; }
-#read-message .msg-bubble p{ padding: 8px; background: #e4e4e4; display: inline-block; font-size: 14px; max-width: 300px; border-radius: 3px; }
+#read-message .msg-bubble p{ padding: 8px; background: #e4e4e4; display: inline-block; font-size: 14px; max-width: 300px; border-radius: 3px; box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.2) }
 #read-message .msg-own p{ background: #046796; color: #fff; float: right; }
 
 /* GOMBOK */

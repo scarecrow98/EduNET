@@ -83,25 +83,19 @@
 			$stmt->execute(array(1, $this->receiver_id));
 		}
 		
-		public static function setToSeen($message_id){
+		public static function setToSeen($user_id, $partner_id){
 			$db = Database::getInstance();
 			
 			$stmt = $db->prepare(
-				"SELECT * FROM messages WHERE id = ?"
+				"UPDATE messages SET is_seen = :true WHERE is_seen = :false AND receiver_id IN (:uid, :pid) AND sender_id IN (:uid, :pid)"
 			);
-			$stmt->execute(array($message_id));
-			$msg = new Message($stmt->fetch());
-			
-			if( $msg->is_seen == 1 ){
-				return false;
-			}
-			
-			$stmt = $db->prepare(
-				"UPDATE messages SET is_seen = ? WHERE id = ?"
-			);
-			$stmt->execute(array(1, $message_id));
-			
-			return true;
+			$stmt->execute(array(
+				':true'		=> 1,
+				':false'	=> 0,
+				':uid'		=> $user_id,
+				':pid'		=> $partner_id
+			));
+			return $stmt->rowCount();
 		}
 		
 		public static function create($data){

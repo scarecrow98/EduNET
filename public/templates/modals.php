@@ -264,10 +264,7 @@
             <h3>Beszélgetés</h3>
             <i class="ion-close-round close-modal"></i>
         </header>
-        <section class="modal-body" style="height: calc(100% - 170px);">
-            <section id="conversation">
-                <!-- üzenetek helye -->
-            </section>
+        <section class="modal-body" id="conversation" style="height: calc(100% - 170px);">
         </section>
         <div id="message-controls" style="background: #e3e3e3; padding: 6px; box-sizing: border-box;">
             <textarea placeholder="Üzeneted helye..." id="message"></textarea>

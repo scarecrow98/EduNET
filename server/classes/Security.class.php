@@ -18,12 +18,12 @@
             $token = Security::securityToken();
             //20 perces biztonsági token
             setcookie('access-token', $token, time() + 1200, '/');
-            Session::set('acces-token', $token);
+            Session::set('access-token', $token);
         }
 
         public static function checkAccessToken(){
-            if( isset($_COOKIE['access-token']) ){
-                if( Session::get('access-token' !== $_COOKIE['access-token'] ) ){
+            if( isset($_COOKIE['access-token']) && !empty(Session::get('access-token')) ){
+                if( Session::get('access-token') !== $_COOKIE['access-token']  ){
                     return false;
                 }
             } else {

@@ -55,27 +55,34 @@
 	}
 	
 	// ===========================
-    // ÜZENET 'OLVASOTTÁ' ÁLLÍTÁSA, ÉS ÜPÁRBESZÉD LEKÉRÉSE
+    // ÜZENET 'OLVASOTTÁ' ÁLLÍTÁSA, ÉS PÁRBESZÉD LEKÉRÉSE
     // ===========================
-	if( isset($_POST['message-seen']) ){
-        $message_id = $_POST['message-id'];
-        $partner_id = $_POST['partner-id'];
-				
-		if( empty($message_id) ){ exit('Hiba történt!'); }
-		if( !is_numeric($message_id) ){ exit('Hiba történt!'); }
-		
-		Message::setToSeen($message_id);
-        
+	if( isset($_POST['get-conversation']) ){
+
+        //lekérjük a partner és a köztünk lévő pádbeszédet
+        $partner_id = $_POST['partner-id'];        
         $messages = Message::getConversation(Session::get('user-id'), $partner_id);
 
-        $resp = array();
+
+        //ha olvasattá kell állítani üzeneteket
+        $affected_messages = 0;
+        if( !empty($_POST['set-to-seen']) ) {
+            $affected_messages = Message::setToSeen(Session::get('user-id'), $partner_id);
+        }
+
+        $msgs = array();
         foreach( $messages as $message ){
-            $resp[] = array(
+            $msgs[] = array(
                 'is_own'    => $message->sender_id == Session::get('user-id') ? 1 : 0,
                 'text'      => $message->text,
                 'date'      => $message->date
             );
-		}
+        }
+
+        $resp = array(
+            'messages'          => json_encode($msgs),
+            'affected_messages' => $affected_messages
+        );
 
         exit(json_encode($resp));
 		

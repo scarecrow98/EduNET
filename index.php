@@ -9,7 +9,7 @@
 
     Session::start();
 
-    if( Security::checkAccessToken() === false ){
+    if( Security::checkAccessToken() == false ){
         header('Location: logout');
         exit();
     }
