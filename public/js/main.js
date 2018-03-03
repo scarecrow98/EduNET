@@ -25,12 +25,12 @@ $(document).ready(() => {
 
     //csoporttagok felvétele modalnál csoport ID megszerzése
     $('button.btn-add-members').click((e) => {
-        localStorage.setItem('group-id', $(e.currentTarget).attr('data-group-id'));
+        sessionStorage.setItem('group-id', $(e.currentTarget).attr('data-group-id'));
     });
 
     //feladatlap ID-jének eltárolása, amikor a user lenyitja lenyiló menüt
     $('i.open-test-options').click((e) => {
-        localStorage.setItem('test-id', $(e.currentTarget).attr('data-test-id'));
+        sessionStorage.setItem('test-id', $(e.currentTarget).attr('data-test-id'));
     });
     
     //feladatlap nyitása/zárása (formkülés)
@@ -74,7 +74,10 @@ $(document).ready(() => {
     });
 	
     //üzenetek popup nyitása/csukása
-    $('button#btn-messages').click(() => { $('.messages-popup').slideToggle(); });
+    $('button#btn-messages').click(() => {
+        $('.messages-popup').slideToggle();
+        $('button#btn-messages').removeClass('has-new-message');
+    });
 
 
     //file dialogok megnyitása
@@ -140,7 +143,7 @@ $(document).ready(() => {
     //beállításoknál email feliratkozás státuszának változtatása checkbox kattintáskor
     $('input#new-email-subscription').change((e) => {
         let status = $(e.currentTarget).is(':checked');
-        localStorage.setItem('subscription-changed', true);
+        sessionStorage.setItem('subscription-changed', true);
 
         if (status)
             $('span#email-subscription-status').html('Értesítések bekapcsolva');

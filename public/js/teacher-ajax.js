@@ -225,7 +225,7 @@ $('input#student-name').keyup((e) => {
     $.ajax({
         type: 'POST',
         url: SERVER_ROOT + 'parsers/search-parser.php',
-        data: { 'student-name': studentName, 'group-id': localStorage.getItem('group-id') },
+        data: { 'student-name': studentName, 'group-id': sessionStorage.getItem('group-id') },
         success: (resp, status, xhr) => {
             //szerver válaszának visszalakítása JS tömbbé
             let results = JSON.parse(resp);
@@ -273,7 +273,7 @@ $('body').on('click', 'button.btn-add-student', (e) => {
         url: SERVER_ROOT + 'parsers/main-parser.php',
         data: {
             'add-group-member': true,
-            'group-id': localStorage.getItem('group-id'),
+            'group-id': sessionStorage.getItem('group-id'),
             'student-id': $(e.currentTarget).attr('data-student-id')
         },
         success: (resp, status, xhr) => {
@@ -323,14 +323,14 @@ $('form#share-test-form').submit((e) => {
 
     let newTestAuthor = $('select#new-test-author').val();
     let newTestGroup = $('select#new-test-group').val();
-    let testId = localStorage.getItem('test-id');
+    let testId = sessionStorage.getItem('test-id');
 
     if (!testId) {
         alert('Valami hiba történt!');
         return false;
     }
 
-    localStorage.removeItem('test-id');
+    sessionStorage.removeItem('test-id');
 
     $.ajax({
         type: 'POST',

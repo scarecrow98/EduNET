@@ -1,32 +1,37 @@
 // ====================
 // új üzenet létrehozása
 // ===================
-// $('form#create-message-form').submit((e) => {
-//     e.preventDefault();
+$('form#create-message-form').submit((e) => {
+    e.preventDefault();
 
-//     let partnerId = localStorage.getItem('message-partner-id');
-//     let text = $('textarea#').val();
+    let partnerId = $('select#message-receiver').val();
+    let text = $('textarea#message-text').val();
 
-//     $.ajax({
-//         type: 'POST',
-//         url: SERVER_ROOT + 'parsers/main-parser.php',
-//         data: {
-//             'new-message': true,
-//             'partner-id': partnerId,
-//             'text': text
-//         },
-//         success: (resp, xhr, status) => {
-//             if (resp == 'success') {
-//                 alert('Az üzenetet sikeresen elküldtük!');
-//             } else {
-//                 alert('Valami hiba történt az üzenet küldése közben!');
-//             }
-//         },
-//         error: (status, xhr, error) => {
-//             alert(error);
-//         }
-//     });
-// });
+    $.ajax({
+        type: 'POST',
+        url: SERVER_ROOT + 'parsers/main-parser.php',
+        data: {
+            'create-message': true,
+            'partner-id': partnerId,
+            'text': text
+        },
+        success: (resp, xhr, status) => {
+            let data = JSON.parse(resp);
+
+            createMessagePreview({
+                'sender_id': partnerId,
+                'sender_name': data.partner_name,
+                'sender_avatar': data.partner_avatar,
+                'id': data.message_id,
+                'date': 'most',
+                'text': text
+            }, 'message-item');
+        },
+        error: (status, xhr, error) => {
+            alert(error);
+        }
+    });
+});
 
 //üzenetbuborékot létrehozó függvény
 function createMessageBubble(message, className) {
@@ -43,18 +48,15 @@ function createMessageBubble(message, className) {
 }
 
 //üzenet előnézetet létrehozó függvény (popup ablakban)
-function createMessagePreview(message) {
+function createMessagePreview(message, className) {
     //létező listelem eltávolítása
     $('li#partner-' + message.sender_id).remove();
-
-    //keresztvén kinyerése
-    let partnerName = message.sender_name.split(' ')[1];
-
+ 
     //html létrehozása, beszúrása a lista elejére
-    let li = $('<li>', { class: 'message-item unread-message', 'data-message-id': message.id, 'data-partner-id': message.sender_id, id: 'partner-' + message.sender_id });
+    let li = $('<li>', { class: className, 'data-message-id': message.id, 'data-partner-id': message.sender_id, id: 'partner-' + message.sender_id });
     let span = $('<span>', { css: { 'background-image': 'url(' + SERVER_ROOT + 'uploads/avatars/' + message.sender_avatar + ')' } });
     let h4 = $('<h4>', { html: message.sender_name });
-    let p = $('<p>', { html: partnerName +': ' + message.text });
+    let p = $('<p>', { html: message.text });
     let time = $('<time>', { html: message.date });
     span.appendTo(li);
     h4.appendTo(li);
@@ -75,7 +77,7 @@ function scrollToBottom() {
 // ===================
 function sendMessage() {
 
-    let partnerId = localStorage.getItem('message-partner-id');
+    let partnerId = sessionStorage.getItem('message-partner-id');
     let text = $('textarea#message').val();
 
     if (text == '') return false;
@@ -122,20 +124,17 @@ function getNewMessages() {
 
             if (messages.length < 1) { return false; }
 
-            let unreadCounter = parseInt($('span#message-counter').html()) + messages.length;
-            $('span#message-counter').html(unreadCounter);
-
             beep.play();
 
             for (message of messages) {
 
-                if (localStorage.getItem('message-partner-id') == message.sender_id && $('#read-message').is(':visible')) {
+                if (sessionStorage.getItem('message-partner-id') == message.sender_id && $('#read-message').is(':visible')) {
                     createMessageBubble(message, 'msg-bubble clear');
                 }
 
-                createMessagePreview(message);
+                createMessagePreview(message, 'message-item unread-message');
             }
-
+            $('button#btn-messages').addClass('has-new-message');
             scrollToBottom();
         },
         error: (status, xhr, error) => {
@@ -156,12 +155,10 @@ $('body').on('click', 'li.message-item', (e) => {
     $('.page-overlay #read-message').show();
 
     let clickedLi = $(e.currentTarget);
-
-    let message = $(e.currentTarget);
     let modal = $('.page-overlay #read-message');
-    let partnerId = message.attr('data-partner-id');
+    let partnerId = clickedLi.attr('data-partner-id');
 
-    localStorage.setItem('message-partner-id', partnerId);
+    sessionStorage.setItem('message-partner-id', partnerId);
 
 
     let data = {};
@@ -202,10 +199,6 @@ $('body').on('click', 'li.message-item', (e) => {
 
                 createMessageBubble(message, msgClass);
             }
-
-            let unreadCounter = parseInt($('span#message-counter').html()) - parseInt(affectedMessages);
-            $('span#message-counter').html(unreadCounter);
-
             scrollToBottom();
 
         }

@@ -7,6 +7,22 @@ $.ajaxSetup({
     }
 });
 
+//felhasználói adatok lekérése a szerverről, és eltárolása a sessionStorage-be
+$(document).ready(() => {
+    $.ajax({
+        type: 'POST',
+        url: SERVER_ROOT + 'parsers/main-parser.php',
+        data: { 'get-user-data': true },
+        success: (resp, xhr, status) => {
+            let user = JSON.parse(resp);
+
+            sessionStorage.setItem('user-name', user.name);
+            sessionStorage.setItem('user-avatar', user.avatar);
+            sessionStorage.setItem('user-email', user.email);
+        }
+    });
+});
+
 
 // ====================
 // csoporttagok listázása
@@ -75,9 +91,9 @@ $('button#btn-save-settings').click((e) => {
         formData.append('new-email', $('#new-email').val());
     }
 
-    if ( localStorage.getItem('subscription-changed') ) {
+    if ( sessionStorage.getItem('subscription-changed') ) {
         formData.append('new-email-subscription', $('#new-email-subscription').is(':checked') ? 1 : 0);
-        localStorage.removeItem('subscription-changed');
+        sessionStorage.removeItem('subscription-changed');
     }
 
     $.ajax({

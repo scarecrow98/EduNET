@@ -6,6 +6,29 @@
     if( Security::checkAccessToken() === false ){
         exit();
     }
+    // ===========================
+    // FELHASZNÁLÓI ADATOK LEKÉRÉSE
+    // ===========================
+    if( !empty($_POST['get-user-data']) ){
+        $resp = array(
+            'name'      => Session::get('user-name'),
+            'email'     => Session::get('user-email'),
+            'avatar'    => Session::get('user-avatar'),
+        );
+
+        exit(json_encode($resp));
+    }
+    
+
+    function newMessage($receiver_id, $text){
+		$data = array(
+			'sender_id'		=> Session::get('user-id'),
+			'receiver_id'	=> $receiver_id,
+            'text'			=> $text,
+            'date'          => date('Y-m-d H:i:s')
+		);
+		return Message::create($data);
+    }
     
     // ===========================
     // ÜZENET KÜLDÉSE
@@ -13,20 +36,31 @@
 	if( isset($_POST['new-message']) ){
 		$partner_id = $_POST['partner-id'];
 		$text = $_POST['text'];
-		
-		if( empty($partner_id) ){	exit('Az üzenet címzettje nincs kiválasztva!'); }
-		if( !is_numeric($partner_id) ){ exit('A megadott címzett nem található!'); }
-		if( empty($text) ){	exit('Az üzenet szövege nincs megadva!'); }
-		
-		$data = array(
-			'sender_id'		=> Session::get('user-id'),
-			'receiver_id'	=> $partner_id,
-            'text'			=> $text,
-            'date'          => date('Y-m-d H:i:s')
-		);
-		
-		Message::create($data);
+        
+        newMessage($partner, $text);
+
 		exit('success');
+		
+    }
+    
+    // ===========================
+    // ÜZENET KÜLDÉSE
+    // ===========================
+	if( isset($_POST['create-message']) ){
+		$partner_id = $_POST['partner-id'];
+		$text = $_POST['text'];
+		
+		
+        $msg_id = newMessage($partner, $text);
+        $partner = User::get($partner_id);
+
+        $resp = array(
+            'partner_name'      => $partner->name,
+            'partner_avatar'    => $partner->avatar,
+            'id'                => $msg_id
+        );
+
+		exit(json_encode($resp));
 		
 	}
 	

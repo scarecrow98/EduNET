@@ -111,6 +111,8 @@
 				':t'	=> $data['text'],
 				':d'	=> $data['date']
 			));
+
+			return $db->lastInsertId();
 		}
 
 		public static function getPartnerIds($user_id){

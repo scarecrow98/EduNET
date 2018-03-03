@@ -25,7 +25,7 @@
 
 /* ÜZENETEK POPUP */
 button#btn-messages{ position: relative; }
-button#btn-messages #message-counter{ position: absolute; right: -6px; bottom: -6px; display: inline-block; width: 20px; height: 20px; background: red; line-height: 20px; color: #fff; border-radius: 4px; }
+button.has-new-message{ background: #f4cb42 !important; color: #fff !important; }
 .messages-popup{ position: absolute; top: 70px; right: 85px; width: 300px; height: 400px; background: #fff; z-index: 888; }
 .messages-popup section{ height: calc(100% - 40px); overflow-x: hidden; overflow-y: scroll; }
 .messages-popup button#create-new-message{ width: 100%; height: 40px; border-top: 1px solid var(--theme-grey); }
