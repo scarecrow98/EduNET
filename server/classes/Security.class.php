@@ -10,6 +10,18 @@
             return hash('sha256', $password.$salt);
         }
 
+        public static function generatePassword(){
+            $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            $password = '';
+
+            for($i = 0; $i <= 7; $i++){
+                $index = rand(0, strlen($chars) - 1);
+                $password .= $chars[$index];
+            }
+
+            return $password;
+        }
+
         public static function securityToken(){
             return hash('sha1', bin2hex( random_bytes(16) ).microtime(true));
         }
@@ -19,6 +31,7 @@
             //20 perces biztonsági token
             setcookie('access-token', $token, time() + 1200, '/');
             Session::set('access-token', $token);
+
         }
 
         public static function checkAccessToken(){

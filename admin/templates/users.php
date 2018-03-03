@@ -1,9 +1,12 @@
+<pre>
 <?php
-    if( isset($_POST['submit']) ){
+    if( isset($_POST['registrate-user']) ){
         $name = $_POST['user-name'];
         $password = $_POST['user-password'];
         $email = $_POST['user-email']; 
         $type = $_POST['user-type'];
+
+        if( Admin::emailExists($email) ) exit('Az emailcím már létezik!');
 
         $data = array(
             'name'      => $name,
@@ -13,7 +16,42 @@
         );
         Admin::registrateUser($data);
     }
+
+    if( isset($_POST['upload-csv']) ){
+        $data = FileUploader::parseCSV($_FILES['csv']);
+        $errors = array();
+        $email_regex = '/^[a-zA-Z0-9.!#$%&’*+\/\=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/';
+
+
+        $line_counter = 1;
+        foreach( $data as $user ){
+            if ( Admin::emailExists($user['email']) ) exit('Hiba a '.$line_counter.'. sorban! Az email cím már létezik!');
+
+            if( empty($user['name']) || empty($user['email']) ) exit('Hiba a '.$line_counter.'. sorban! A sor üres mezőt tartalmaz!');
+
+            if( !preg_match($email_regex, $user['email']) ) exit('Hiba a '.$line_counter.'. sorban! Az email cím formátuma érvénytelen!');
+            
+            $line_counter++;
+        }
+
+        $user_data = array();
+        foreach( $data as $user ){
+            $login_id = Admin::registrateUser(array(
+                'name'  => utf8_encode($user['name']),
+                'email' => utf8_encode($user['email']),
+                'type'  => 0
+            ));
+
+            $user_data[] = array(
+                'name'  => utf8_encode($user['name']),
+                'login' => $login_id
+            );
+        }
+        print_r($user_data);
+        exit();
+    }
 ?>
+</pre>
 
 <div id="left">
     <p style="color: red;"><?= empty(Session::get('error-message'))?'':Session::get('error-message'); ?></p>
@@ -39,20 +77,20 @@
                 diák<input type="radio" name="user-type" value="0" checked>
             </li>
             <li>
-                <input type="submit" name="submit" value="Felhasználó regisztrálása">
+                <input type="submit" name="registrate-user" value="Felhasználó regisztrálása">
             </li>
         </form>
     </section>
     <section>
-        <h3>Feltöltése CSV fájlból</h3>
+        <h3>Diákok felvétele CSV-ből</h3>
         <p style="color: #c3c3c3;">
-            A CSV fájl egy sora egy felhasználó adatát tartalmazza! A sor cellái a következők legyen, ebben a sorrendben: <span style="color: #888; font-style: italic;">név;emailcím;típus</span>.
+            A CSV fájl egy sora egy felhasználó adatát tartalmazza! A sor cellái a következők legyen, ebben a sorrendben: <span style="color: #888; font-style: italic;">név;emailcím</span>.
             A típus értéke 0 legyen, ha a felhasználó diák, és 1-es abban az esetben, ha tanár.
             Arra is figyeljóünk, hogy az email cím egyedi legyen minden felhasználónál. Ellenkező esetben a megegyező emailel rendelkező sorok nem lesznek regisztrálva a rendszerben.
         </p>
-        <form action="">
-            <input type="file" style="display: none;">
-            <button>Fájl kiválasztása</button>
+        <form action="" method="POST" enctype="multipart/form-data">
+            <input type="file" name="csv">
+            <input type="submit" name="upload-csv">
         </form>
     </section>
 </div>
@@ -67,7 +105,7 @@
         foreach( $users as $user ):
     ?>
         <li class="clear">
-            <h4><?php echo $user->name; echo $user->type==0?' (diák)':' (tanár)' ?></h4>
+            <h4><?php echo $user->name; echo $user->type==0?' (diák)':' (tanár)'; echo ' - '.$user->login_id; ?></h4>
             <span><?= empty($user->email)?'nincs megadva email cím':$user->email ?></span>
             <i class="ion-trash-a"></i>
         </li>

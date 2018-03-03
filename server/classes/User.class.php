@@ -7,7 +7,6 @@
 		public $name;
 		public $email;
 		public $is_subscribed;
-		public $is_online;
 		public $avatar;
 		public $type;
 		public $pass_hash;
@@ -20,7 +19,6 @@
 			$this->name = $data['name'];
 			$this->email = $data['email'];
 			$this->is_subscribed = $data['is_subscribed'];
-			$this->is_online = $data['is_online'];
 			$this->avatar = $data['avatar'];
 			$this->type = $data['type'];
 			$this->pass_salt = $data['pass_salt'];
@@ -40,7 +38,7 @@
 		
 		public static function getByLogin($login_id){
 			$db = Database::getInstance();
-			
+
 			$stmt = $db->prepare(
 				"SELECT * FROM users WHERE login_id = ?"
 			);
@@ -49,14 +47,6 @@
 			return new User($stmt->fetch());
 		}
 		
-		public static function updateStatus($user_id, $status){
-			$db = Database::getInstance();
-			
-			$stmt = $db->prepare(
-				"UPDATE users SET is_online = ? WHERE id = ?"
-			);
-			$stmt->execute(array($status, $user_id));
-		}
 		
 		public static function getByType($user_type){
 			$db = Database::getInstance();

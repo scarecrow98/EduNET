@@ -79,8 +79,9 @@ function sendMessage() {
 
     let partnerId = sessionStorage.getItem('message-partner-id');
     let text = $('textarea#message').val();
+    text = text.trim()
 
-    if (text == '') return false;
+    if (text.length < 1 || text == '\n') return false;
 
     $.ajax({
         type: 'POST',

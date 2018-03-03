@@ -21,7 +21,7 @@
             return $list;
         }
 
-        private static function emailExists($email){
+        public static function emailExists($email){
             $db = Database::getInstance();
 
             $stmt = $db->prepare(
@@ -34,36 +34,32 @@
 
         public static function registrateUser($data){
             $db = Database::getInstance();
-            $error = false;
-
-            if( Admin::emailExists($data['email']) ){
-                Session::set('error-message', 'Az emailcím már létezik!');
-                $error = true;
-            }
 
             $login_id = Admin::getLoginId();
-            $pass_salt = hash( 'md5', bin2hex(random_bytes(16)) );
+            $pass_salt = Security::passwordSalt();
 
-            $pass_hash = hash('sha256', $data['password'].$pass_salt);
+            $password;
+            if( isset($data['password']) )
+                $password = $data['password'];
+            else
+                $password = Security::generatePassword();
+
+            $pass_hash = Security::hashPassword($password, $pass_salt);
 
             $stmt = $db->prepare(
                 "INSERT INTO users(login_id, name, email, pass_hash, pass_salt, type)".
                 " VALUES(?, ?, ?, ?, ?, ?)"
             );
 
-            if( !$error ){
-
-                $stmt->execute(array(
-                    $login_id,
-                    $data['name'],
-                    $data['email'],
-                    $pass_hash,
-                    $pass_salt,
-                    $data['type']
-                ));
-                
-                //Mailer::sendPassword($data['name'], $login_id, $data['password'], $data['email']);
-            }
+            $stmt->execute(array(
+                $login_id,
+                $data['name'],
+                $data['email'],
+                $pass_hash,
+                $pass_salt,
+                $data['type']
+            ));
+            return $login_id.' - '.$password;            
         }
 
         private function getLoginId(){

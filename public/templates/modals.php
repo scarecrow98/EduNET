@@ -244,7 +244,7 @@
                             foreach($teachers as $teacher):
                                 if( $teacher->id == Session::get('user-id') ) continue;
                         ?>
-                        <option value="<?php echo $teacher->id; ?>"><?php echo $teacher->name; ?> (<?php echo $teacher->is_online==0?'Nem elérhető':'Elérhető' ?>)</option>
+                        <option value="<?php echo $teacher->id; ?>"><?php echo $teacher->name; ?></option>
                         <?php endforeach; ?>             
                     </select>
                 </li>
@@ -258,7 +258,7 @@
         </section>
     </div>
 
-    <!-- MEGNYITOTT ÜZENET -->
+    <!-- MEGNYITOTT ÜZENETEK -->
     <div class="modal" style="width: 500px; height: 600px; display: none;" id="read-message">
         <header>
             <h3>Beszélgetés</h3>
@@ -267,7 +267,7 @@
         <section class="modal-body" id="conversation" style="height: calc(100% - 170px);">
         </section>
         <div id="message-controls" style="background: #e3e3e3; padding: 6px; box-sizing: border-box;">
-            <textarea placeholder="Üzeneted helye..." id="message"></textarea>
+            <textarea placeholder="Üzeneted helye..." id="message" required></textarea>
             <button id="btn-send-message">Küldés</button>
         </div>
     </div>
@@ -296,7 +296,7 @@
                 </li>
                 <li class="input-container" style="border-top: 1px solid var(--theme-grey);">
                     <label for="new-email">Email megváltoztatása:</label>
-                    <input type="email" name="new-email" id="new-email" placeholder="Új email cím">
+                    <input type="email" name="new-email" id="new-email" placeholder="<?= Session::get('user-email') ?>">
                 </li>
                 <li class="input-container">
                     <label for="new-email-subscription">Email értesítések:</label>

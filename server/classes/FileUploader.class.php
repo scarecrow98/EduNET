@@ -46,13 +46,13 @@
 			$extension = strtolower( pathinfo($name)['extension'] );
 			$mime = $this->file['type'];
 			
-			if( !is_uploaded_file($tmp) ){ exit('Hiba történt a feltöltés közben!'); }
+			if( !is_uploaded_file($tmp) ) exit('Hiba történt a feltöltés közben!'); 
 			
-			if( $size > $this->max_size ){ exit('A fájl mérete nem lehet nagyobb, mint 5MB!'); }
+			if( $size > $this->max_size ) exit('A fájl mérete nem lehet nagyobb, mint 5MB!'); 
 			
-			if( !in_array($extension, $this->allowed_extensions[$this->file_type] ) ){ exit('A fájl kiterjesztése nem megengedett!'); }
+			if( !in_array($extension, $this->allowed_extensions[$this->file_type] ) ) exit('A fájl kiterjesztése nem megengedett!'); 
 			
-			if( !in_array($mime, $this->allowed_mime_types[$this->file_type]) ){ exit('A fájl kiterjesztése nem megengedett!'); }
+			if( !in_array($mime, $this->allowed_mime_types[$this->file_type]) ) exit('A fájl kiterjesztése nem megengedett!'); 
 			
 			$new_base_name = hash('md5', $tmp.microtime(true) );
 			$new_file_name = $new_base_name.'.'.$extension;
@@ -61,6 +61,34 @@
 			
 			return $new_file_name;
 
+		}
+
+		public static function parseCSV($_file){
+			$file = $_file;
+			$file_name = $file['name'];
+			$file_tmp = $file['tmp_name'];
+			$file_ext = strtolower( pathinfo($file_name)['extension'] );
+			$allowed_formats = array('application/vnd.ms-excel','text/plain','text/csv','text/tsv');
+
+			if( $file['error'] > 0 ) exit('Hiba történt a feltöltés közben!');
+
+			if( $file_ext != 'csv' ) exit('Csak CSV fájl feltöltése megengedett!');
+
+			if( !in_array($file['type'], $allowed_formats) ) exit('Csak CSV fájl feltöltése megengedett!');
+			
+			$data = array_map('str_getcsv', file($file_tmp));
+			$output = array();
+
+			foreach( $data as $d ){
+				$s = explode(';', $d[0]);
+
+				$output[] = array(
+					'name'	=> $s[0],
+					'email'	=> $s[1]
+				);
+			}
+
+			return $output;
 		}
 	}
 

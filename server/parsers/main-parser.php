@@ -20,6 +20,7 @@
     }
     
 
+    //függvény, amely létrehoz egy új üzenetet az adatbázisban
     function newMessage($receiver_id, $text){
 		$data = array(
 			'sender_id'		=> Session::get('user-id'),
@@ -37,7 +38,7 @@
 		$partner_id = $_POST['partner-id'];
 		$text = $_POST['text'];
         
-        newMessage($partner, $text);
+        newMessage($partner_id, $text);
 
 		exit('success');
 		
@@ -51,7 +52,7 @@
 		$text = $_POST['text'];
 		
 		
-        $msg_id = newMessage($partner, $text);
+        $msg_id = newMessage($partner_id, $text);
         $partner = User::get($partner_id);
 
         $resp = array(

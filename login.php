@@ -38,8 +38,6 @@
         //ha minden rendben volt, beléptetjük a felhasználót
 		Session::unset('error-message');
 
-		User::updateStatus($user->id, 1);
-
 		Session::set('user-id', $user->id);
 		Session::set('user-name', $user->name);
 		Session::set('user-type', $user->type);
