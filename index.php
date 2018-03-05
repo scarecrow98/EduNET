@@ -34,7 +34,6 @@
         <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/side-menu.css">
         <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/top-bar.css">
         <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/components.css">
-        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/animations.css">
     </head>
     <body>
 
@@ -65,6 +64,7 @@
     </body>
 </html>
 <script src="<?= PUBLIC_ROOT ?>js/jquery.js"></script>
+<script src="<?= PUBLIC_ROOT; ?>js/ajax-settings.js"></script>
 <script src="<?= PUBLIC_ROOT ?>js/main.js"></script>
 <script src="<?= PUBLIC_ROOT ?>js/ajax.js"></script>
 <script src="<?= PUBLIC_ROOT ?>js/message-ajax.js"></script>

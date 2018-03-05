@@ -96,6 +96,11 @@ li.input-container{ list-style: none; display: flex; padding: 20px; }
 /* GOMBOK */
 button:hover, input[type="submit"]{ cursor: pointer; }
 
+/* ikonok */
+span.option-result-icon{ display: inline-block; width: 18px; height: 18px; margin: 0px 12px; vertical-align: middle; background-size: cover !important; background-repeat: no-repeat !important; }
+span.wrong-icon{ background: url('../resources/images/icon-wrong.png'); }
+span.correct-icon{ background: url('../resources/images/icon-correct.png'); }
+span.missing-icon{ background: url('../resources/images/icon-missing.png'); }
 
 .btn-rounded{ color: #fff !important; padding: 10px; border-radius: 30px; font-weight: 600; border: none !important; }
 .btn-rounded i:before{ font-size: 20px; margin-right: 8px; vertical-align: middle; }

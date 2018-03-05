@@ -31,7 +31,7 @@
 					<h3><?= Session::get('current-task-number') ?>. feladat</h3>	
 				</header>
 				
-				<form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-task-form" enctype="multipart/form-data">
+				<form novalidate action="<?= SERVER_ROOT; ?>parsers/main-parser.php" name="create-task-form" method="POST" id="create-task-form" enctype="multipart/form-data">
 					<li class="input-container">
 						<label for="">Feladat kérdése:</label>
 						<input type="text" name="task-question" id="task-question" placeholder="A feladathoz tartozó kérdés, utasítás *" required>
@@ -75,6 +75,7 @@
     </body>
 </html>
 <script src="<?= PUBLIC_ROOT; ?>js/jquery.js"></script>
+<script src="<?= PUBLIC_ROOT; ?>js/ajax-settings.js"></script>
 <script src="<?= PUBLIC_ROOT; ?>js/main.js"></script>
 <script src="<?= PUBLIC_ROOT; ?>js/ajax.js"></script>
 <script src="<?= PUBLIC_ROOT; ?>js/teacher-ajax.js"></script>

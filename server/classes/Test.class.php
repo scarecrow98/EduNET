@@ -78,13 +78,13 @@
 			
 		}
 
-		public function hasTextTypeTask(){
+		public function hasFileOrTextTypeTask(){
 			$db = Database::getInstance();
 
 			$stmt = $db->prepare(
-				"SELECT COUNT(id) AS 'count' FROM tasks WHERE type = ? AND test_id = ?"
+				"SELECT COUNT(id) AS 'count' FROM tasks WHERE type = ? OR type = ? AND test_id = ?"
 			);
-			$stmt->execute(array(2, $this->id));
+			$stmt->execute(array(2, 5, $this->id));
 			$data = $stmt->fetch();
 
 			if( $data['count'] > 0 ){

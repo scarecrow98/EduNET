@@ -27,6 +27,7 @@
 				'application/octet-stream'
 			)
 		);
+		//megengedett kiterjesztések
 		private $allowed_extensions = array(
 			'image'	=> array('jpeg', 'jpg', 'png', 'gif'),
 			'file'	=> array('rar', 'zip')
@@ -39,6 +40,7 @@
 		}
 		
 
+		//feltöltött fájl ellenőrzése, áthelyezése a megfelelő mappába
 		public function checkFile(){
 			$size = $this->file['size'];
 			$name = $this->file['name'];
@@ -47,22 +49,25 @@
 			$mime = $this->file['type'];
 			
 			if( !is_uploaded_file($tmp) ) exit('Hiba történt a feltöltés közben!'); 
-			
+			//méret
 			if( $size > $this->max_size ) exit('A fájl mérete nem lehet nagyobb, mint 5MB!'); 
-			
+			//kiterjesztés
 			if( !in_array($extension, $this->allowed_extensions[$this->file_type] ) ) exit('A fájl kiterjesztése nem megengedett!'); 
-			
+			//mime típus
 			if( !in_array($mime, $this->allowed_mime_types[$this->file_type]) ) exit('A fájl kiterjesztése nem megengedett!'); 
 			
+			//fájlnév generálása, áthelyezése
 			$new_base_name = hash('md5', $tmp.microtime(true) );
 			$new_file_name = $new_base_name.'.'.$extension;
 			
 			move_uploaded_file($tmp, $this->save_paths[$this->file_role].$new_file_name);
 			
+			//feltöltött fájlnév vissszaadása
 			return $new_file_name;
 
 		}
 
+		//megadott CSV fájl feldolgozása (diákok regisztrálásakor használt CSV)
 		public static function parseCSV($_file){
 			$file = $_file;
 			$file_name = $file['name'];
@@ -79,6 +84,7 @@
 			$data = array_map('str_getcsv', file($file_tmp));
 			$output = array();
 
+			//adatok tömbbe helyezése
 			foreach( $data as $d ){
 				$s = explode(';', $d[0]);
 

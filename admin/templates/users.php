@@ -1,11 +1,13 @@
 <pre>
 <?php
+    //felhasználó manuális regisztrálása
     if( isset($_POST['registrate-user']) ){
         $name = $_POST['user-name'];
         $password = $_POST['user-password'];
         $email = $_POST['user-email']; 
         $type = $_POST['user-type'];
 
+        //létező email
         if( Admin::emailExists($email) ) exit('Az emailcím már létezik!');
 
         $data = array(
@@ -17,26 +19,32 @@
         Admin::registrateUser($data);
     }
 
+    //CSV fájlból történő diákadatok feldolgozása
     if( isset($_POST['upload-csv']) ){
         $data = FileUploader::parseCSV($_FILES['csv']);
         $errors = array();
         $email_regex = '/^[a-zA-Z0-9.!#$%&’*+\/\=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/';
 
 
+        //hibák keresése a CSV fájlban
         $line_counter = 1;
         foreach( $data as $user ){
+            //lérező email
             if ( Admin::emailExists($user['email']) ) exit('Hiba a '.$line_counter.'. sorban! Az email cím már létezik!');
-
+            //üres név vagy email
             if( empty($user['name']) || empty($user['email']) ) exit('Hiba a '.$line_counter.'. sorban! A sor üres mezőt tartalmaz!');
-
+            //rossz email formátum
             if( !preg_match($email_regex, $user['email']) ) exit('Hiba a '.$line_counter.'. sorban! Az email cím formátuma érvénytelen!');
             
             $line_counter++;
         }
 
+        //diákok belépési adatainak eltárolása --> PDF generálás
         $user_data = array();
+
+        //diákok regisztrálása
         foreach( $data as $user ){
-            $login_id = Admin::registrateUser(array(
+            $login = Admin::registrateUser(array(
                 'name'  => utf8_encode($user['name']),
                 'email' => utf8_encode($user['email']),
                 'type'  => 0
@@ -44,7 +52,7 @@
 
             $user_data[] = array(
                 'name'  => utf8_encode($user['name']),
-                'login' => $login_id
+                'login' => $login
             );
         }
         print_r($user_data);

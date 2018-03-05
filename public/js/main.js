@@ -49,17 +49,7 @@ $(document).ready(() => {
 	
 	//keresés sáv kinyitása
 	$('button#btn-show-search').click(() => {
-		let elem = $('#search-form-container');
-		
-		if( elem.hasClass('anim-slide-to-left') ){
-			elem.removeClass('anim-slide-to-left').addClass('anim-slide-to-right');
-		}
-		else if( elem.hasClass('anim-slide-to-right') ){
-			elem.removeClass('anim-slide-to-right').addClass('anim-slide-to-left');
-		}
-		else{
-			elem.addClass('anim-slide-to-right')
-		}
+        $('#search-form-container').toggle();
 	});
 	
     //a kiválasztott feladattípusnak megfelelő formrészlet megjelenítése

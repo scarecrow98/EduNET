@@ -3,6 +3,7 @@
     class Admin{
 
 
+        //visszaadja az összes usert, amely nem admin
         public static function getAllUsers(){
             $db = Database::getInstance();
 
@@ -21,6 +22,7 @@
             return $list;
         }
 
+        //visszaadja, hogy létezik e-már ilyen email
         public static function emailExists($email){
             $db = Database::getInstance();
 
@@ -32,12 +34,14 @@
             return !empty($stmt->fetch());
         }
 
+        //user regisztálása
         public static function registrateUser($data){
             $db = Database::getInstance();
 
             $login_id = Admin::getLoginId();
             $pass_salt = Security::passwordSalt();
 
+            //ha van a paraméterban jelszó akkor azt használjuk, egyébként generálunk egyer
             $password;
             if( isset($data['password']) )
                 $password = $data['password'];
@@ -59,18 +63,22 @@
                 $pass_salt,
                 $data['type']
             ));
+            //visszadjuk a belépési ID-t és a jelszót
             return $login_id.' - '.$password;            
         }
 
-        private function getLoginId(){
+        //visszaadja a soron következő belépési id-t
+        private static function getLoginId(){
             $db = Database::getInstance();
 
+            //utolsó login id lekérése
             $stmt = $db->prepare(
                 "SELECT * FROM users ORDER BY id DESC LIMIT 1"
             );
             $stmt->execute();
             $login_id = $stmt->fetch()['login_id'];
 
+            //login id generálása (előző növelése egyel) pl.: ab01 --> ab02
             $output = '';
             $num_part = (int)$login_id[2].$login_id[3];
             $c1 = $login_id[0];

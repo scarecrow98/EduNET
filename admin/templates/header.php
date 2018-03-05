@@ -21,6 +21,9 @@
                 <li>
                     <a href="uploads" class="ion-android-upload">Feltöltések</a>
                 </li>
+                <li style="float: right;" title="Kijelentkezés">
+                    <a href="../logout"><i class="ion-log-out" style="font-size: 22px;"></i></a>
+                </li>
             </ul>
         </header>
         <div id="page">

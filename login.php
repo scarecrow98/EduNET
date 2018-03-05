@@ -33,7 +33,16 @@
 			Session::set('error-message', 'Helytelen belépési adatok!');
 			header('Location: home');
 			exit();
-		}
+        }
+        
+        //ha 2-es a user típusa, akkor az adminról van szó
+        if( $user->type == 2 ){
+            Session::set('user-name', $user->name);
+		    Session::set('user-type', $user->type);
+            Security::setAccessToken(); 		
+            header('Location: admin');
+            exit();
+        }
 
         //ha minden rendben volt, beléptetjük a felhasználót
 		Session::unset('error-message');

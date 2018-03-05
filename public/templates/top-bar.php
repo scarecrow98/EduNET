@@ -14,13 +14,17 @@
 
 
 <section id="top-bar">
+
+    <!-- keresés mező -->
 	<?php if( isset($_GET['page']) && $_GET['page'] == 'tests' ): ?>
     <button id="btn-show-search"><i class="ion-ios-search-strong"></i></button>
 
-    <div class="" id="search-form-container">
+    <div id="search-form-container">
         <?php require_once 'public/templates/search-form.php'; ?>
     </div>
-	<?php endif; ?>
+    <?php endif; ?>
+    
+    <!-- jobb oldali gombok -->
     <div id="top-bar-buttons-right">
         <button id="btn-settings" data-modal-id="user-settings" class="modal-opener"><i class="ion-gear-a"></i></button><button id="btn-messages" class="<?= $has_new ? 'has-new-message' : '' ?>"><i class="ion-ios-chatboxes-outline"></i></button><a href="logout.php"><button id="btn-logout"><i class="ion-log-out"></i></button></a>
         <div class="messages-popup panel" style="display: none;">

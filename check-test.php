@@ -1,60 +1,12 @@
 <?php
 
     require_once 'config.php';
-
-    if( empty($_GET['test_instance']) ){
-        errorRedirect('Érvénytelen paraméterek');
-        exit();
-    }
-
     Session::start();
-    
-    if( Security::checkAccessToken() === false ){
-        header('Location: logout');
-        exit();
-    }
 
-    Security::setAccessToken();
-
-    //tanár fiókból nem lehet megoldani a tesztet
-    if( Session::get('user-type') == 1 ){
-        errorRedirect('A feladatlap megoldása csak diákok számára elérhető!');
-        exit();
-    }
-
-    $test_instance_id = $_GET['test_instance'];
-    $test_instance = TestInstance::get($test_instance_id);
-        
-    //ha üres eredményt ad vissza a lekérdezés
-    if( empty($test_instance->id) ){
-        errorRedirect('A keresett feladatlap nem található!');
-        exit();
-    }
-
-    //ha a feladat nem nyitott állapotú
-    if( $test_instance->status != 1 ){
-        errorRedirect('A feladatlapot jelenleg nem lehet megoldani!');
-        exit();
-    }
-
-    //diák ellenőrzése, hogy benne van-e a feladatlap csoportjában
-    if( !$test_instance->checkCredentials(Session::get('user-id')) ){
-        errorRedirect('Nincs jogosultságod a feladatlap megtekintéséhez!');
-        exit();
-    }
-
-    //ellenőrizzük, hogy meg a feladatlap meg lett-e már oldva a diák által
-    if( $test_instance->hasResults(Session::get('user-id')) && Session::get('user-type') == 0 ){
-        errorRedirect('Ezt a feladatlapod már megoldottad!');
-        exit();
-    }
-
-
-    Session::set('test-instance-id', $test_instance_id);
-
+    $test_instance = TestInstance::get($_GET['test_instance']);
     $test = Test::get($test_instance->test_id);
     $tasks = $test->getTasks();
-    
+    $user_id = Session::get('user-id');
 ?>
 <html>
     <head>
@@ -72,27 +24,11 @@
     <body class="test-body">
         <div class="test-container">
             <h1><?= $test->title; ?></h1>
-            <form action="<?= SERVER_ROOT ?>parsers/test-evaluator.php" method="POST" id="submit-test-form" enctype="multipart/form-data">  
 
-            <input type="hidden" name="task-count" id="task-count" value="<?= count($tasks) ?>">
-            
             <?php
-                $task_counter = 0;
                 foreach( $tasks as $task ): /* tasks foreach kezdete */ 
-                    $task_counter++;
-
                     $options = $task->getTaskOptions();
-                    $option_data = array();
-                    foreach( $options as $option ){ $option_data[] = $option->id; }
-
-                    $task_data = array(
-                        'task-id'       => $task->id,
-                        'task-type'     => $task->type,
-                        'task-options'  => $option_data
-                    );
-            ?>
-                <input type="hidden" name="task-<?= $task_counter ?>-data" id="task-<?= $task_counter ?>-data" value='<?= json_encode($task_data) ?>'>
-                
+            ?>                
                 <div class="test-sheet panel">   
                     <header class="bg-1">
                         <h3 class="ion-compose"><?= $task->task_number; ?>. feladat</h3>
@@ -113,6 +49,7 @@
                         <table>
                         <?php
                             foreach( $options as $option ): /* options foreach kezdete */  
+                                $user_ans = Answer::getByOptionId($user_id, $test_instance->id, $option->id);
                         ?>
                             <tr>
                                 <td>
@@ -120,16 +57,15 @@
                                 </td>
                                     <?php if( $task->type == 1 ): ?>
                                     <td>
-                                        <input type="checkbox" name="option-<?= $option->id; ?>" id="option-<?= $option->id; ?>">
+                                        <?= UIDrawer::quizResult($option->correct_ans, $user_ans->answer); ?>
                                     </td>
                                     <?php elseif( $task->type == 3 ): ?>
                                     <td>
-                                        <input type="text" maxlength="1" name="option-<?= $option->id; ?>">
+                                        <?= UIDrawer::pairingResult($option->correct_ans, $user_ans->answer); ?>
                                     </td>
                                     <?php elseif( $task->type == 4 ): ?>
                                     <td>
-                                        igaz<input type="radio" value="1" name="option-<?= $option->id; ?>">
-                                        hamis<input type="radio" value="0" name="option-<?= $option->id; ?>">
+                                        <?= UIDrawer::trueFalseResult($option->correct_ans, $user_ans->answer); ?>
                                     </td>
                                     <?php endif; ?>
                             </tr>
@@ -137,14 +73,17 @@
                             
                             <?php
                                 if( $task->type == 2 ):
-                            ?>
-                                <textarea placeholder="Ide írd a válaszod..." style="width: 100%;" name="textarea-<?= $task->id; ?>"></textarea>
-                            <?php
-                                elseif( $task->type == 5 ):
+                                    $user_ans = Answer::getTextAnswer($user_id, $test_instance->id, $task->id);
                             ?>
                                 <td>
-                                    Fájl feltöltése:
-                                    <input type="file" name="file-<?= $task->id ?>"  id="file-<?= $task->id ?>">
+                                    <pre><?= $user_ans->answer ?></pre>
+                                </td>
+                            <?php
+                                elseif( $task->type == 5 ):
+                                    $user_ans = Answer::getFileAnswer($user_id, $test_instance->id, $task->id);
+                            ?>
+                                <td>
+                                    <a href="<?= SERVER_ROOT ?>uploads/files/<?= $user_ans->file_name ?>">Fájl letöltése</a>
                                 </td>
                             <?php endif; ?>
                         </table>
@@ -153,8 +92,6 @@
                 <?php
                     endforeach; /* tasks foreach vége */
                 ?>
-                <input type="submit" class="btn-wide bg-1" value="Feladatlap beküldése" id="btn-submit-test">
-            </form>
         </div>
     </body>
 </html>

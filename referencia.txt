@@ -1,3 +1,5 @@
 egyszerűbb CSV fájl feltöltés
 https://stackoverflow.com/questions/5593473/how-to-upload-and-parse-a-csv-file-in-php
 
+error logging megoldása PHP-ban
+https://stackoverflow.com/questions/7500532/php-error-log-method-doesnt-write-errors-to-my-error-log-file

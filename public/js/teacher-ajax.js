@@ -37,6 +37,8 @@ $('form#create-test-form').submit((e) => {
 $('form#create-task-form').submit((e) => {
     e.preventDefault();
 
+    console.log('asdasd');
+
     let taskType = $('#task-type').val();
     let optionNumber = 0;
     let parentContainer = '';
@@ -106,7 +108,7 @@ $('form#create-task-form').submit((e) => {
             //hiba
         }
     });
-
+    
     let count = $('input#mennyiseg').val();
 });
 

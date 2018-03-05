@@ -6,6 +6,7 @@
         private function __construct(){  }
         private function __clone(){  }
         
+        //visszaadja a már megnyitptt DB kapcsolatot, vagy egy újat, ha még nincs megnyitva
         public static function getInstance(){
             if( !isset(self::$instance) ){
                 self::$instance = new PDO('mysql:host='.HOST.';dbname='.DB_NAME, DB_USER, DB_PASSWORD, array(
@@ -13,7 +14,7 @@
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
                 ));
             }
-
+            logError('Valami hiba történt!');
             return self::$instance;
         }
     }

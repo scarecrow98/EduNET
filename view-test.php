@@ -56,7 +56,7 @@
             <h1><?= $test->title; ?></h1>
             <?php
                 $tasks = $test->getTasks();
-                foreach( $tasks as $task ): /* tasks foreach kezdete */ 
+                foreach( $tasks as $task ): /* tasks foreach kezdete */
             ?>
                 <div class="test-sheet panel">   
                     <header class="bg-1">
@@ -107,6 +107,7 @@
         </div>
     </body>
 </html>
-<script src="js/jquery.js"></script>
-<script src="js/main.js"></script>
-<script src="js/ajax.js"></script>
+<script src="<?= PUBLIC_ROOT ?>js/jquery.js"></script>
+<script src="<?= PUBLIC_ROOT; ?>js/ajax-settings.js"></script>
+<script src="<?= PUBLIC_ROOT ?>js/main.js"></script>
+<script src="<?= PUBLIC_ROOT ?>js/ajax.js"></script>

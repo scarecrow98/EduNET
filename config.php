@@ -1,4 +1,6 @@
 <?php
+    error_reporting(E_ALL);
+
     //adatbázis
     DEFINE('HOST', 'localhost');
     DEFINE('DB_NAME', 'edunet');
@@ -47,5 +49,12 @@
     function errorRedirect($message){
         $_SESSION['error-message'] = $message;
         header('Location: http://'.$_SERVER['SERVER_NAME'].'/EduNET/error.php');
+    }
+
+    //hibanaplózó függvény
+    function logError($message){
+        $date = date('Y-m-d H:i:s');
+        $msg = $message.' - '.$date.'\n';
+        error_log($msg, 3, 'C:/xampp/htdocs/edunet/admin/errors.log');
     }
 ?>

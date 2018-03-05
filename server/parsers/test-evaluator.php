@@ -135,7 +135,7 @@
         }
     }
 
-    if( !$test->hasTextTypeTask() ){
+    if( !$test->hasFileOrTextTypeTask() ){
         $test_instance->storeEvaluation($user_id, date('Y-m-d H:i:s'));
     }
 
