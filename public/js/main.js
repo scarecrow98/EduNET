@@ -89,9 +89,16 @@ $(document).ready(() => {
     });
 
 
+    //fájlfeltöltése ablak megnyitása feladatlapon
+    $('button.upload-task-file').click((e) => {
+        e.preventDefault();
+        let inputId = $(e.currentTarget).data('input-id');
+        $('input#' + inputId).click();
+    });
+
     //fájlnév megjelenítése feltöltés előtt
     $('input[type=file]').change((e) => {
-        $('span.uploaded-file-name').html(e.target.files[0].name);
+        $(e.currentTarget).siblings('span.uploaded-file-name').html(e.target.files[0].name);
     });
     
     //modal megnyitása (beállítások)

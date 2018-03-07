@@ -60,33 +60,53 @@
             return new Answer($stmt->fetch());
         }
 
-        //user összes fájl válaszának lekérése feladatlap alapján
-        public static function getFileAnswers($user_id, $test_instance_id){
+        // //user összes fájl válaszának lekérése feladatlap alapján
+        // public static function getFileAnswers($user_id, $test_instance_id){
+        //     $db = Database::getInstance();
+
+        //     $stmt = $db->prepare(
+        //         "SELECT * FROM user_file_answers WHERE user_id = ? AND test_instance_id = ?"
+        //     );
+        //     $stmt->execute(array($user_id, $test_instance_id));
+
+        //     $data = $stmt->fetchAll();
+
+        //     $list = array();
+        //     foreach( $data as $d ){
+        //         array_push($list, new Answer($d));
+        //     }
+
+        //     return $list;
+        // }
+
+        // //user összes szöevegs válaszának lekérése feladatlap alapján
+        // public static function getTextAnswers($user_id, $test_instance_id){
+        //     $db = Database::getInstance();
+
+        //     $stmt = $db->prepare(
+        //         "SELECT * FROM user_text_answers WHERE user_id = ? AND test_instance_id = ?"
+        //     );
+        //     $stmt->execute(array($user_id, $test_instance_id));
+
+        //     $data = $stmt->fetchAll();
+
+        //     $list = array();
+        //     foreach( $data as $d ){
+        //         array_push($list, new Answer($d));
+        //     }
+
+        //     return $list;
+        // }
+
+        public static function getFileAndTextAnswers($user_id, $test_instance_id){
             $db = Database::getInstance();
 
             $stmt = $db->prepare(
-                "SELECT * FROM user_file_answers WHERE user_id = ? AND test_instance_id = ?"
+                "SELECT id, user_id, test_instance_id, task_id, file_name AS 'answer' FROM user_file_answers WHERE user_id = :uid AND test_instance_id = :tid".
+                " UNION ALL".
+                " SELECT id, user_id, test_instance_id, task_id, answer AS 'answer' FROM user_text_answers WHERE user_id = :uid AND test_instance_id = :tid"
             );
-            $stmt->execute(array($user_id, $test_instance_id));
-
-            $data = $stmt->fetchAll();
-
-            $list = array();
-            foreach( $data as $d ){
-                array_push($list, new Answer($d));
-            }
-
-            return $list;
-        }
-
-        //user összes szöevegs válaszának lekérése feladatlap alapján
-        public static function getTextAnswers($user_id, $test_instance_id){
-            $db = Database::getInstance();
-
-            $stmt = $db->prepare(
-                "SELECT * FROM user_text_answers WHERE user_id = ? AND test_instance_id = ?"
-            );
-            $stmt->execute(array($user_id, $test_instance_id));
+            $stmt->execute(array(':uid' => $user_id, ':tid' => $test_instance_id));
 
             $data = $stmt->fetchAll();
 

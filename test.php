@@ -93,30 +93,34 @@
             ?>
                 <input type="hidden" name="task-<?= $task_counter ?>-data" id="task-<?= $task_counter ?>-data" value='<?= json_encode($task_data) ?>'>
                 
-                <div class="test-sheet panel">   
-                    <header class="bg-1">
-                        <h3 class="ion-compose"><?= $task->task_number; ?>. feladat</h3>
+                <div class="task-box panel">   
+
+                    <header>
+                        <h3 class="ion-compose"><?= $task->task_number ?>. feladat</h3>
                     </header>
+
                     <section>
-                        <label for="" style="width: auto;"><?= $task->question; ?></label>
-                        <small>( <?= $task->max_points; ?> pont )</small>
+                        <pre class="task-question"><?= $task->question; ?></pre>
 
                         <?php if( !empty($task->text) ): ?>
-                        <pre style="white-space: pre-wrap; color: #b2b2b2; font-style: italic; padding: 15px;"><?= $task->text ?></pre>
+                        <pre class="task-text"><?= $task->text ?></pre>
                         <?php endif; ?>
 
                         <?php if( !empty($task->image) ): ?>
-                            <a href="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" target="_blank">
-                                <img src="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" alt="" style="width: 300px; display: block; margin-bottom: 20px;">
+                        <div class="task-image">
+                            <a  href="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" target="_blank">
+                                <img src="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" title="Kattints a nagyobb méretért!">
                             </a>
+                        </div>
                         <?php endif; ?>
-                        <table>
+
+                        <table class="options-table">
                         <?php
                             foreach( $options as $option ): /* options foreach kezdete */  
                         ?>
                             <tr>
-                                <td>
-                                    <label class="label-small" style="display: inline-block; width: auto;" for="option-<?= $option->id ?>"><?= $option->text; /* opció szövege */ ?></label>
+                                <td style="width: 550px;" valign="top">
+                                    <label class="option-text"><?= $option->text ?></label>
                                 </td>
                                     <?php if( $task->type == 1 ): ?>
                                     <td>
@@ -124,7 +128,7 @@
                                     </td>
                                     <?php elseif( $task->type == 3 ): ?>
                                     <td>
-                                        <input type="text" maxlength="1" name="option-<?= $option->id; ?>">
+                                        <input style="width: 50px;" type="text" maxlength="1" name="option-<?= $option->id; ?>">
                                     </td>
                                     <?php elseif( $task->type == 4 ): ?>
                                     <td>
@@ -138,16 +142,20 @@
                             <?php
                                 if( $task->type == 2 ):
                             ?>
-                                <textarea placeholder="Ide írd a válaszod..." style="width: 100%;" name="textarea-<?= $task->id; ?>"></textarea>
+                                <textarea placeholder="Válaszod helye..." style="width: 100%; height: 120px;" name="textarea-<?= $task->id; ?>"></textarea>
                             <?php
                                 elseif( $task->type == 5 ):
                             ?>
                                 <td>
-                                    Fájl feltöltése:
-                                    <input type="file" name="file-<?= $task->id ?>"  id="file-<?= $task->id ?>">
+                                    <button class="btn-rounded bg-2 upload-task-file" data-input-id="file-<?= $task->id ?>"><i class="ion-android-upload"></i>ZIP vagy RAR fájl feltöltése</button>
+                                    <span class="uploaded-file-name"></span>
+                                    <input type="file" name="file-<?= $task->id ?>"  id="file-<?= $task->id ?>" style="display: none;">
                                 </td>
                             <?php endif; ?>
                         </table>
+                        <p style="text-align: right; margin-top: 30px;">
+                            Pontszám: <strong class="task-points"><?= $task->max_points ?>p</strong>
+                        </p>
                     </section>
                 </div> 
                 <?php

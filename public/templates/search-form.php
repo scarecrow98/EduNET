@@ -23,7 +23,7 @@ if( isset($_POST['tst-view']) ){
 			$groups = Group::getAll(Session::get('user-id'), Session::get('user-type'));
             foreach($groups as $group):
                 ?>
-                <option value="<?php echo $group->id ?>"><?php echo $group->name ?></option>
+                <option value="<?= $group->id ?>"><?= $group->name ?></option>
             <?php endforeach; ?>
         </select>
     </li>
@@ -35,7 +35,7 @@ if( isset($_POST['tst-view']) ){
             $subjects = Subject::all();
             foreach($subjects as $subject):
                 ?>
-                <option value="<?php echo $subject->id ?>"><?php echo $subject->name ?></option>
+                <option value="<?= $subject->id ?>"><?= $subject->name ?></option>
             <?php endforeach; ?>
         </select>
     </li>

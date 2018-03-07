@@ -23,17 +23,16 @@
     $test_instance = TestInstance::get($test_instance_id);
 
     $test = Test::get($test_instance->test_id);
-    $text_answers = Answer::getTextAnswers($user_id, $test_instance_id);
-    $file_answers = Answer::getFileAnswers($user_id, $test_instance_id);
+    $answers = Answer::getFileAndTextAnswers($user_id, $test_instance_id);
     $students = $test_instance->getStudents();
 
     //print_r($file_answers);
 
     //létező eredmények ellenőrzése
-    if( empty($answers) && empty($file_answers) ){
-        errorRedirect('Helytelen feladatlap azonosító!');
-        exit();
-    }
+    // if( empty($answers) && empty($file_answers) ){
+    //     errorRedirect('Helytelen feladatlap azonosító!');
+    //     exit();
+    // }
 
     //tanár ellenőrzése, hogy valóban az ó feladatlapja-e
     if( $test_instance->current_author_id != Session::get('user-id') ){
@@ -69,20 +68,24 @@
             <?php endforeach; ?>
         </div>
 
+        <pre><?= print_r($answers) ?></pre>
+
         <div class="test-container">
-        <h2>Szöveges válaszok:</h2>
         <form method="POST" action="<?= SERVER_ROOT; ?>parsers/manual-evaluator.php">
             <input type="hidden" name="user-id" value="<?= $user_id ?>">
             <input type="hidden" name="test-instance-id" value="<?= $test_instance_id; ?>">
         <?php
             $task_count = 0;
-            foreach($text_answers as $answer):
+            foreach($answers as $answer):
             $task_count++;
             $task = Task::get($answer->task_id);
-            $result = Task::getResult($task->id, $test_instance->id, $user_id);
-            $HAS_RESULT = empty($result['result'])?false:true;
+
+            $task_data = array(
+                'task-id'   => $task->id,
+                'task-type' => $task->type,
+            );
         ?>
-        <input type="hidden" name="task-id-<?= $task_count; ?>" value="<?= $task->id; ?>">
+        <input type="hidden" name="task-<?= $task_count ?>-data" value='<?= json_encode($task_data)?>'>
         <div class="test-sheet panel">   
             <header class="bg-1">
                 <h3 class="ion-compose"><?= $task->task_number;/* feladat száma */ ?>. feladat</h3>
@@ -101,84 +104,25 @@
                 <?php endif; ?>
 
                 <h4>A felhasználó válasza:</h4>
-                <i>
-                <?php
-                    if( empty($answer->answer) ){
-                        echo '<span style="color: red">A felhasználó nem válaszolt erre a kérdésre!</span>';
-                    }
-                    else{
-                        echo '<pre style="white-space: pre-wrap;">'.$answer->answer.'</pre>';
-                    }
-                ?>
-                </i>
-                <?php if( !$HAS_RESULT ): ?>
-                <div>
-                    <input type="number" min="0" max="<?= $task->max_points ?>" value="0" name="user-points-<?= $task_count; ?>">
-                    <textarea placeholder="Feladathoz kapcsolódó, diáknak szánt megjegyzés..." maxlength="10" style="width: 100%;" name="teacher-comment-<?= $task_count; ?>"></textarea>
-                </div>
-                <?php else: ?>
-                    <label for="">Eredmény: <?= $result['result'] ?></label>
-                <?php endif; ?>
-            </section>
-        </div>
-    <?php endforeach; ?>
 
-
-
-
-    <h2>Fájl válaszok:</h2>
-    <?php
-        $task_count = 0;
-        foreach($file_answers as $answer):
-        $task_count++;
-        $task = Task::get($answer->task_id);
-        $result = Task::getResult($task->id, $test_instance->id, $user_id);
-        $HAS_RESULT = empty($result['result'])?false:true;
-    ?>
-        <input type="hidden" name="task-id-<?= $task_count; ?>" value="<?= $task->id; ?>">
-
-        <div class="test-sheet panel">   
-            <header class="bg-1">
-                <h3 class="ion-compose"><?= $task->task_number;/* feladat száma */ ?>. feladat</h3>
-            </header>
-            <section>
-                <label for="" style="width: auto;"><?= $task->question; ?></label>
-                <small>( <?= $task->max_points; /* feladat pontszáma */?> pont )</small>
-
-                <pre style="white-space: pre-wrap; color: #b2b2b2; font-style: italic; padding: 15px;"><?php if( !empty($task->text) ){ echo $task->text;  } /* feladat szövege (ha létezik) */ ?></pre>
-
-
-                <?php if( !empty($task->image) ): /* feladat képe (ha létezik) */ ?>
-                    <a href="<?= SERVER_ROOT; ?>uploads/images/<?= $task->image; ?>" target="_blank">
-                        <img src="<?= SERVER_ROOT; ?>uploads/images/<?= $task->image; ?>" alt="" style="width: 300px; display: block; margin-bottom: 20px;">
-                    </a>
-                <?php endif; ?>
-
-                <h4>A felhasználó válasza:</h4>
-                <i>
-                <?php
-                    if( empty($answer->file_name) ){
-                        echo '<span style="color: red">A felhasználó nem válaszolt erre a kérdésre!</span>';
-                    }
-                    else{
-                        echo '<a href="'.SERVER_ROOT.'uploads/files/'.$answer->file_name.'">Fájl letöltése</a>';
+                <?php 
+                    if( $task->type == 5 ){
+                        echo UIDrawer::fileAnswer($answer->answer);
+                    } else{
+                        echo UIDrawer::textAnswer($answer->answer);
                     }
                 ?>
-                </i>
-                <?php if( !$HAS_RESULT ): ?>
+
                 <div>
-                    <input type="number" min="0" max="<?= $task->max_points ?>" value="0" name="user-points-<?= $task_count; ?>">
-                    <textarea placeholder="Feladathoz kapcsolódó, diáknak szánt megjegyzés..." maxlength="10" style="width: 100%;" name="teacher-comment-<?= $task_count; ?>"></textarea>
+                    <input type="number" min="0" max="<?= $task->max_points ?>" value="0" name="points-<?= $task->id ?>">
+                    <textarea placeholder="Feladathoz kapcsolódó, diáknak szánt megjegyzés..." maxlength="10" style="width: 100%;" name="comment-<?= $task->id ?>"></textarea>
                 </div>
-                <?php else: ?>
-                    <label for="">Eredmény: <?= $result['result'] ?></label>
-                <?php endif; ?>
+
             </section>
         </div>
-    <?php endforeach; ?>
-        <?php if( !$HAS_RESULT ): ?>
+        <?php endforeach; ?> <!-- answers foreach vége -->
+
         <input type="submit" value="Értékelés" class="cta-button color-2">
-        <?php endif; ?>
         </form>
         </div>
     </body>

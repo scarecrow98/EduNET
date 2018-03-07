@@ -225,8 +225,7 @@
             <?php endforeach; ?>
         </section>
     </div>
-    <?php endif; ?>
-
+    
     <!-- ÜZENET KÜLDÉSE -->
     <div class="modal" style="width: 500px; height: 400px; display: none;" id="create-message">
         <header>
@@ -271,6 +270,7 @@
             <button id="btn-send-message">Küldés</button>
         </div>
     </div>
+    <?php endif; ?>
 
     <!-- BEÁLLÍTÁSOK -->
     <div class="modal" style="width: 600px; height: 400px; display: none;" id="user-settings">

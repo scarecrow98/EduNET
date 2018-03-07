@@ -67,5 +67,5 @@
 <script src="<?= PUBLIC_ROOT; ?>js/ajax-settings.js"></script>
 <script src="<?= PUBLIC_ROOT ?>js/main.js"></script>
 <script src="<?= PUBLIC_ROOT ?>js/ajax.js"></script>
-<script src="<?= PUBLIC_ROOT ?>js/message-ajax.js"></script>
-<?= IS_ADMIN ? '<script src="'.PUBLIC_ROOT.'js/teacher-ajax.js"></script>' : '' ?>
+<?= IS_ADMIN ? '<script src="'.PUBLIC_ROOT.'js/message-ajax.js"></script>' : '&nbsp' ?>
+<?= IS_ADMIN ? '<script src="'.PUBLIC_ROOT.'js/teacher-ajax.js"></script>' : '&nbsp' ?>

@@ -1,9 +1,10 @@
-/* ÁLTALÁNOS CLASSOK */
+/* ÁLTALÁNOS CLASSOK, SZABÁLYOK */
 .clear{ clear: both; }
 .clear:after{ display: table; content: ''; clear: both; }
 .panel{ border: 1px solid var(--theme-grey); box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1); }
 .flex-wrap{ display: flex; flex-wrap: wrap; justify-content: space-between; }
 .flex-row{ display: flex; width: 100%; }
+pre{ white-space: pre-wrap; }
 
 /* MODALOK */
 .page-overlay{ z-index: 999; position: absolute; top: 0px; bottom: 0px; left: 0px; right: 0px; background: rgba(0, 0, 0, 0.2); display: flex; justify-content: center; align-items: center; }
@@ -69,7 +70,6 @@ li.input-container{ list-style: none; display: flex; padding: 20px; }
 
 /* FŐOLDAL BOXOK */
 .home-box{ background: #fff; width: 100%; padding: 20px; margin-bottom: 30px; }
-.home-box header{ }
 .home-box header h4{ font-weight: 600; color: var(--theme-grey-dark); margin-bottom: 6px; }
 .home-box header h4:before{ font-size: 20px; margin-right: 6px; }
 
@@ -96,12 +96,34 @@ li.input-container{ list-style: none; display: flex; padding: 20px; }
 /* GOMBOK */
 button:hover, input[type="submit"]{ cursor: pointer; }
 
-/* ikonok */
+/* EREDMÉNYJELZŐ IKONOK */
 span.option-result-icon{ display: inline-block; width: 18px; height: 18px; margin: 0px 12px; vertical-align: middle; background-size: cover !important; background-repeat: no-repeat !important; }
 span.wrong-icon{ background: url('../resources/images/icon-wrong.png'); }
 span.correct-icon{ background: url('../resources/images/icon-correct.png'); }
 span.missing-icon{ background: url('../resources/images/icon-missing.png'); }
 
+/* FELADATLAP, FELADATOK */
+body.test-body{ margin: 30px 0px; background: var(--theme-background); overflow: auto; }
+.test-container{ width: 900px; margin: 0px auto; }
+.test-container .task-box{ background: #fff; border-radius: 6px; margin-bottom: 25px; overflow: hidden; }
+.task-box header{ background: #39a8b1; color: #fff; padding: 8px 16px; }
+.task-box header h3:before{ margin-right: 8px; }
+.task-box section{ padding: 25px; }
+
+.task-question{ padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid var(--theme-grey); color: var(--theme-color-1); font-weight: 600; }
+.task-text{ padding: 20px 40px 35px 40px; margin-bottom: 15px; border-bottom: 1px solid var(--theme-grey); position: relative; font-style: italic; color: var(--theme-grey-dark); line-height: 1.5em; } 
+.task-text img{ position: absolute; left: 5px; top: -5px; width: 50px; opacity: 0.1; }
+.task-image{ margin: 20px 0px 35px 0px; }
+.task-image img{ border-radius: 6px; border: 2px solid var(--theme-color-1); width: 430px; }
+table.options-table{ width: 100%; }
+.options-table td{ padding: 6px 15px; }
+.options-table .option-text{ position: relative; display: inline-block; padding-left: 10px; }
+.options-table .option-text:before{ content: ''; position: absolute; top: 4px; left: -6px; display: inline-block; width: 12px; height: 12px; background: url('../resources/images/arrow_icon.png'); background-size: contain; background-repeat: no-repeat; }
+strong.task-points{ font-size: 22px; margin-left: 6px; color: #fff; padding: 6px 10px; background: #354052; border-radius: 6px; letter-spacing: 6px; }
+.options-table input, textarea{ border: 1px solid var(--theme-grey); border-radius: 4px; padding: 6px; }
+
+
+/* GOMBOK */
 .btn-rounded{ color: #fff !important; padding: 10px; border-radius: 30px; font-weight: 600; border: none !important; }
 .btn-rounded i:before{ font-size: 20px; margin-right: 8px; vertical-align: middle; }
 
@@ -109,7 +131,7 @@ span.missing-icon{ background: url('../resources/images/icon-missing.png'); }
 
 .btn-rect{ color: #fff; padding: 8px; border: none !important; border-radius: 3px; }
 
-/* HÁTTÉRSZÍNEK */
+/* GOMBOK SZÍNEI */
 .bg-1{ background: #39a8b1; }
 .bg-1:hover{ background: #2a8891; }
 
@@ -117,3 +139,6 @@ span.missing-icon{ background: url('../resources/images/icon-missing.png'); }
 .bg-2:hover{ background: #046796; }
 
 .bg-3{ background: #f49e42; }
+
+.bg-2{ background: #354052; }
+.bg-2:hover{ background: #30394a; }
