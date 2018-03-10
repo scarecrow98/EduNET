@@ -12,23 +12,26 @@
         $login_id = $_POST['login-id'];
         $password = $_POST['login-password'];
 
-        //user mezők vizsgálata
+        //üres mezők vizsgálata
         if (empty($login_id) || empty($password)) {
             Session::set('error-message', 'Nincs kitöltve minden mező!');
             header('Location: login');
             exit();
         }
-
+		
+		//user adatok lekérése belépési azonosító alapján
 		$user = User::getByLogin($login_id);
-				
+		//ha nincs ilyen user, akkor hibaüzenet	
 		if( empty($user->id) ){
 			Session::set('error-message', 'Helytelen belépési adatok!');
 			header('Location: login');
             exit();
 		}
 		
+		//megadott jelszó és az adatábzisban lévő só kódolása
 		$pass_hash = hash('sha256', $password.$user->pass_salt);
 		
+		//ha nem egyezik az adatbázisban lévő értékkel az előbb generált hash, akkor hiba
 		if( $pass_hash != $user->pass_hash ){
 			Session::set('error-message', 'Helytelen belépési adatok!');
 			header('Location: home');
@@ -53,7 +56,7 @@
 		Session::set('user-avatar', $user->avatar);
         Session::set('user-email', $user->email);
         Session::set('user-subscription', $user->is_subscribed);
-        
+        //biztonsági token beállítása
         Security::setAccessToken();
 		
 		header('Location: home');

@@ -121,5 +121,21 @@
 
 
     }
+	
+	//adatbáziskapcsolat kérése
+	$db = Database::getInstance();
+	$id = 3;
+	
+	//lekérdezés
+	$stmt = $db->prepare(
+		"SELECT * FROM users WHERE id = :id"
+	);
+	//adat hozzárendelése a lekérdezéshez
+	$stmt->execute(array(
+		':id'	=> $id
+	));
+	
+	//eredmény tárolása
+	$result = $stmt->fetch();
 
 ?>

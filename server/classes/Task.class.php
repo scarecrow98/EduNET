@@ -120,7 +120,7 @@
 			));
 		}
 
-		public static function getResult($user_id, $task_id, $test_instance_id){
+		public static function getResult($user_id, $test_instance_id, $task_id){
 			$db = Database::getInstance();
 			
 			$stmt = $db->prepare(

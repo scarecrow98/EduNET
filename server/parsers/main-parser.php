@@ -20,7 +20,7 @@
     }
     
 
-    //függvény, amely létrehoz egy új üzenetet az adatbázisban
+    //függvény, amely létrehoz egy új üzenetet az adatbázisban, és visszaadja létrehozott üzenet azonosítóját
     function newMessage($receiver_id, $text){
 		$data = array(
 			'sender_id'		=> Session::get('user-id'),
@@ -35,23 +35,28 @@
     // ÜZENET KÜLDÉSE
     // ===========================
 	if( isset($_POST['new-message']) ){
-		$partner_id = $_POST['partner-id'];
-		$text = $_POST['text'];
+        if( empty($_POST['text']) ) exit('Nem írtál be üzenetet!');
+        if( empty($_POST['partner-id']) ) exit('Nem adtad meg a címzettet!');
+        
+        $partner_id = (int)$_POST['partner-id'];
+        $text = htmlspecialchars($_POST['text']);
         
         newMessage($partner_id, $text);
 
 		exit('success');
-		
     }
     
     // ===========================
-    // ÜZENET KÜLDÉSE
+    // ÜZENET LÉTREHOZÁSA
     // ===========================
 	if( isset($_POST['create-message']) ){
-		$partner_id = $_POST['partner-id'];
-		$text = $_POST['text'];
-		
-		
+        
+        if( empty($_POST['text']) ) exit('Nem írtál be üzenetet!');
+        if( empty($_POST['partner-id']) ) exit('Nem adtad meg a címzettet!');
+        
+        $partner_id = (int)$_POST['partner-id'];
+		$text = htmlspecialchars($_POST['text']);
+
         $msg_id = newMessage($partner_id, $text);
         $partner = User::get($partner_id);
 
@@ -99,27 +104,23 @@
         $messages = Message::getConversation(Session::get('user-id'), $partner_id);
 
 
-        //ha olvasattá kell állítani üzeneteket
-        $affected_messages = 0;
+        //ha olyan beszélgetésre kattintott a felhasználó amiben van olvasatlan üzenet,
+        //akkor azokat az üzeneteket olvasottra állítjuk
         if( !empty($_POST['set-to-seen']) ) {
-            $affected_messages = Message::setToSeen(Session::get('user-id'), $partner_id);
+            Message::setToSeen(Session::get('user-id'), $partner_id);
         }
 
+        //beszélgetés tömbbé alakítása, hogy tudjuk küldeni a kliensnek
         $msgs = array();
         foreach( $messages as $message ){
             $msgs[] = array(
-                'is_own'    => $message->sender_id == Session::get('user-id') ? 1 : 0,
-                'text'      => $message->text,
-                'date'      => $message->date
+                'is_own'    => $message->sender_id == Session::get('user-id') ? 1 : 0, //mutatja, hogy mi írtuk-e az üzenetet vagy úgy kaptuk
+                'text'      => $message->text, //üzenet szüvege
+                'date'      => $message->date //üzenet dátuma
             );
         }
 
-        $resp = array(
-            'messages'          => json_encode($msgs),
-            'affected_messages' => $affected_messages
-        );
-
-        exit(json_encode($resp));
+        exit(json_encode($msgs));
 		
 	}
 	
@@ -128,18 +129,21 @@
     // ===========================
     if( !empty($_POST['create-new-test']) ){
 		
-        if( empty($_POST['title']) ){ exit('A feladatlap címe kötelezően megadandó mező!'); }
-        if( empty($_POST['group-id']) ){ exit('A feladatlap csoportja kötelezően megadandó mező!'); }
-        if( empty($_POST['subject-id']) ){ exit('A feladatlap tantárgya kötelezően megadandó mező!'); }
-		if( strlen($_POST['title']) > 100 ){ exit('A feladatlap címe max. 100 karakter lehet!'); }
-        if( strlen($_POST['description']) > 255 ){ exit('A feladatlap leírása max. 255 karakter lehet!'); }
-        if( $_POST['task-count'] > 30 || $_POST['task-count'] < 1 ){ exit('A feladatok száma 1 és 30 között kell legyen!'); }
-				
+        if( empty($_POST['title']) ) exit('A feladatlap címe kötelezően megadandó mező!');
+        if( empty($_POST['group-id']) ) exit('A feladatlap csoportja kötelezően megadandó mező!');
+        if( empty($_POST['subject-id']) ) exit('A feladatlap tantárgya kötelezően megadandó mező!');
+		if( strlen($_POST['title']) > $dat_req['test_title'] ) exit('A feladatlap címe max. 100 karakter lehet!');
+        if( strlen($_POST['description']) > $dat_req['test_desc'] ) exit('A feladatlap leírása max. 255 karakter lehet!');
+        if( $_POST['task-count'] > 30 || $_POST['task-count'] < 1 ) exit('A feladatok száma 1 és 30 között kell legyen!');
+                
+        $description = empty($_POST['description']) ? null : $_POST['description'];
+        $text = empty($_POST['text']) ? null : $_POST['text'];
+
         $data = array(
 			'author_id'		=> Session::get('user-id'),
-            'title'         => $_POST['title'],
-            'description'   => $_POST['description'],
-            'text'          => $_POST['text'],
+            'title'         => htmlspecialchars($_POST['title']),
+            'description'   => htmlspecialchars($description),
+            'text'          => htmlspecialchars($text), 
             'group_id'      => (int)$_POST['group-id'],
             'subject_id'    => (int)$_POST['subject-id'],
             'task_count'    => (int)$_POST['task-count'],
@@ -165,12 +169,11 @@
 				
         $data = array(
 			'author_id'		=> Session::get('user-id'),
-            'text'     		=> $_POST['text'],
-            'subject_id'   	=> $_POST['subject_id'],
-			'group_id'		=> $_POST['group_id'],
-            'text'      	=> $_POST['text'],
+            'text'     		=> htmlspecialchars($_POST['text']),
+            'subject_id'   	=> (int)$_POST['subject_id'],
+			'group_id'		=> (int)$_POST['group_id'],
             'date'      	=> $_POST['date'],
-            'type'      	=> $_POST['type']
+            'type'      	=> (int)$_POST['type']
         );
 
         Notification::create($data);
@@ -198,8 +201,12 @@
 			$fu = new FileUploader($_FILES['image'], 'image', 'task_image'); 	
 			$image = $fu->checkFile();
 		}
-		
-		
+        
+        if( empty($_POST['question']) ) exit('A feladat kérdése kötelezően megadandó mező!');
+        if( empty($_POST['type']) ) exit('A feladat típusa kötelezően megadandó mező!');
+        if( $_POST['max_points'] < 1 || $_POST['max_points'] > 127 ) exit('A feladat maxmiális pontszámának 1 és 127 közé kell esnie !');
+
+
         $data = array(
             'question'          => $_POST['question'],
             'text'              => $_POST['text'],

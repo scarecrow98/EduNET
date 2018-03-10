@@ -12,7 +12,7 @@
         </header>
         <section class="modal-body">
 
-            <form action="<?php echo SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-test-form">
+            <form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-test-form">
                 <li class="input-container">
                     <label for="test-title">Feladatlap címe:</label>
                     <input type="text" placeholder="max. 100 karakter *" name="test-title" id="test-title" required>
@@ -33,7 +33,7 @@
                             $groups = Group::getAll(Session::get('user-id'), Session::get('user-type'));
                             foreach($groups as $group):
                         ?>
-                        <option value="<?php echo $group->id ?>"><?php echo $group->name ?></option>
+                        <option value="<?= $group->id ?>"><?= $group->name ?></option>
                         <?php endforeach; ?>
                     </select>
                 </li>
@@ -45,7 +45,7 @@
                             $subjects = Subject::all();
                             foreach($subjects as $subject):
                         ?>
-                            <option value="<?php echo $subject->id ?>"><?php echo $subject->name ?></option>
+                            <option value="<?= $subject->id ?>"><?= $subject->name ?></option>
                         <?php endforeach; ?>
                     </select>
                 </li>
@@ -68,7 +68,7 @@
             <i class="ion-close-round close-modal"></i>
         </header>
         <section class="modal-body">
-            <form action="<?php echo SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-group-form" enctype="multipart/form-data">
+            <form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-group-form" enctype="multipart/form-data">
                 <li class="input-container">
                     <label for="">Csoport neve:</label>
                     <input type="text" placeholder="A csoport nevét adhatod meg (pl.: 9B - Matek)" name="group-name" id="group-name" required>
@@ -97,7 +97,7 @@
             <i class="ion-close-round close-modal"></i>
         </header>
         <section class="modal-body" id="adding-members">
-            <form action="<?php echo SERVER_ROOT; ?>parsers/main-parser.php" name="add-group-member-form" id="add-group-member-form">
+            <form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" name="add-group-member-form" id="add-group-member-form">
                 <li class="input-container">
 					<input type="text" name="student-name" id="student-name" placeholder="Diák neve">
                 <li>
@@ -124,7 +124,7 @@
                             $teachers = User::getByType(1);
                             foreach($teachers as $teacher):
                         ?>
-                        <option value="<?php echo $teacher->id; ?>"><?php echo $teacher->name; ?></option>
+                        <option value="<?= $teacher->id; ?>"><?= $teacher->name; ?></option>
                         <?php endforeach; ?>
                     </select>
                 </li>
@@ -137,7 +137,7 @@
                             foreach($groups as $group):
 								$admin = User::get($group->author_id);
                         ?>
-                        <option value="<?php echo $group->id; ?>"><?php echo $group->name.' ('.$admin->name.')' ?></option>
+                        <option value="<?= $group->id; ?>"><?= $group->name.' ('.$admin->name.')' ?></option>
                         <?php endforeach; ?>
                     </select>
                 </li>
@@ -161,7 +161,7 @@
         </div>
 
         <section class="modal-body" id="new-notification" style="height: calc(100% - 125px)">
-            <form action="<?php echo SERVER_ROOT; ?>parsers/main-parser.php" id="create-notification-form">
+            <form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" id="create-notification-form">
                 <li class="input-container">
                     <label for="nt-text">Értesítés szövege:</label>
                     <input type="text" id="nt-text" placeholder="max. 100 karakter *" required>
@@ -174,7 +174,7 @@
                             $groups = Group::getAll(Session::get('user-id'), Session::get('user-type'));
                             foreach($groups as $group):
                         ?>
-                        <option value="<?php echo $group->id ?>"><?php echo $group->name ?></option>
+                        <option value="<?= $group->id ?>"><?= $group->name ?></option>
                         <?php endforeach; ?>
                     </select>
                 </li>
@@ -186,7 +186,7 @@
                             $subjects = Subject::all();
                             foreach($subjects as $subject):
                         ?>
-                            <option value="<?php echo $subject->id ?>"><?php echo $subject->name ?></option>
+                            <option value="<?= $subject->id ?>"><?= $subject->name ?></option>
                         <?php endforeach; ?>
                     </select>
                 </li>
@@ -198,13 +198,14 @@
                     <label for="nt-type">Dolgozat szint:</label>
                     <select id="nt-type" required>
                         <option value="">Válassz szintet *</option>
-                            <option value="1">Röpdolgozat</option>
-                            <option value="2">Nagydolgozat</option>
-                            <option value="3">Témazáró</option>
+                            <option value="1">Szóbeli felelet</option>
+                            <option value="2">Dolgozat</option>
+                            <option value="3">Témazáró dolgozat</option>
+                            <option value="4">Egyéb esmemény</option>
                     </select>
                 </li>
                 <li class="input-container">
-                    <input type="submit" value="Értesítés létrehozása" class="btn-wide bg-1">
+                    <input type="submit" value="Értesítés létrehozása" class="btn-wide bg-3">
                 </li>
             </form>
         </section>
@@ -214,41 +215,53 @@
                 //print_r($nts);
                 foreach( $notifications as $nt ):
 				$subject = Subject::get($nt->subject_id);
-				$group = Group::get($nt->group_id);
+                $group = Group::get($nt->group_id);
+
+                $type = '';
+                switch( $nt->type ){
+                    case 1: $type = 'Szóbeli felelet';
+                        break;
+                    case 2: $type = 'Dolgozat';
+                        break;
+                    case 3: $type = 'Témazáró dolgozat';
+                        break;
+                    case 4: $type = 'Egyéb esemény';
+                        break;
+                }
             ?>
             <li class="notification-list-item">
-                <h4><?php echo $nt->title ?></h4>
-                <span><?php echo $group->name.' - '.$subject->name?></span>
-                <time><?php echo $nt->date ?></time>
-                <i class="ion-close-round btn-delete-notification" style="padding: 4px; cursor: pointer;" data-notification-id="<?php echo $nt->id ?>"></i>
+                <strong><?= $nt->title ?></strong>
+                <p><?= $group->name.' - '.$subject->name?></p>
+                <p><?= $type.' - '.$nt->date ?></p>
+                <i class="ion-close-round btn-delete-notification" style="padding: 4px; cursor: pointer;" data-notification-id="<?=  $nt->id ?>"></i>
             </li>
             <?php endforeach; ?>
         </section>
     </div>
     
-    <!-- ÜZENET KÜLDÉSE -->
+    <!-- ÜZENET LÉTREHOZÁSA -->
     <div class="modal" style="width: 500px; height: 400px; display: none;" id="create-message">
         <header>
             <h3>Üzenet küldése</h3>
             <i class="ion-close-round close-modal"></i>
         </header>
         <section class="modal-body">
-            <form action="<?php echo SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-message-form">
+            <form novalidate action="<?=  SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-message-form">
                 <li class="input-container">
                     <label for="message-partner">Üzenet címzettje:</label>
-                    <select name="message-receiver" id="message-receiver" required>
+                    <select name="message-receiver" id="message-receiver">
                         <option value="">Válassz címzettet</option>
                         <?php
                             $teachers = User::getByType(1);
                             foreach($teachers as $teacher):
                                 if( $teacher->id == Session::get('user-id') ) continue;
                         ?>
-                        <option value="<?php echo $teacher->id; ?>"><?php echo $teacher->name; ?></option>
+                        <option value="<?= $teacher->id; ?>"><?= $teacher->name; ?></option>
                         <?php endforeach; ?>             
                     </select>
                 </li>
                 <li class="input-container">
-                    <textarea name="message-text" id="message-text" placeholder="Üzenet szövege..." style="height: 140px;" required></textarea>
+                    <textarea name="message-text" id="message-text" placeholder="Üzenet szövege..." style="height: 140px;"></textarea>
                 </li>
                 <li class="input-container">
                     <input type="submit" value="Üzenet küldése" class="btn-wide bg-1">
@@ -257,16 +270,16 @@
         </section>
     </div>
 
-    <!-- MEGNYITOTT ÜZENETEK -->
-    <div class="modal" style="width: 500px; height: 600px; display: none;" id="read-message">
+    <!-- CHATABLAK -->
+    <div class="modal" style="width: 500px; height: 570px; display: none;" id="read-message">
         <header>
             <h3>Beszélgetés</h3>
             <i class="ion-close-round close-modal"></i>
         </header>
         <section class="modal-body" id="conversation" style="height: calc(100% - 170px);">
         </section>
-        <div id="message-controls" style="background: #e3e3e3; padding: 6px; box-sizing: border-box;">
-            <textarea placeholder="Üzeneted helye..." id="message" required></textarea>
+        <div id="message-controls">
+            <textarea placeholder="Üzeneted helye..." id="message"></textarea>
             <button id="btn-send-message">Küldés</button>
         </div>
     </div>

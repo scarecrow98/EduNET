@@ -87,7 +87,7 @@
 			));
 		}
 		
-		public function members(){
+		/*public function members(){
 			$db = Database::getInstance();
 			
 			$stmt = $db->prepare(
@@ -102,7 +102,7 @@
             foreach( $data as $d ){
                 array_push($list, new User($d));
             }
-		}
+		}*/
 
 		public function getMembers(){
 			$db = Database::getInstance();

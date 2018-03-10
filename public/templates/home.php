@@ -17,14 +17,20 @@
 	
 ?>
 <header class="content-header">
-    <h2>Főoldal</h2>
+    <h2>Események</h2>
+    
+    <?php if( IS_ADMIN ): ?>
+        <button class="btn-rounded bg-3 modal-opener" data-modal-id="create-notification" style="float: right; margin-right: 8px;">
+            <i class="ion-android-notifications"></i>Események kezelése
+        </button>
+    <?php endif; ?>
 </header>
 <section class="content-body" id="stats">
 
     <div class="home-box panel">
         <header>
             <h4 class="ion-calendar">Közelgő dolgozatok</h4>
-            <small>Feladatlapok, melyek 30 napon belül kerülnek megírásra</small>
+            <small>Ez elkövetkezendő 30 nap eseményei</small>
         </header>
         <div id="event-calendar">
         <?php
@@ -41,36 +47,46 @@
                 $day = $date->format('d');
 
 				$html = '';
-                $bgcolor = '';
+                $type = '';
 				
                 foreach( $notifications as $nt ){
 					$subject = Subject::get($nt->subject_id);
 					$group = Group::get($nt->group_id);
 					
                     switch( $nt->type ){
-                        case 0: $bgcolor = 'green';
+                        case 1: $type = 'Szóbeli felelet';
                             break;
-                        case 1: $bgcolor = 'orange';
+                        case 2: $type = 'Dolgozat';
                             break;
-                        case 2: $bgcolor = 'red';
+                        case 3: $type = 'Témazáró dolgozat';
+                            break;
+                        case 4: $type = 'Egyéb esemény';
                             break;
                     }
-                    $html .= '<li style="border-left: 4px solid '.$bgcolor.'"><h4>'.$nt->title.'</h4><p>'.$group->name.' - '.$subject->name.'</p></li>';
+                    $html .= '
+                        <li class="event">
+                            <strong>'.$nt->title.'</strong>
+                            <p><i class="ion-information-circled"></i>'.$type.'</p>
+                            <p><i class="ion-ios-people"></i>'.$group->name.'</p>
+                            <p><i class="ion-university"></i>'.$subject->name.'</p>
+                        </li>
+                    ';
                 }
         ?>            
-            <div class="day <?php echo empty($html)?'':'has-event' ?>" >
+            <div class="day <?= empty($html) ? '' : 'has-event' ?>" >
                 <i class="ion-chevron-down"></i>
-                <span class="month-name"><?php echo $months[(int)$month].' '; ?></span><span class="month-day"><?php echo $day; ?></span>
+                <span class="month-name"><?= $months[(int)$month].' '; ?></span><span class="month-day"><?= $day; ?></span>
                 <?php if( $html != '' ): ?>
                 <section class="panel">
-                    <?php echo $html; ?>
+                    <?= $html; ?>
                 </section>
                 <?php endif; ?>
             </div>
-        <?php } ?>
+        <?php } ?> <!-- dátum for vége -->
         </div>
     </div>
 
+    <!-- ha nem tanár a felhaszáló, akkor megjelenítjük az utolsó 3 kijavított dolgozat eredményeit -->
     <?php if( !IS_ADMIN ): ?>
     <div class="home-box panel">
         <header>
@@ -86,7 +102,7 @@
             $max_points = 0;
             $user_points = 0;
         ?>
-        <h1><?php echo $test->title; ?></h1>
+        <h1><?= $test->title; ?></h1>
             <?php 
                 foreach( $tasks as $task ):    
                 $result = Task::getResult($task->id, $test_instance->id, Session::get('user-id'));
@@ -95,11 +111,11 @@
                 $user_points += $split[1];
             ?>
             <li>
-                <strong><?php echo $task->task_number ?>. feladat</strong>
-                <label for=""><?php echo $result['result']; ?></label>
+                <strong><?= $task->task_number ?>. feladat</strong>
+                <label for=""><?= $result['result']; ?></label>
             </li>
             <?php endforeach; ?>
-            <label for="">Végeredmény: <?php echo $max_points.'/'.$user_points ?></label>
+            <label for="">Végeredmény: <?= $max_points.'/'.$user_points ?></label>
         <?php endforeach; ?>
     </div>
     <?php endif; ?>

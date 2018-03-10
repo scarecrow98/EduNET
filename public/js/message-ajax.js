@@ -40,9 +40,7 @@ function createMessageBubble(message, className) {
         title: message.date ? message.date : 'Nem rég küldve'
     });
 
-    let p = $('<p>', {
-        html: message.text
-    });
+    let p = $('<p>', { html: message.text });
     p.appendTo(msgBubble);
     msgBubble.appendTo('#conversation');
 }
@@ -79,8 +77,9 @@ function sendMessage() {
 
     let partnerId = sessionStorage.getItem('message-partner-id');
     let text = $('textarea#message').val();
-    text = text.trim()
+    text = text.trim();
 
+    //ha üres az üzenetmező, return false
     if (text.length < 1 || text == '\n') return false;
 
     $.ajax({
@@ -101,7 +100,7 @@ function sendMessage() {
             }
         },
         error: (status, xhr, error) => {
-            alert(error);
+            //hiba
         }
     });
 }
@@ -123,16 +122,20 @@ function getNewMessages() {
         success: (resp, xhr, status) => {
             let messages = JSON.parse(resp);
 
+            //ha nincsenek új üzenetek, nem csinálunk semmit
             if (messages.length < 1) { return false; }
 
+            //hang lejátszása
             beep.play();
 
             for (message of messages) {
 
+                //ha éppen annak a partnernak van megnyitva az ablaka, akitől kaptunk üzenetet, akkor az ablakba hozunk létre egy buborékot
                 if (sessionStorage.getItem('message-partner-id') == message.sender_id && $('#read-message').is(':visible')) {
                     createMessageBubble(message, 'msg-bubble clear');
                 }
-
+                
+                //előnézet létrehozása
                 createMessagePreview(message, 'message-item unread-message');
             }
             $('button#btn-messages').addClass('has-new-message');
@@ -143,7 +146,7 @@ function getNewMessages() {
         }
     });
 }
-
+//5 másodpercenként lekérjük az új üzeneteket
 window.setInterval(getNewMessages, 5000);
 
 
@@ -156,7 +159,6 @@ $('body').on('click', 'li.message-item', (e) => {
     $('.page-overlay #read-message').show();
 
     let clickedLi = $(e.currentTarget);
-    let modal = $('.page-overlay #read-message');
     let partnerId = clickedLi.attr('data-partner-id');
 
     sessionStorage.setItem('message-partner-id', partnerId);
@@ -167,7 +169,8 @@ $('body').on('click', 'li.message-item', (e) => {
     //ha olvasatlan üzenetre kattintottunk
     if ( clickedLi.hasClass('unread-message') ) {
         clickedLi.removeClass('unread-message');
-        data['set-to-seen'] = true;
+        $('button#btn-messages').removeClass('has-new-message');
+        data['set-to-seen'] = true; //ezzel a POST elemmel tudatjuk a szerverrel, hogy megnéztük az üzentetet, szóvál állítsa olvasottá
     }
 
     data['partner-id'] = partnerId;
@@ -180,19 +183,17 @@ $('body').on('click', 'li.message-item', (e) => {
         data: data,
         success: (resp, xhr, status) => {
             //console.log(resp);
-            
-            let r = JSON.parse(resp);
-            let messages = JSON.parse(r.messages);
-            let affectedMessages = r.affected_messages;
+            let messages = JSON.parse(resp);
 
             if (messages.length < 1) { return; }
 
+            //párbeszéd ablak ürítése, és feltöltése lekért üzenetekkels
             $('#conversation').empty();
-
             for (message of messages) {
 
                 let msgClass;
 
+                //class név meghatározása, az alapján, hogy mi írtuk vagy kaptuk az üzenetet
                 if (message.is_own == 1)
                     msgClass = 'msg-bubble clear msg-own';
                 else

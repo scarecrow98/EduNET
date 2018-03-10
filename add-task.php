@@ -26,7 +26,8 @@
 
 		<div class="test-container">
 
-			<div class="test-sheet panel">
+			<div class="task-box panel">
+
 				<header class="bg-1">
 					<h3><?= Session::get('current-task-number') ?>. feladat</h3>	
 				</header>

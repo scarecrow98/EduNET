@@ -13,7 +13,7 @@
 ?>
 
 
-<section id="top-bar">
+<section id="top-bar" class="clear">
 
     <!-- keresés mező -->
 	<?php if( isset($_GET['page']) && $_GET['page'] == 'tests' ): ?>
@@ -30,14 +30,14 @@
     <!-- jobb oldali gombok -->
     <div id="top-bar-buttons-right">
 
-        <button id="btn-settings" data-modal-id="user-settings" class="modal-opener" style="margin-right: -4px;">
+        <button id="btn-settings" data-modal-id="user-settings" class="modal-opener">
             <img src="<?= SERVER_ROOT ?>/uploads/avatars/<?= Session::get('user-avatar') ?>">
             <strong>Profil</strong>
         </button>
 
 
         <?php if( IS_ADMIN ): ?>
-        <button id="btn-messages" class="<?= $has_new ? 'has-new-message' : '' ?>" style="margin-right: -4px;">
+        <button id="btn-messages" class="<?= $has_new ? 'has-new-message' : '' ?>" >
             <i class="ion-ios-chatboxes-outline"></i>
         </button>
         <?php endif; ?>

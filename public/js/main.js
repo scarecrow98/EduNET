@@ -25,6 +25,7 @@ $(document).ready(() => {
 
     //csoporttagok felvétele modalnál csoport ID megszerzése
     $('button.btn-add-members').click((e) => {
+        //amelyik csoportra kattintunk, annak az id-jét eltároljuk sessionStorage-ba
         sessionStorage.setItem('group-id', $(e.currentTarget).attr('data-group-id'));
     });
 
@@ -41,7 +42,7 @@ $(document).ready(() => {
     //feladatlapok lenyíló menüjének nyitása/zárása
     $('td.tool-cell i').click((e) => {
         let menu = $(e.currentTarget).siblings('ul.table-menu');
-        console.log(menu.children().length);
+        //ha a lenyíló ablakban nincs semmi opció még, mert a diák még semmit sem kezdhet a teszttel, akkor return
         if ( menu.children().length < 1 ) return false;
 
         menu.slideToggle(200);
@@ -181,7 +182,7 @@ function createNewTaskOption(parentContainer, inputTextName, inputAnsName, input
     label.appendTo(li);
 
     //opciók szövegét tartó textinput létrehozása
-    let inputText = $('<input>', { type: 'text', name: inputTextName+optionNumber, required: true });
+    let inputText = $('<input>', { type: 'text', name: inputTextName+optionNumber, required: true, placeholder: 'A válaszlehetőség szövege' });
     inputText.appendTo(li);
 
     //ha rádiógomb típusú az elem, akkor 2 rádiógombot hozunk létre (egyiket 1, másikat 0-ás értékkel --> igaz/hamis)
@@ -194,7 +195,7 @@ function createNewTaskOption(parentContainer, inputTextName, inputAnsName, input
     }
     //egyébként pedig létrehozunk egy darab input element, a megadott inputtípusban (checkbox/text)
     else{
-        let inputAns1 = $('<input>', { type: inputType, name: inputAnsName+optionNumber, maxlength: 1 });
+        let inputAns1 = $('<input>', { type: inputType, name: inputAnsName+optionNumber, maxlength: 1, placeholder: 'A helyes válasz betűjele' });
         inputAns1.appendTo(li);
     }
 

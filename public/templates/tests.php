@@ -26,9 +26,6 @@
         <button class="btn-rounded bg-1 modal-opener" data-modal-id="create-test" style="float: right;">
             <i class="ion-plus-round"></i>Feladatlap létrehozása
         </button>
-        <button class="btn-rounded bg-1 modal-opener" data-modal-id="create-notification" style="float: right; margin-right: 8px;">
-            <i class="ion-android-notifications"></i>Értesítések
-        </button>
     <?php endif; ?>
     
 </header>

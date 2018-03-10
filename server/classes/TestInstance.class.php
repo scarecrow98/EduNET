@@ -175,6 +175,17 @@
             return false;
         }
 
+        public function hasEvaluatedInstance($user_id){
+            $db = Database::getInstance();
+
+            $stmt = $db->prepare(
+                "SELECT * FROM evaluated_tests WHERE user_id = ? AND test_instance_id = ?"
+            );
+            $stmt->execute(array($user_id, $this->id)); 
+
+            return !empty($stmt->fetch());
+        }
+
         public function hasResults($user_id){
             $db = Database::getInstance();
 
@@ -187,7 +198,7 @@
             );
             $stmt->execute(array($this->id, $user_id, $this->id, $user_id, $this->id, $user_id));
 
-            return !empty($stmt->fetchAll());
+            return !empty($stmt->fetch());
         }
     }
 

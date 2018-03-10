@@ -1,15 +1,21 @@
 <?php
 
     class Security{
+		
 
+		//jelszavakhoz sót generáló függvény
         public static function passwordSalt(){
+			//a random_bytes függvény kriptográfialilag biztonságos, 16 darab random bájtot ad vissza
+			//ezt hexadecimális értékekre konvertáljuk, majd md5-el kódoljuk
             return hash('md5', bin2hex( random_bytes( 16 ) ));
         }
 
+		//jelszóhasht előállítő függvény
         public static function hashPassword($password, $salt){
             return hash('sha256', $password.$salt);
         }
 
+		//8 karakter hosszú jelszót generáló függvény
         public static function generatePassword(){
             $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             $password = '';

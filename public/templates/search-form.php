@@ -1,11 +1,11 @@
 <?php
 
-if( isset($_POST['tst-view']) ){
+if( isset($_GET['search']) ){
     $data = array(
-        'title'         => empty($_POST['tst-title'])?null:$_POST['tst-title'],
-        'group_id'      => empty($_POST['tst-group'])?null:$_POST['tst-group'],
-        'subject_id'    => empty($_POST['tst-subject'])?null:$_POST['tst-subject'],
-        'date'          => empty($_POST['tst-date'])?null:$_POST['tst-date'],
+        'title'         => empty($_GET['title'])?null:$_GET['title'],
+        'group_id'      => empty($_GET['group'])?null:$_GET['group'],
+        'subject_id'    => empty($_GET['subject'])?null:$_GET['subject'],
+        'date'          => empty($_GET['date'])?null:$_GET['date'],
         'user_id'       => Session::get('user-id')
     );
     
@@ -13,11 +13,11 @@ if( isset($_POST['tst-view']) ){
 }
 
 ?>
-<form action="" method="POST" name="search-test-form" id="search-test-form">
-    <input type="hidden" name="tst-view" value="1">
+<form action="" method="GET" name="search-test-form" id="search-test-form">
+    <input type="hidden" name="search" value="true">
     <li class="input-container">
         <label for="">Csoport:</label>
-        <select name="tst-group" class="search-form-input">
+        <select name="group" class="search-form-input">
             <option value="0">válassz csoportot</option>
             <?php
 			$groups = Group::getAll(Session::get('user-id'), Session::get('user-type'));
@@ -29,7 +29,7 @@ if( isset($_POST['tst-view']) ){
     </li>
     <li class="input-container">
         <label for="">Tantárgy:</label>
-        <select name="tst-subject" class="search-form-input">
+        <select name="subject" class="search-form-input">
             <option value="0">válassz tantárgyat</option>
             <?php
             $subjects = Subject::all();
@@ -41,11 +41,11 @@ if( isset($_POST['tst-view']) ){
     </li>
     <li class="input-container">
         <label for="">Dátum:</label>
-        <input type="date" name="tst-date" class="search-form-input">
+        <input type="date" name="date" class="search-form-input">
     </li>
     <li class="input-container">
         <label for="">Cím:</label>
-        <input type="text" name="tst-title" class="search-form-input" placeholder="cím egy része...">
+        <input type="text" name="title" class="search-form-input" placeholder="cím egy része...">
     </li>
     <li class="input-container">
         <input type="submit" value="keresés" class="btn-rounded bg-1">

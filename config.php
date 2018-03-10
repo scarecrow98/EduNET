@@ -11,19 +11,6 @@
     DEFINE('PUBLIC_ROOT', 'http://localhost/EduNET/public/');
     DEFINE('SERVER_ROOT', 'http://localhost/EduNET/server/');
 
-    //input adatok hossza
-    $data_req = array(
-        'test_title'    => 100,
-        'test_desc'     => 255,
-        'user_name'     => 50,
-        'user_email'    => 255,
-        'subject_name'  => 100,
-        'ntf_text'      => 100,
-        'group_name'    => 100,
-        'group_desc'    => 255,
-        'task_comment'  => 255
-    );
-
     //dolgozattípusok + classok
     $test_types = array(
         'Házi feladat',

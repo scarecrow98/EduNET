@@ -17,9 +17,6 @@
         <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/main.css">
         <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/components.css">
         <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/content.css">
-        <style>
-            .test-sheet section{ padding: 15px; }
-        </style>
     </head>
     <body class="test-body">
         <div class="test-container">
@@ -28,7 +25,7 @@
             <?php
                 foreach( $tasks as $task ): /* tasks foreach kezdete */ 
                     $options = $task->getTaskOptions();
-                    $result = Task::getResult($task->id, $test_instance->id, $user_id);
+                    $result = Task::getResult($user_id, $test_instance->id, $task->id);
             ?>                
                 <div class="task-box panel">   
                     <header>
@@ -39,59 +36,58 @@
                         <pre class="task-question"><?= $task->question; ?></pre>
 
                         <?php if( !empty($task->text) ): ?>
-                        <pre class="task-text"><?= $task->text ?></pre>
+                            <pre class="task-text"><?= $task->text ?></pre>
                         <?php endif; ?>
 
                         <?php if( !empty($task->image) ): ?>
-                            <a href="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" target="_blank">
-                                <img src="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" alt="" style="width: 300px; display: block; margin-bottom: 20px;">
+                        <div class="task-image">
+                            <a  href="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" target="_blank">
+                                <img src="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" title="Kattints a nagyobb méretért!">
                             </a>
+                        </div>
                         <?php endif; ?>
 
-                        <!-- <strong class="task-result"><?= $result['result'] ?></strong> -->
-
-
+                        <?php if( $task->option_count > 0 ): ?>
                         <table class="options-table">
-                        <?php
+                            <tr>
+                                <td></td>
+                                <td>Te válaszod</td>
+                                <td>Helyes válasz</td>
+                            </tr>
+                            <?php
                             foreach( $options as $option ): /* options foreach kezdete */  
                                 $user_ans = Answer::getByOptionId($user_id, $test_instance->id, $option->id);
-                        ?>
+                            ?>
                             <tr>
                                 <td style="width: 550px;" valign="top">
                                     <label class="option-text"><?= $option->text ?></label>
                                 </td>
-                                <?php if( $task->type == 1 ): ?>
-                                <td valign="top">
-                                    <?= UIDrawer::quizResult($option->correct_ans, $user_ans->answer); ?>
-                                </td>
-                                <?php elseif( $task->type == 3 ): ?>
-                                <td valign="top">
-                                    <?= UIDrawer::pairingResult($option->correct_ans, $user_ans->answer); ?>
-                                </td>
-                                <?php elseif( $task->type == 4 ): ?>
-                                <td valign="top">
-                                    <?= UIDrawer::trueFalseResult($option->correct_ans, $user_ans->answer); ?>
-                                </td>
-                                <?php endif; ?>
+                                <?php 
+                                if( $task->type == 1 )
+                                    echo UIDrawer::quizResult($option->correct_ans, $user_ans->answer);
+                                elseif( $task->type == 3 )
+                                    echo UIDrawer::pairingResult($option->correct_ans, $user_ans->answer);
+                                elseif( $task->type == 4 )
+                                    echo UIDrawer::trueFalseResult($option->correct_ans, $user_ans->answer);
+                                ?>
                             </tr>
                             <?php endforeach; /* options foreach vége */ ?> 
-                            
-                            <?php
-                                if( $task->type == 2 ):
-                                    $user_ans = Answer::getTextAnswer($user_id, $test_instance->id, $task->id);
-                            ?>
-                                <td>
-                                    <pre><?= $user_ans->answer ?></pre>
-                                </td>
-                            <?php
-                                elseif( $task->type == 5 ):
-                                    $user_ans = Answer::getFileAnswer($user_id, $test_instance->id, $task->id);
-                            ?>
-                                <td>
-                                    <a href="<?= SERVER_ROOT ?>uploads/files/<?= $user_ans->file_name ?>">Fájl letöltése</a>
-                                </td>
-                            <?php endif; ?>
                         </table>
+                        <?php endif; ?>
+
+                        <div class="user-answer">
+                        <?php 
+                            //ha a feladat fájl típusú akkor letöltséi linket jelenítünk meg, egyébkét pedig a szöveges válaszát
+                            if( $task->type == 5 ){
+                                $answer = Answer::getFileAnswer($user_id, $test_instance->id, $task->id);
+                                echo UIDrawer::fileAnswer($answer->answer);
+                            } else if( $task->type == 2 ){
+                                $answer = Answer::getTextAnswer($user_id, $test_instance->id, $task->id);
+                                echo UIDrawer::textAnswer($answer->answer);
+                            }
+                        ?>
+                        </div>
+
                         <p style="text-align: right; margin-top: 30px;">
                             Eredmény:<strong class="task-points"><?= $result['result'] ?>p</strong>
                         </p>
