@@ -1,5 +1,4 @@
 
-<input type="hidden" id="security-token" value="<?= $token ?>">
 <div class="page-overlay" style="display: none;">
 
     <?php if( IS_ADMIN ): ?>
@@ -12,23 +11,36 @@
         </header>
         <section class="modal-body">
 
-            <form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-test-form">
+            <form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-test-form" novalidate>
                 <li class="input-container">
-                    <label for="test-title">Feladatlap címe:</label>
-                    <input type="text" placeholder="max. 100 karakter *" name="test-title" id="test-title" required>
+                    <label for="test-title">Feladatlap címe: *</label>
+                    <input type="text" placeholder="max. 100 karakter" name="test-title" id="test-title" maxlength="100">
                 </li>
                 <li class="input-container">
                     <label for="test-description">Feladatlap leírása:</label>
-                    <textarea placeholder="max. 255 karakter" name="test-description" id="test-description"></textarea>
+                    <textarea placeholder="max. 255 karakter" name="test-description" id="test-description" maxlength="255"></textarea>
                 </li>
                 <li class="input-container">
                     <label for="test-text">Feladatlap szövege:</label>
                     <textarea style="vertical-align: top;" placeholder="A feladatokhoz kötődő szöveg adható meg (pl.: szövegértési feladathoz)" name="test-text" id="test-text"></textarea>
-                </li>
+             <li class="input-container">
+                    <label for="test-subject">Tantárgy: *</label>
+                    <select name="test-subject" id="test-subject">
+                        <option value="">Válassz tantárgyat</option>
+                        <?php
+							//lekérem az összes csoportot objektumként,
+							//majd végigiterálok az objektumokon foreach ciklussal
+                            $subjects = Subject::all();
+                            foreach($subjects as $subject):
+                        ?>
+                            <option value="<?= $subject->id ?>"><?= $subject->name ?></option>
+                        <?php endforeach; //befejezem a foreach-t ?>
+                    </select>
+                </li>   </li>
                 <li class="input-container">
-                    <label for="test-group">Csoport:</label>
-                    <select name="test-group" id="test-group" required>
-                        <option value="">Válassz csoportot *</option>
+                    <label for="test-group">Csoport: *</label>
+                    <select name="test-group" id="test-group">
+                        <option value="">Válassz csoportot</option>
                         <?php
                             $groups = Group::getAll(Session::get('user-id'), Session::get('user-type'));
                             foreach($groups as $group):
@@ -37,21 +49,10 @@
                         <?php endforeach; ?>
                     </select>
                 </li>
+                
                 <li class="input-container">
-                    <label for="test-subject">Tantárgy:</label>
-                    <select name="test-subject" id="test-subject" required>
-                        <option value="">Válassz tantárgyat *</option>
-                        <?php
-                            $subjects = Subject::all();
-                            foreach($subjects as $subject):
-                        ?>
-                            <option value="<?= $subject->id ?>"><?= $subject->name ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </li>
-                <li class="input-container">
-                    <label for="test-tasknumber">Feladatok száma:</label>
-                    <input type="number" name="test-taskcount" id="test-taskcount" placeholder="1 és 30 közé eső szám" value="1" min="1" max="30">
+                    <label for="test-tasknumber">Feladatok száma: *</label>
+                    <input type="number" name="test-taskcount" id="test-taskcount" value="1" min="1" max="30">
                 </li>
                 <li class="input-container">
                     <input type="submit" value="Feladatlap létrehozása" id="create-test" name="create-test" class="btn-wide bg-1">
@@ -68,19 +69,19 @@
             <i class="ion-close-round close-modal"></i>
         </header>
         <section class="modal-body">
-            <form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-group-form" enctype="multipart/form-data">
+            <form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-group-form" enctype="multipart/form-data" novalidate>
                 <li class="input-container">
-                    <label for="">Csoport neve:</label>
-                    <input type="text" placeholder="A csoport nevét adhatod meg (pl.: 9B - Matek)" name="group-name" id="group-name" required>
+                    <label for="">Csoport neve: *</label>
+                    <input type="text" placeholder="max. 50 karakter" name="group-name" id="group-name" maxlength="50">
                 </li>
                 <li class="input-container">
                     <label for="">Csoport leírása:</label>
-                    <textarea placeholder="A csoport leírását adhatod meg" name="group-description" id="group-description"></textarea>
+                    <textarea placeholder="max. 255 karakter" name="group-description" id="group-description" maxlength="255"></textarea>
                 </li>
                 <li class="input-container">
-                    <label for="">Kép beállítása:</label>
+                    <label for="">Csoport képe:</label>
                     <input type="file" name="group-avatar" id="group-avatar" style="display: none;">
-                    <button class="btn-rounded bg-2" id="select-group-avatar"><i class="ion-images"></i>Kép feltöltése</button>
+                    <button class="btn-rounded bg-2 btn-open-file-dialog" data-input-id="group-avatar"><i class="ion-images"></i>Feltöltés</button>
                     <span class="uploaded-file-name">&nbsp;</span>
                 </li>
                 <li class="input-container">
@@ -101,7 +102,7 @@
                 <li class="input-container">
 					<input type="text" name="student-name" id="student-name" placeholder="Diák neve">
                 <li>
-				<ul class="student-results">
+				<ul id="student-results">
                     <!-- ide töltődnek a találatok -->
                 </ul>
             </form>
@@ -109,7 +110,7 @@
     </div>
 
     <!-- FELADATLAP MEGOSZTÁSA -->
-    <div class="modal" style="width: 500px; height: 300px; display: none;" id="share-test">
+    <div class="modal" style="width: 630px; height: 360px; display: none;" id="share-test">
         <header>
             <h3>Feladatlap megosztása</h3>
             <i class="ion-close-round close-modal"></i>
@@ -117,29 +118,21 @@
         <section class="modal-body">
             <form method="POST" action="parsers/main-parser.php" name="share-test-form" id="share-test-form">
                 <li class="input-container">
-                    <label for="new-test-author">Akivel megosztod:</label>
-                    <select name="new-test-author" id="new-test-author">
-                        <option value="0">Válassz tanárt:</option>
-                        <?php
-                            $teachers = User::getByType(1);
-                            foreach($teachers as $teacher):
-                        ?>
-                        <option value="<?= $teacher->id; ?>"><?= $teacher->name; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </li>
-                <li class="input-container">
-                    <label for="new-test-group">Ahová megosztod:</label>
+                    <label for="new-test-group">Feladatlap csoportja: *</label>
                     <select name="new-test-group" id="new-test-group">
                         <option value="0">Válassz csoportot</option>
                         <?php
                             $groups = Group::all();
                             foreach($groups as $group):
-								$admin = User::get($group->author_id);
+								$teacher = User::get($group->author_id);
                         ?>
-                        <option value="<?= $group->id; ?>"><?= $group->name.' ('.$admin->name.')' ?></option>
+                        <option value="<?= $group->id; ?>"><?= $group->name.' ('.($teacher->id == Session::get('user-id') ? 'saját' : $teacher->name).')' ?></option>
                         <?php endforeach; ?>
                     </select>
+                </li>
+                <li class="input-container">
+                    <label for="">Feladatlap leírása:</label>
+                    <textarea name="new-test-description" id="new-test-description" placeholder="max. 255 karakter" maxlength="255"></textarea>
                 </li>
                 <li class="input-container">
                     <input type="submit" class="btn-wide bg-1" name="share-test" value="Feladatlap megosztása">
@@ -149,7 +142,7 @@
     </div>
 
 	<!-- ÉRTESÍTÉS LÉTREHOZÁSA -->
-    <div class="modal" style="width: 500px; height: 500px; display: none;" id="create-notification" >
+    <div class="modal" style="width: 600px; height: 500px; display: none;" id="create-notification" >
         <header>
             <h3>Értesítések</h3>
             <i class="ion-close-round close-modal"></i>
@@ -161,15 +154,15 @@
         </div>
 
         <section class="modal-body" id="new-notification" style="height: calc(100% - 125px)">
-            <form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" id="create-notification-form">
+            <form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" id="create-notification-form" novalidate>
                 <li class="input-container">
-                    <label for="nt-text">Értesítés szövege:</label>
-                    <input type="text" id="nt-text" placeholder="max. 100 karakter *" required>
+                    <label for="nt-text">Értesítés szövege: *</label>
+                    <input type="text" id="nt-text" placeholder="max. 100 karakter" >
                 </li>
                 <li class="input-container">
-                    <label for="nt-group-id">Értesítés csoportja:</label>
+                    <label for="nt-group-id">Értesítés csoportja: *</label>
                     <select id="nt-group-id" required>
-                        <option value="">Válassz csoportot *</option>
+                        <option value="">Válassz csoportot</option>
                         <?php
                             $groups = Group::getAll(Session::get('user-id'), Session::get('user-type'));
                             foreach($groups as $group):
@@ -179,9 +172,9 @@
                     </select>
                 </li>
                 <li class="input-container">
-                    <label for="nt-subject-id">Dolgozat tantárgya:</label>
+                    <label for="nt-subject-id">Dolgozat tantárgya: *</label>
                     <select id="nt-subject-id" required>
-                        <option value="">Válassz tantárgyat *</option>
+                        <option value="">Válassz tantárgyat</option>
                         <?php
                             $subjects = Subject::all();
                             foreach($subjects as $subject):
@@ -191,13 +184,13 @@
                     </select>
                 </li>
                 <li class="input-container">
-                    <label for="nt-date">Dolgozat időpontja:</label>
-                    <input type="date" id="nt-date" required>
+                    <label for="nt-date">Dolgozat időpontja: *</label>
+                    <input type="date" id="nt-date">
                 </li>
                 <li class="input-container">
-                    <label for="nt-type">Dolgozat szint:</label>
-                    <select id="nt-type" required>
-                        <option value="">Válassz szintet *</option>
+                    <label for="nt-type">Dolgozat szint: *</label>
+                    <select id="nt-type">
+                        <option value="">Válassz szintet</option>
                             <option value="1">Szóbeli felelet</option>
                             <option value="2">Dolgozat</option>
                             <option value="3">Témazáró dolgozat</option>
@@ -228,12 +221,22 @@
                     case 4: $type = 'Egyéb esemény';
                         break;
                 }
+
+                $split = explode('-', $nt->date);
+                $month = (int)$split[1];
+                $day = (int)$split[2];
             ?>
             <li class="notification-list-item">
-                <strong><?= $nt->title ?></strong>
-                <p><?= $group->name.' - '.$subject->name?></p>
-                <p><?= $type.' - '.$nt->date ?></p>
-                <i class="ion-close-round btn-delete-notification" style="padding: 4px; cursor: pointer;" data-notification-id="<?=  $nt->id ?>"></i>
+                <div class="notification-date">
+                    <p class="notification-date-day"><?= $day ?>.</p>
+                    <p class="notification-date-month"><?= $months[$month] ?></p>
+                </div>
+                <div class="notification-body">
+                    <i class="ion-close-round btn-delete-notification" style="padding: 4px; cursor: pointer;" data-notification-id="<?=  $nt->id ?>"></i>
+                    <strong><?= $nt->title ?></strong>
+                    <p><?= $type.' - '.$subject->name ?></p>
+                    <p><?= $group->name ?></p>
+                </div>
             </li>
             <?php endforeach; ?>
         </section>
@@ -246,11 +249,11 @@
             <i class="ion-close-round close-modal"></i>
         </header>
         <section class="modal-body">
-            <form novalidate action="<?=  SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-message-form">
+            <form action="<?=  SERVER_ROOT; ?>parsers/main-parser.php" method="POST" id="create-message-form" novalidate>
                 <li class="input-container">
-                    <label for="message-partner">Üzenet címzettje:</label>
+                    <label for="message-partner">Üzenet címzettje: *</label>
                     <select name="message-receiver" id="message-receiver">
-                        <option value="">Válassz címzettet</option>
+                        <option value="">Válassz címzettet *</option>
                         <?php
                             $teachers = User::getByType(1);
                             foreach($teachers as $teacher):
@@ -286,7 +289,7 @@
     <?php endif; ?>
 
     <!-- BEÁLLÍTÁSOK -->
-    <div class="modal" style="width: 600px; height: 400px; display: none;" id="user-settings">
+    <div class="modal" style="width: 600px; height: 520px; display: none;" id="user-settings">
         <header>
             <h3>Beállítások</h3>
             <i class="ion-close-round close-modal"></i>
@@ -295,7 +298,7 @@
             <form action="<?= SERVER_ROOT ?>parsers/main-parser.php" method="POST" enctype="multipart/form-data" id="user-settings-form">
                 <li class="input-container">
                     <label for="select-profile-pic">Új profilkép:</label>
-                    <button class="btn-rounded bg-2" id="select-profile-pic"><i class="ion-upload"></i>Profilkép kiválasztása</button>
+                    <button class="btn-rounded bg-2 btn-open-file-dialog" data-input-id="new-avatar"><i class="ion-upload"></i>Feltöltés</button>
                     <span class="uploaded-file-name"></span>
                     <input type="file" name="new-avatar" id="new-avatar" style="display: none;">                    
                 </li>

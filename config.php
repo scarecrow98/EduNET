@@ -11,12 +11,20 @@
     DEFINE('PUBLIC_ROOT', 'http://localhost/EduNET/public/');
     DEFINE('SERVER_ROOT', 'http://localhost/EduNET/server/');
 
-    //dolgozattípusok + classok
-    $test_types = array(
-        'Házi feladat',
-        'Dolgozat',
-        'Témazáró dolgozat',
-        'Szóbeli felelet',
+    //hónapok
+    $months = array(
+        '1'     => 'Jan.',
+        '2'     => 'Febr.',
+        '3'     => 'Márc.',
+        '4'     => 'Ápr.',
+        '5'     => 'Máj.',
+        '6'     => 'Jún.',
+        '7'     => 'Júl.',
+        '8'     => 'Aug.',
+        '9'     => 'Szept.',
+        '10'    => 'Okt.',
+        '11'    => 'Nov.',
+        '12'    => 'Dec.' 
     );
 
     //osztály autoloader
@@ -36,12 +44,6 @@
     function errorRedirect($message){
         $_SESSION['error-message'] = $message;
         header('Location: http://'.$_SERVER['SERVER_NAME'].'/EduNET/error.php');
-    }
-
-    //hibanaplózó függvény
-    function logError($message){
-        $date = date('Y-m-d H:i:s');
-        $msg = $message.' - '.$date.'\n';
-        error_log($msg, 3, 'C:/xampp/htdocs/edunet/admin/errors.log');
+		exit();
     }
 ?>

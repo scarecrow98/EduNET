@@ -52,24 +52,29 @@ $('button#btn-save-settings').click((e) => {
 
     formData.append('update-user-settings', true);
 
+	//ha van kép megadva, akkor hozzáadjuka formdata-hoz
     if ( $('#new-avatar').get(0).files[0] ) {
         formData.append('new-avatar', $('#new-avatar').get(0).files[0]);        
     }
 
+	//ha ki van töltve mindkettő jelszó mező
     if ( $('#new-password1').val() && $('#new-password2').val() ) {
         formData.append('new-password1', $('#new-password1').val());
         formData.append('new-password2', $('#new-password2').val());
     }
 
+	//ha ki van töltve az email mező
     if ( $('#new-email').val() ) {
         formData.append('new-email', $('#new-email').val());
     }
 
+	//ha meg lett változtatva a feliratkozós checkbox értéke
     if ( sessionStorage.getItem('subscription-changed') ) {
         formData.append('new-email-subscription', $('#new-email-subscription').is(':checked') ? 1 : 0);
         sessionStorage.removeItem('subscription-changed');
     }
 
+	//ajax kérés a main-parser.php-nak
     $.ajax({
         type: 'POST',
         url: SERVER_ROOT+'parsers/main-parser.php',

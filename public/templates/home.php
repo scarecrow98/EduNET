@@ -1,21 +1,4 @@
-<?php
 
-    $months = array(
-        '1'     => 'Jan.',
-        '2'     => 'Febr.',
-        '3'     => 'Márc.',
-        '4'     => 'Ápr.',
-        '5'     => 'Máj.',
-        '6'     => 'Jún.',
-        '7'     => 'Júl.',
-        '8'     => 'Aug.',
-        '9'     => 'Szept.',
-        '10'    => 'Okt.',
-        '11'    => 'Nov.',
-        '12'    => 'Dec.' 
-    );
-	
-?>
 <header class="content-header">
     <h2>Események</h2>
     
@@ -105,7 +88,7 @@
         <h1><?= $test->title; ?></h1>
             <?php 
                 foreach( $tasks as $task ):    
-                $result = Task::getResult($task->id, $test_instance->id, Session::get('user-id'));
+                $result = Task::getResult(Session::get('user-id'), $test_instance->id, $task->id);
                 $split = explode('/', $result['result']);
                 $max_points += $split[0];
                 $user_points += $split[1];

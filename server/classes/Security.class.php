@@ -28,10 +28,12 @@
             return $password;
         }
 
+		//biztonsági token generáló függvény
         public static function securityToken(){
             return hash('sha1', bin2hex( random_bytes(16) ).microtime(true));
         }
 
+		//token beállítása a sessionben és a kliens böngészőjében
         public static function setAccessToken(){
             $token = Security::securityToken();
             //20 perces biztonsági token
@@ -40,6 +42,7 @@
 
         }
 
+		//biztonsági token meglétét és érvényességét ellenőrző függvény
         public static function checkAccessToken(){
             if( isset($_COOKIE['access-token']) && !empty(Session::get('access-token')) ){
                 if( Session::get('access-token') !== $_COOKIE['access-token']  ){
@@ -51,6 +54,7 @@
             return true;
         }
 
+		//token törlés szerver és kliensoldalról
         public static function destroyAccessToken(){
             if( isset($_COOKIE['access-token']) ){
                 unset($_COOKIE['access-token']);

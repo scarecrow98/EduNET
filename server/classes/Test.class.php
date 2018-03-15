@@ -7,7 +7,6 @@
         public $text;
         public $subject_id;
         public $task_count;
-		public $description;
 
         public function __construct($data){
             $this->id = $data['id'];
@@ -46,20 +45,27 @@
             return $list;
 		}
 		
+		//létrehoz egy új bázisfeladatlapot
 		public static function create($data){
 			$db = Database::getInstance();
 			
-			//bázisfeladatlap létrehozása
+			//bázisfeladatlap létrehozása egyszerű INSERT INTO utasítással
 			$stmt = $db->prepare(
 				"INSERT INTO tests(title, text, subject_id, task_count)".
 				" VALUES(?, ?, ?, ?)"
 			);
 			$stmt->execute(array(
-				$data['title'], $data['text'], $data['subject_id'], $data['task_count']
+				$data['title'],
+				$data['text'], 
+				$data['subject_id'],
+				$data['task_count']
 			));
 			
+			//a létrehozott bázisfeladatlap ID-jének tárolása
 			$last_insert_id = $db->lastInsertId();
 			
+			//session adatok tárolása, amik kellenek a feladatok
+			//felvételéhez a feladatlapba
 			Session::set('current-test-id', $last_insert_id);
 			Session::set('current-task-number', 1);
 			Session::set('total-task-count', $data['task_count']);

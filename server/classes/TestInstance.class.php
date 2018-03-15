@@ -9,6 +9,7 @@
         public $group_id;
         public $creation_date;
         public $status;
+		public $description;
 
         public function __construct($data){
             $this->id                   = $data['id'];
@@ -18,6 +19,7 @@
             $this->group_id             = $data['group_id'];
             $this->creation_date        = $data['creation_date'];
             $this->status               = $data['status'];
+			$this->description			= empty($data['description']) ? null : $data['description'];
         }
 
         public static function get($test_instance_id){
@@ -31,23 +33,33 @@
             return new TestInstance($stmt->fetch());
         }
 
+		//felhasználók feladatlapjait lekérő függvény
         public static function getAll($user_id, $user_type){
             $db = Database::getInstance();
             $stmt;
 
+			//ha tanár, akkor akkor kiválasztom a feladatlapokat,
+			//aminek ő a jelenlegi felhasználója
             if( $user_type == 1 ){
                 $stmt = $db->prepare(
-                    "SELECT * FROM test_instances WHERE current_author_id = ? ORDER BY creation_date DESC"
+                    "SELECT * FROM test_instances".
+					" WHERE current_author_id = ?".
+					" ORDER BY creation_date DESC"
                 );
+			//ha diák, akkor azokat a feladatlapokat választjuk ki,
+			//amelyik csoportja megegyezik a diák csoportjaival
             } else {
                 $stmt = $db->prepare(
-                    "SELECT * FROM test_instances WHERE group_id IN (SELECT group_id FROM group_members WHERE user_id = ?) ORDER BY creation_date DESC"
+                    "SELECT * FROM test_instances".
+					" WHERE group_id IN (SELECT group_id FROM group_members WHERE user_id = ?)".
+					" ORDER BY creation_date DESC"
                 );
             }
 
             $stmt->execute(array($user_id));
             $data = $stmt->fetchAll();
 
+			//lekért adatokból objektumok készítése
             $list = array();
             foreach( $data as $d ){
                 array_push($list, new TestInstance($d));
@@ -56,9 +68,11 @@
             return $list;
         }
         
+		//feladatlappéldányt létrehozó függvény
 		public static function create($data){
 			$db = Database::getInstance();
 			
+			//egyszerű INSERT INTO
 			$stmt = $db->prepare(
 				"INSERT INTO test_instances(test_id, original_author_id, current_author_id, group_id, creation_date, description)".
 				" VALUES(?, ?, ?, ?, ?, ?)"
@@ -126,6 +140,23 @@
             $stmt->execute(array($status, $test_instance_id));
         }
         
+        public static function duplicate($data){
+            $db = Database::getInstance();
+
+            $stmt = $db->prepare(
+                "INSERT INTO test_instances(test_id, original_author_id, current_author_id, group_id, creation_date, description)".
+                " VALUES(?, ?, ?, ?, ?, ?)"
+            );
+            $stmt->execute(array(
+                $data['test-id'],
+                $data['original-author-id'],
+                $data['current-author-id'],
+                $data['group-id'],
+                $data['date'],
+                $data['description']
+            ));
+        }
+
         public function getStudents(){
             $db = Database::getInstance();
 

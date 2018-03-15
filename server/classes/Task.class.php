@@ -2,6 +2,7 @@
 
 	class Task{
 		
+		//adattagok
 		public $id;
 		public $test_id;
 		public $task_number;
@@ -10,10 +11,9 @@
 		public $max_points;
 		public $image;
 		public $type;
-
 		public $option_count;
 		
-		
+		//konstruktor
 		public function __construct($data){
 			$this->id 					= $data['id'];
 			$this->test_id 				= $data['test_id'];
@@ -27,6 +27,7 @@
 			$this->option_count			= $this->getOptionCount();
 		}
 
+		//visszaadja a feladat feladatopcióit
 		public function getTaskOptions(){
 			$db = Database::getInstance();
 
@@ -45,6 +46,7 @@
             return $list;
 		}
 		
+		//visszaad egy feladatot id alapján
 		public static function get($task_id){
 			$db = Database::getInstance();
 			
@@ -57,6 +59,7 @@
 			
 		}
 		
+		//létrehoz egy feladatot
 		public static function create($data){
 			$db = Database::getInstance();
 			
@@ -74,8 +77,10 @@
 				$data['type'],
 			));
 			
+			//létrhozott feladat id-je, amit felhasználunk a feladatopciók létrehozásakor
 			$last_insert_id = $db->lastInsertId();
 			
+			//feladatopciók létrehozása
 			for( $i = 1; $i < count($data['option_answers']); $i++ ){
 				$stmt = $db->prepare(
 					"INSERT INTO task_options(task_id, text, correct_ans)".
@@ -84,13 +89,14 @@
 				
 				$d = array(
 					'task_id'		=> $last_insert_id,
-					'text'			=> $data['option_texts'][$i],
+					'text'			=> htmlspecialchars($data['option_texts'][$i]),
 					'correct_ans'	=> $data['option_answers'][$i]
 				);
 				TaskOption::create($d);
 			}
 		}
 
+		//visszaadja, hogy hány feladatopció tartozik a feladathoz
 		private function getOptionCount(){
 			$db = Database::getInstance();
 
@@ -104,6 +110,7 @@
 			return $data['option_count'];
 		}
 
+		//eltárolja egy diák feladatra adott válaszát
 		public function storeResult($data){
 			$db = Database::getInstance();
 			
@@ -120,6 +127,7 @@
 			));
 		}
 
+		//visszaadja egy diák feladatra adott válaszát
 		public static function getResult($user_id, $test_instance_id, $task_id){
 			$db = Database::getInstance();
 			
@@ -131,6 +139,7 @@
             return $stmt->fetch();
 		}
 
+		//eltárolja a tanár javításkor írt, diáknak szóló kommentjét
 		public static function storeComment($data){
 			$db = Database::getInstance();
 			

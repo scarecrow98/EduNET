@@ -1,4 +1,3 @@
-<pre>
 <?php
     //felhasználó manuális regisztrálása
     if( isset($_POST['registrate-user']) ){
@@ -8,7 +7,7 @@
         $type = $_POST['user-type'];
 
         //létező email
-        if( Admin::emailExists($email) ) exit('Az emailcím már létezik!');
+        if( User::emailExists($email) ) exit('Az emailcím már létezik!');
 
         $data = array(
             'name'      => $name,
@@ -20,16 +19,17 @@
     }
 
     //CSV fájlból történő diákadatok feldolgozása
-    if( isset($_POST['upload-csv']) ){
-        $data = FileUploader::parseCSV($_FILES['csv']);
-        $errors = array();
+    if( isset($_FILES['csv']) && is_uploaded_file($_FILES['csv']['tmp_name']) ){
+        //CSV fájl ellenőrzése, feldolgozása
+		$data = FileUploader::parseCSV($_FILES['csv']);
+		//reguláris kifejezés emailre
         $email_regex = '/^[a-zA-Z0-9.!#$%&’*+\/\=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/';
 
 
-        //hibák keresése a CSV fájlban
+        //hibák keresése a CSV fájlból származó adatokban
         $line_counter = 1;
         foreach( $data as $user ){
-            //lérező email
+            //létező email
             if ( Admin::emailExists($user['email']) ) exit('Hiba a '.$line_counter.'. sorban! Az email cím már létezik!');
             //üres név vagy email
             if( empty($user['name']) || empty($user['email']) ) exit('Hiba a '.$line_counter.'. sorban! A sor üres mezőt tartalmaz!');
@@ -44,22 +44,27 @@
 
         //diákok regisztrálása
         foreach( $data as $user ){
+			//a registrateUser metódus visszaadja a registrált user
+			//belépési azonosítóját és a jelszavát egy tömbben
             $login = Admin::registrateUser(array(
                 'name'  => utf8_encode($user['name']),
                 'email' => utf8_encode($user['email']),
                 'type'  => 0
             ));
 
+			//összegyűjtjük a regisztrált diákok nevét, jelszavát és belépési azonosítóját,
+			//hogy oda lehessen adni nekik papíron, vagy emailban
             $user_data[] = array(
-                'name'  => utf8_encode($user['name']),
-                'login' => $login
+                'name' 		=> utf8_encode($user['name']),
+                'login_id' 	=> $login[0],
+				'password'	=> $login[1]
             );
         }
-        print_r($user_data);
-        exit();
+		//regisztrált diákok adatainak eltárolása sessionbe,
+		//hogy PDF-et tudjunk csinálni belőle a pdf-generator.php-ban
+		Session::set('registrated-users', $user_data);
     }
 ?>
-</pre>
 
 <div id="left">
     <p style="color: red;"><?= empty(Session::get('error-message'))?'':Session::get('error-message'); ?></p>
@@ -100,6 +105,9 @@
             <input type="file" name="csv">
             <input type="submit" name="upload-csv">
         </form>
+		<?php if( !empty(Session::get('registrated-users')) ): ?>
+			<a href="../pdf-renderer.php">Belépési adatok letöltése</a>
+		<?php endif; ?>
     </section>
 </div>
 <div id="right">

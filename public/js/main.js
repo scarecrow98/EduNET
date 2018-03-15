@@ -72,27 +72,9 @@ $(document).ready(() => {
 
 
     //file dialogok megnyitása
-    $('button#select-group-avatar').click((e) => {
+    $('button.btn-open-file-dialog').click((e) => {
         e.preventDefault();
-        $('input[name="group-avatar"]').click();
-        return false;
-    });
 
-    $('button#select-task-image').click((e) => {
-        e.preventDefault();
-        $('input[name="task-image"]').click();
-        return false;
-    });
-
-    $('button#select-profile-pic').click((e) => {
-        e.preventDefault();
-        $('input#new-avatar').click();
-    });
-
-
-    //fájlfeltöltése ablak megnyitása feladatlapon
-    $('button.upload-task-file').click((e) => {
-        e.preventDefault();
         let inputId = $(e.currentTarget).data('input-id');
         $('input#' + inputId).click();
     });

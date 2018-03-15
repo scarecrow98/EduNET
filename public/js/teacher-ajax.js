@@ -1,9 +1,14 @@
 // ====================
 // feladatlap létrehozása
 // ====================
+
+//a 'create-test-form' azonosítójú űrlap küldésekor lefutó esemény
 $('form#create-test-form').submit((e) => {
+	//oldal újratöltésének megakadályozása
     e.preventDefault();
 
+	//JavaScript FormData objetum létrehozása
+	//DOM értékek eltárolása
     let formData = new FormData();
     formData.append('create-new-test', true);
     formData.append('title', $('#test-title').val());
@@ -13,6 +18,7 @@ $('form#create-test-form').submit((e) => {
     formData.append('subject-id', $('#test-subject').val());
     formData.append('task-count', $('#test-taskcount').val());
 
+	//ajax kérés küldése a main-parser.php-nak
     $.ajax({
         type: 'POST',
         url: SERVER_ROOT + 'parsers/main-parser.php',
@@ -20,9 +26,14 @@ $('form#create-test-form').submit((e) => {
         processData: false,
         contentType: false,
         success: (resp, status, xhr) => {
+			//ha a válasz 'success', akkor üzenet megejelenítése,
+			//majd oldal frissítése
             if (resp == 'success') {
                 alert('Feladatlap sikeresen létrehozva!');
                 window.location.assign('add_task');
+			//egyébként a hibaüzenet megjelenítése
+            } else {
+                alert(resp);
             }
         },
         error: (xhr, status, error) => {
@@ -76,15 +87,9 @@ $('form#create-task-form').submit((e) => {
             }
             break;
     }
-    //formData.append('task-option-number', optionNumber);
-    // console.log(optionTexts);
-    // console.log(optionAnswers);
+
     formData.append('option_texts', JSON.stringify(optionTexts));
     formData.append('option_answers', JSON.stringify(optionAnswers));
-
-    for (val of formData.entries()) {
-        console.table(val[0] + " - " + val[1]);
-    }
 
     $.ajax({
         type: 'POST',
@@ -124,7 +129,7 @@ $('form#create-notification-form').submit((e) => {
     formData.append('group_id', $('select#nt-group-id').val());
     formData.append('subject_id', $('select#nt-subject-id').val());
     formData.append('date', $('input#nt-date').val());
-    formData.append('type', $('input#nt-type').val());
+    formData.append('type', $('select#nt-type').val());
 
     $.ajax({
         type: 'POST',
@@ -149,24 +154,37 @@ $('form#create-notification-form').submit((e) => {
 // ====================
 // értesítés törlése
 // ====================
+
+//az ikonra kattintás eseménykezelője
 $('i.btn-delete-notification').click((e) => {
-    console.log('click');
+	//megerősítő ablak (confirm) megjelenítése
     let conf = confirm('Biztosan törölni szeretnéd az értesítést?');
     if (!conf) return false;
 
+	//az értesítés azonosítója megtalálható az ikon
+	//data-notification-id attribótumában, így eltároljuk azt egy változóban
     let notificationId = $(e.currentTarget).attr('data-notification-id');
 
+	//ajax kérés
     $.ajax({
+		//a HTPP kérés típusa
         type: 'POST',
+		//a feldolgozó fájl helye
         url: SERVER_ROOT + 'parsers/main-parser.php',
+		//adatok csatolása JSON formátumban
         data: { 'delete-notification': true, 'notification-id': notificationId },
+		//ez a callbak fut le, ha a szerver válaszolt
+		//a resp paraméterben van a szerver válasza tárolva
         success: (resp, xhr, status) => {
+			//ha a válasz 'success', akkor töröljük
+			//az értesítést a DOM-ból animálva
             if (resp == 'success') {
-                $(e.currentTarget).parent('li').animate({
+                $(e.currentTarget).closest('li.notification-list-item').animate({
                     height: '0'
                 }, 200, function () { $(this).remove(); });
             }
         },
+		//hiba esetén ez a callback fut le
         error: (status, xhr, error) => {
             //hiba
         }
@@ -226,7 +244,7 @@ $('input#student-name').keyup((e) => {
 
     $.ajax({
         type: 'POST',
-        url: SERVER_ROOT + 'parsers/search-parser.php',
+        url: SERVER_ROOT + 'parsers/main-parser.php',
         data: { 'student-name': studentName, 'group-id': sessionStorage.getItem('group-id') },
         success: (resp, status, xhr) => {
             //szerver válaszának visszalakítása JS tömbbé
@@ -235,11 +253,11 @@ $('input#student-name').keyup((e) => {
 
             //ha a tömb üres, akkor nem volt találat
             if (results.length < 1) {
-                $('ul.student-results').html('<li>Nincs eredmény</li>');
+                $('ul#student-results').html('<li>Nincs eredmény</li>');
             }
             //ha nem üres, akkor felsoroljuk a találatokat egy listába
             else {
-                $('ul.student-results').empty();
+                $('ul#student-results').empty();
                 for (student of results) {
                     let li = $('<li>', {});
 
@@ -254,7 +272,7 @@ $('input#student-name').keyup((e) => {
                         class: 'btn-add-student btn-rect bg-1',
                     }).appendTo(li);
 
-                    li.appendTo('ul.student-results');
+                    li.appendTo('ul#student-results');
                 }
             }
         },
@@ -323,8 +341,8 @@ $('body').on('click', 'button.btn-delete-member', (e) => {
 $('form#share-test-form').submit((e) => {
     e.preventDefault();
 
-    let newTestAuthor = $('select#new-test-author').val();
     let newTestGroup = $('select#new-test-group').val();
+    let newTestDescription = $('textarea#new-test-description').val();
     let testId = sessionStorage.getItem('test-id');
 
     if (!testId) {
@@ -336,15 +354,20 @@ $('form#share-test-form').submit((e) => {
 
     $.ajax({
         type: 'POST',
-        url: 'parsers/main-parser.php',
+        url: SERVER_ROOT + 'parsers/main-parser.php',
         data: {
             'share-test': true,
-            'new-test-author': newTestAuthor,
-            'new-test-group': newTestGroup,
-            'original-test': testId,
+            'group-id': newTestGroup,
+            'description': newTestDescription,
+            'original-test-id': testId,
         },
         success: (resp, status, xhr) => {
-            alert(resp);
+            if (resp == 'success' ) {
+                alert('A feladatalap sikeresen megosztva!');
+                window.location.reload();
+            } else {
+                alert(resp);
+            }
         },
         error: (xhr, status, error) => {
             alert(error);

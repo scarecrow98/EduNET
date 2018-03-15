@@ -17,27 +17,6 @@ section.content-body{
     overflow-y: scroll;
 }
 
-section.two-col{
-    display: flex;
-}
-
-section.two-col .col-left{
-    flex: 1;
-    margin-right: 15px;
-}
-section.two-col .col-right{
-    flex: 1;
-    margin-left: 15px;
-}
-
-@media(max-width: 1300px){
-    section.two-col{ flex-direction: column; }
-    section.two-col .col-left{ margin-right: 0px; }
-    section.two-col .col-right{ margin-left: 0px; }
-}
-
-/* KISSEBB ELEMEK */
-span.uploaded-file-name{ font-size: 14px; color: var(--theme-grey-dark); margin-left: 8px; display: inline-block; }
 
 /* CSOPORTTAGOK FELVÉTELE - KERESÉSI TALÁLATOK */
 form#add-group-member-form li{ list-style: none; }

@@ -92,10 +92,15 @@ li.input-container{ list-style: none; display: flex; padding: 20px; }
 .day .event p{ color: var(--theme-grey-dark); padding: 4px 0px; font-size: 15px; }
 .day .event i{ position: initial !important; cursor: auto !important; display: inline !important; padding: 0px !important; margin-right: 5px; }
 
-li.notification-list-item{ list-style: none; border-bottom: 1px solid var(--theme-grey); position: relative; padding: 15px; }
-li.notification-list-item:last-child{ border-bottom: 0px; }
-.notification-list-item i{ position: absolute; top: 35px; right: 12px; }
-.notification-list-item p{ color: var(--theme-grey-dark); padding: 4px 0px; }
+li.notification-list-item{ list-style: none; display: flex; border-bottom: 1px solid var(--theme-grey); position: relative; padding: 15px; }
+.notification-date{ width: 60px; height: 60px; margin-right: 15px; padding: 8px; background: var(--theme-background); color: var(--theme-grey-dark); }
+.notification-date p{ text-align: center; }
+.notification-date-day{ font-size: 22px; font-weight: 700; }
+.notification-date-month{ font-size: 14px; }
+.notification-body{ position: relative; flex: 1; }
+.notification-body i{ position: absolute; top: 0px; right: -2px; }
+.notification-body p{ color: var(--theme-grey-dark); margin-top: 4px; font-size: 14px; }
+
 
 /* üzenetek */
 #read-message .msg-bubble{ width: 100%; padding: 5px 15px; }
@@ -114,6 +119,7 @@ span.option-result-icon{ display: inline-block; width: 18px; height: 18px; margi
 span.wrong-icon{ background: url('../resources/images/icon-wrong.png'); }
 span.correct-icon{ background: url('../resources/images/icon-correct.png'); }
 span.missing-icon{ background: url('../resources/images/icon-missing.png'); }
+
 
 /* FELADATLAP, FELADATOK */
 body.test-body{ background: var(--theme-background); overflow: auto; }
@@ -152,6 +158,11 @@ a.btn-download-file{ color: #fff; background: #354052; }
 #student-selector strong{ font-size: 14px; display: block; text-align: center; color: var(--theme-grey-dark); margin-top: 8px; }
 
 label.label-bold{ color: var(--theme-grey-dark); font-weight: 600; display: block; margin-bottom: 8px; }
+
+/* fájlfeltöltés */
+span.uploaded-file-name{ font-size: 14px; color: var(--theme-grey-dark); margin-left: 8px; display: inline-block; max-width: 150px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+
+
 
 /* GOMBOK */
 .btn-rounded{ color: #fff !important; padding: 10px; border-radius: 30px; font-weight: 600; border: none !important; }

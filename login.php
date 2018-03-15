@@ -4,7 +4,7 @@
 
     Session::start();
 
-    if( !empty(Session::get('user-id')) ){
+    if( !empty(Session::get('access-token')) ){
         header('Location: home');
     }
 
@@ -34,7 +34,7 @@
 		//ha nem egyezik az adatbázisban lévő értékkel az előbb generált hash, akkor hiba
 		if( $pass_hash != $user->pass_hash ){
 			Session::set('error-message', 'Helytelen belépési adatok!');
-			header('Location: home');
+			header('Location: login');
 			exit();
         }
         
@@ -81,35 +81,39 @@
         <div class="overlay">
 
             <div id="login-window">
-                <div class="left-col">
-                    <form action="" method="POST">
-                        <li>
-                            <h1>Bejelentkezés</h1>
-                            <small><?= empty(Session::get('error-message')) ? '' : Session::get('error-message') ?></small>
-                        </li>
-                        <li>
-                            <input type="text" name="login-id" placeholder="Felhasználónév" class="input-field">
-                        </li>
-                        <li>
-                            <input type="password" name="login-password" placeholder="Jelszó" class="input-field">
-                        </li>
-                        <li>
-                            <input type="hidden" name="form-token" value="">
-                        </li>
-                        <li>
-                            <input type="submit" name="login-submit" value="Bejelentkezés" class="login-button">
-                        </li>
-                    </form>
-                </div>
-                <div class="right-col">
-                    <div id="logo-container">
-                        <img src="<?= PUBLIC_ROOT; ?>resources/images/edunet-logo-white.png" alt="">
-                    </div>
-                    <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tincidunt, est euismod tincidunt aliquam, urna libero molestie lectus, quis sodales dui lorem eleifend nulla. Quisque fermentum nisl mi, non feugiat velit accumsan dapibus. 
-                    </p>
-                </div>
+				<form action="" method="POST">
+					<li>
+						<h1>Bejelentkezés</h1>
+						<small><?= empty(Session::get('error-message')) ? '' : Session::get('error-message') ?></small>
+					</li>
+					<li>
+						<input type="text" name="login-id" placeholder="Felhasználónév" class="input-field">
+					</li>
+					<li>
+						<input type="password" name="login-password" placeholder="Jelszó" class="input-field">
+					</li>
+					<li>
+						<input type="hidden" name="form-token" value="">
+					</li>
+					<li>
+						<input type="submit" name="login-submit" value="Bejelentkezés" class="login-button">
+					</li>
+					<li>
+						<a href="#" id="cta-forgotten-pass">Elfelejtett jelszó</a>
+					</li>
+				</form>
             </div>
+			
+			<div id="forgotten-pass-window" style="display: none;">
+				<form>
+					<li>
+						<input type="email" name="email">
+					</li>
+					<li>
+						<input type="submit" name="get-new" value="Bejelentkezés" class="login-button">
+					</li>
+				</form>
+			</div>
 
         </div>
 
@@ -117,8 +121,9 @@
 </html>
 <script src="<?= PUBLIC_ROOT; ?>js/jquery.js"></script>
 <script>
-	let cnt = 1;
 
+	//háttérképek váltakozása
+	let cnt = 1;
 	window.setInterval(function(){
 		cnt++;
 		
@@ -128,6 +133,14 @@
 		
 		$('section#p-'+cnt).fadeIn(3000).delay(5000).siblings('section.page-bg').fadeOut(3000).delay(5000);
 	}, 1000);
+	
+	//elfelejtett jelszó ablak mutatása
+	$('a#cta-forgotten-pass').click((e) => {
+		e.preventDefault();
+		
+		$('#login-window').hide();
+		$('#forgotten-pass-window').show();
+	});
 
 
 </script>

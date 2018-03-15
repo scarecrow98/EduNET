@@ -20,7 +20,7 @@
 ?>
 
 <header class="content-header clear">
-    <h2>Feladatlapok <?php echo !isset($search_results)?'':$message; ?></h2>
+    <h2>Feladatlapok <?= !isset($search_results)?'':$message; ?></h2>
 
     <?php if( IS_ADMIN ): ?>
         <button class="btn-rounded bg-1 modal-opener" data-modal-id="create-test" style="float: right;">
@@ -45,23 +45,32 @@
             </thead>
         <?php
             foreach($test_instances as $test_instance):
-                $is_original_author = $test_instance->original_author_id==$_SESSION['user-id']?true:false;
                 $students = $test_instance->getStudents();
                 $test = Test::get($test_instance->test_id);
 				$group = Group::get($test_instance->group_id);
-				$subject = Subject::get($test->subject_id);
+                $subject = Subject::get($test->subject_id);
+                
+                $author_name = '';
+                $is_original_author = false;
+                if( $test_instance->original_author_id == Session::get('user-id') ){
+                    $author_name = 'Saját';
+                    $is_original_author = true;
+                } else {
+                    $user = User::get($test_instance->original_author_id);
+                    $author_name = $user->name;
+                }
         ?>
             <tr>
-                <td><h4><?php echo $test->title;  ?></h4></td>
-                <td><p style="width: <?php echo $is_admin?'300px':'450px' ?>"><?php echo !empty($test->description)?$test->description:'Nem érhető el leírás' ?></p></td>
-                <td><?php echo $group->name ?></td>
-                <td><?php echo $subject->name ?></td>
+                <td><h4><?= $test->title;  ?></h4></td>
+                <td><p style="width: <?= $is_admin?'300px':'450px' ?>"><?= !empty($test->description)?$test->description:'Nem érhető el leírás' ?></p></td>
+                <td><?= $group->name ?></td>
+                <td><?= $subject->name ?></td>
                 <?php if( IS_ADMIN ): ?>
-                <td><?php echo $is_original_author?'Saját':$test['name'] ?></td>
+                <td><?= $author_name ?></td>
                 <?php endif; ?>
-                <td><?php echo explode(' ', $test_instance->creation_date)[0]; ?></td>
+                <td><?= explode(' ', $test_instance->creation_date)[0]; ?></td>
                 <td class="tool-cell">
-                    <i class="ion-arrow-down-b open-test-options" data-test-id="<?php echo $test->id; ?>"></i>
+                    <i class="ion-arrow-down-b open-test-options" data-test-id="<?= $test->id; ?>"></i>
                     <ul class="table-menu panel">
 
                         <?php if( IS_ADMIN ): ?>
@@ -70,8 +79,8 @@
                                     <a href="evaluate.php?test_instance=<?= $test_instance->id ?>&user=<?= $students[0]->id ?>" target="_blank"><i class="ion-checkmark-circled"></i>Javítás</a>
                                 </li>
                             <?php endif; ?>
-                            <form action="<?php echo SERVER_ROOT; ?>parsers/main-parser.php" method="POST" class="open-close-test-form">
-                                <input type="hidden" name="test-instance-id" value="<?php echo $test_instance->id; ?>">
+                            <form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" method="POST" class="open-close-test-form">
+                                <input type="hidden" name="test-instance-id" value="<?= $test_instance->id; ?>">
                             <?php if( $test_instance->status == 0 ): ?>
                                 <input type="hidden" name="test-status" value="1">
                                 <li class="btn-open-close-test">
@@ -84,20 +93,22 @@
                                 </li>
                             <?php endif; ?>
                             </form>
-                            <li class="modal-opener" data-modal-id="share-test" data-test-id="<?php echo $test->id; ?>">
-                                <i class="ion-share"></i>Megosztás
-                            </li>
-                            <li>
-                                <a href="view_test?test_instance=<?php echo $test_instance->id; ?>" target="_blank"><i class="ion-eye"></i>Megtekintés</a>
-                            </li>
-                            <li>
-                                <a href="pdf-renderer.php?test_instance=<?php echo $test_instance->id; ?>" target="_blank"><i class="ion-printer"></i>Konvertálás PDF-be</a>
-                            </li>
+                            <?php if( $is_original_author ): ?>
+                                <li class="modal-opener" data-modal-id="share-test" data-test-id="<?= $test->id; ?>">
+                                    <i class="ion-share"></i>Megosztás
+                                </li>
+                            <?php endif; ?>
+                                <li>
+                                    <a href="view_test?test_instance=<?= $test_instance->id; ?>" target="_blank"><i class="ion-eye"></i>Megtekintés</a>
+                                </li>
+                                <li>
+                                    <a href="pdf-renderer.php?test_instance=<?= $test_instance->id; ?>" target="_blank"><i class="ion-printer"></i>Konvertálás PDF-be</a>
+                                </li>
                         <?php endif; ?>
 
                         <?php if( !IS_ADMIN && $test_instance->status == 1 ): ?>
                             <li>
-                                <a href="test.php?test_instance=<?php echo $test_instance->id ?>" target="_blank"><i class="ion-eye"></i>Megoldás</a>
+                                <a href="test.php?test_instance=<?= $test_instance->id ?>" target="_blank"><i class="ion-eye"></i>Megoldás</a>
                             </li>
                         <?php endif; ?>
 

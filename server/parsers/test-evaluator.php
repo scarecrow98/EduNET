@@ -135,6 +135,8 @@
         }
     }
 
+    //ha nincs a feladatlapnak szöveges vagy fájl típusú feladata
+    //akkor eltárolhatjuk a diák feladatlapját kijavítottként
     if( !$test->hasFileOrTextTypeTask() ){
         $test_instance->storeEvaluation($user_id, date('Y-m-d H:i:s'));
     }

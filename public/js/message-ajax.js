@@ -1,3 +1,42 @@
+//üzenetbuborékot létrehozó függvény
+function createMessageBubble(message, className) {
+    let msgBubble = $('<div>', {
+        class: className,
+        title: message.date ? message.date : 'Nem rég küldve'
+    });
+
+    let p = $('<p>', { html: message.text });
+    p.appendTo(msgBubble);
+    msgBubble.appendTo('#conversation');
+}
+
+//üzenet előnézetet létrehozó függvény (popup ablakban)
+function createMessagePreview(message, className) {
+    //létező listelem eltávolítása
+    $('li#partner-' + message.sender_id).remove();
+
+    //html létrehozása, beszúrása a lista elejére
+    let li = $('<li>', { class: className, 'data-partner-id': message.sender_id, id: 'partner-' + message.sender_id });
+    let span = $('<span>', { css: { 'background-image': 'url(' + SERVER_ROOT + 'uploads/avatars/' + message.sender_avatar + ')' } });
+    let h4 = $('<h4>', { html: message.sender_name });
+    let p = $('<p>', { html: message.text });
+    let time = $('<time>', { html: message.date });
+    span.appendTo(li);
+    h4.appendTo(li);
+    time.appendTo(li);
+    p.appendTo(li);
+    li.prependTo('.messages-popup section');
+}
+
+//üzenetek aljára görgetés
+function scrollToBottom() {
+    $('#read-message #conversation').animate({
+        scrollTop: $('#read-message #conversation')[0].scrollHeight
+    }, 200);
+}
+
+
+
 // ====================
 // új üzenet létrehozása
 // ===================
@@ -17,58 +56,25 @@ $('form#create-message-form').submit((e) => {
         },
         success: (resp, xhr, status) => {
             let data = JSON.parse(resp);
-
-            createMessagePreview({
-                'sender_id': partnerId,
-                'sender_name': data.partner_name,
-                'sender_avatar': data.partner_avatar,
-                'id': data.message_id,
-                'date': 'most',
-                'text': text
-            }, 'message-item');
+            console.log(resp);
+            if ( data.status == 'success' ) {
+                createMessagePreview({
+                    'sender_id': partnerId,
+                    'sender_name': data.partner_name,
+                    'sender_avatar': data.partner_avatar,
+                    'id': data.message_id,
+                    'date': 'most',
+                    'text': data.message
+                }, 'message-item');   
+            } else {
+                alert(data.status);
+            }
         },
         error: (status, xhr, error) => {
             alert(error);
         }
     });
 });
-
-//üzenetbuborékot létrehozó függvény
-function createMessageBubble(message, className) {
-    let msgBubble = $('<div>', {
-        class: className,
-        title: message.date ? message.date : 'Nem rég küldve'
-    });
-
-    let p = $('<p>', { html: message.text });
-    p.appendTo(msgBubble);
-    msgBubble.appendTo('#conversation');
-}
-
-//üzenet előnézetet létrehozó függvény (popup ablakban)
-function createMessagePreview(message, className) {
-    //létező listelem eltávolítása
-    $('li#partner-' + message.sender_id).remove();
- 
-    //html létrehozása, beszúrása a lista elejére
-    let li = $('<li>', { class: className, 'data-message-id': message.id, 'data-partner-id': message.sender_id, id: 'partner-' + message.sender_id });
-    let span = $('<span>', { css: { 'background-image': 'url(' + SERVER_ROOT + 'uploads/avatars/' + message.sender_avatar + ')' } });
-    let h4 = $('<h4>', { html: message.sender_name });
-    let p = $('<p>', { html: message.text });
-    let time = $('<time>', { html: message.date });
-    span.appendTo(li);
-    h4.appendTo(li);
-    time.appendTo(li);
-    p.appendTo(li);
-    li.prependTo('.messages-popup section');
-}
-
-//üzenetek aljára görgetés
-function scrollToBottom() {
-    $('#read-message #conversation').animate({
-        scrollTop: $('#read-message #conversation')[0].scrollHeight
-    }, 200);
-}
 
 // ====================
 // üzenet küldése
@@ -91,9 +97,10 @@ function sendMessage() {
             'text': text
         },
         success: (resp, xhr, status) => {
-            if (resp == 'success') {
+            let response = JSON.parse(resp);
+            if (response.status == 'success') {
                 $('textarea#message').val('');
-                createMessageBubble({ text: text, date: false }, 'msg-bubble clear msg-own');
+                createMessageBubble({ text: response.message, date: false }, 'msg-bubble clear msg-own');
                 scrollToBottom();
             } else {
                 alert('Valami hiba történt az üzenet küldése közben!');

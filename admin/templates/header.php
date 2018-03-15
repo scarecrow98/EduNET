@@ -16,9 +16,6 @@
                     <a href="users" class="ion-person-add">Felhasználók kezelése</a>
                 </li>
                 <li>
-                    <a href="errors" class="ion-alert-circled">Hibanapló</a>
-                </li>
-                <li>
                     <a href="uploads" class="ion-android-upload">Feltöltések</a>
                 </li>
                 <li style="float: right;" title="Kijelentkezés">

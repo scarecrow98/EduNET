@@ -32,10 +32,10 @@
 					<h3><?= Session::get('current-task-number') ?>. feladat</h3>	
 				</header>
 				
-				<form novalidate action="<?= SERVER_ROOT; ?>parsers/main-parser.php" name="create-task-form" method="POST" id="create-task-form" enctype="multipart/form-data">
+				<form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" name="create-task-form" method="POST" id="create-task-form" enctype="multipart/form-data" novalidate>
 					<li class="input-container">
 						<label for="">Feladat kérdése:</label>
-						<input type="text" name="task-question" id="task-question" placeholder="A feladathoz tartozó kérdés, utasítás *" required>
+						<input type="text" name="task-question" id="task-question" placeholder="A feladathoz tartozó kérdés, utasítás *">
 					</li>
 					<li class="input-container">
 						<label for="">Feladat szövege:</label>
@@ -44,12 +44,12 @@
 					<li class="input-container">
 						<label for="">Kép hozzáadása:</label>
 						<input type="file" name="task-image" id="task-image" style="display: none;">
-						<button class="btn-rect bg-1" id="select-task-image"><i class="ion-images"></i>Kép feltöltése</button>
-						<span class="uploaded-file-name">&nbsp</span>
+						<button class="btn-rounded bg-1 btn-open-file-dialog" data-input-id="task-image"><i class="ion-images"></i>Feltöltés</button>
+						<span class="uploaded-file-name">&nbsp;</span>
 					</li>
 					<li class="input-container">
-						<label for="">Feladat típusa:</label>
-						<select name="task-type" id="task-type" required>
+						<label for="">Feladat típusa: *</label>
+						<select name="task-type" id="task-type">
 							<option value="">Válassz feladattípust *</option>
 							<option value="1">Kvíz</option>
 							<option value="2">Szöveges válasz</option>
@@ -61,7 +61,7 @@
 					<!-- ide jön a szekció, amiben a feladatopciókat lehet kezelni  -->
 					<?php require_once 'public/templates/task-options.php'; ?>
 					<li class="input-container" style="justify-content: right;">
-						<button class="btn-add-option btn-rounded bg-1" onclick="return false;">Opció hozzáadása</button>
+						<button class="btn-add-option btn-rounded bg-1" onclick="return false;"><i class="ion-plus-round"></i>Opció hozzáadása</button>
 					</li>
 					<li class="input-container">
 						<label for="">Feladat pontszáma:</label>
