@@ -76,6 +76,7 @@
             <h4 class="ion-android-checkmark-circle">Kijavított dolgozatok</h4>
             <small>Legutóbb kijavított dolgozataid és eredményeik</small>
         </header>
+        <div id="result-box-container">
         <?php
         $data = TestInstance::getEvaluatedInstances(Session::get('user-id'));
         foreach( $data as $d ):
@@ -85,7 +86,8 @@
             $max_points = 0;
             $user_points = 0;
         ?>
-        <h1><?= $test->title; ?></h1>
+        <div class="result-box">
+        <h2><?= $test->title; ?></h2>
             <?php 
                 foreach( $tasks as $task ):    
                 $result = Task::getResult(Session::get('user-id'), $test_instance->id, $task->id);
@@ -94,12 +96,22 @@
                 $user_points += $split[1];
             ?>
             <li>
-                <strong><?= $task->task_number ?>. feladat</strong>
-                <label for=""><?= $result['result']; ?></label>
+                <span><?= $task->task_number ?>. feladat</span>
+                <strong class="task-points" style="font-size: 14px;"><?= $result['result']; ?></strong>
             </li>
             <?php endforeach; ?>
-            <label for="">Végeredmény: <?= $max_points.'/'.$user_points ?></label>
+            <li style="border-top: 1px solid var(--theme-grey-dark)">
+                <span>Végeredmény:</span>
+                <strong class="task-points" style="font-size: 14px;"><?= $max_points.'/'.$user_points ?></strong>
+            </li>
+            <li>
+                <button class="btn-wide bg-5">
+                    <a href="check-test.php?test_instance=<?= $test_instance->id ?>" target="_blank">Feladatlap megtekintése &raquo;</a>
+                </button>
+            </li>
         <?php endforeach; ?>
+        <div>
+        </div>
     </div>
     <?php endif; ?>
 

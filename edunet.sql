@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2018. Már 15. 22:02
--- Kiszolgáló verziója: 10.1.26-MariaDB
--- PHP verzió: 7.1.8
+-- Létrehozás ideje: 2018. Már 15. 23:57
+-- Kiszolgáló verziója: 10.1.25-MariaDB
+-- PHP verzió: 7.1.7
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -99,8 +99,8 @@ CREATE TABLE `messages` (
   `receiver_id` int(10) UNSIGNED NOT NULL,
   `text` text COLLATE utf8_hungarian_ci NOT NULL,
   `date` datetime NOT NULL,
-  `is_seen` tinyint(1) NOT NULL DEFAULT '0',
-  `is_delivered` tinyint(1) NOT NULL DEFAULT '0'
+  `is_seen` tinyint(4) NOT NULL DEFAULT '0',
+  `is_delivered` tinyint(4) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 -- --------------------------------------------------------
@@ -117,7 +117,7 @@ CREATE TABLE `notifications` (
   `subject_id` int(10) UNSIGNED NOT NULL,
   `text` varchar(100) COLLATE utf8_hungarian_ci NOT NULL,
   `date` date NOT NULL,
-  `type` tinyint(1) NOT NULL
+  `type` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 -- --------------------------------------------------------
@@ -151,12 +151,12 @@ DROP TABLE IF EXISTS `tasks`;
 CREATE TABLE `tasks` (
   `id` int(10) UNSIGNED NOT NULL,
   `test_id` int(10) UNSIGNED NOT NULL,
-  `task_number` tinyint(2) NOT NULL,
+  `task_number` tinyint(4) NOT NULL,
   `question` text COLLATE utf8_hungarian_ci NOT NULL,
   `text` text COLLATE utf8_hungarian_ci,
-  `max_points` tinyint(2) NOT NULL,
+  `max_points` tinyint(4) NOT NULL,
   `image` varchar(37) COLLATE utf8_hungarian_ci DEFAULT NULL,
-  `type` tinyint(1) NOT NULL
+  `type` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -229,7 +229,7 @@ CREATE TABLE `tests` (
   `title` varchar(100) COLLATE utf8_hungarian_ci NOT NULL,
   `text` text COLLATE utf8_hungarian_ci,
   `subject_id` int(10) UNSIGNED NOT NULL,
-  `task_count` tinyint(2) NOT NULL
+  `task_count` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -255,7 +255,7 @@ CREATE TABLE `test_instances` (
   `group_id` int(10) UNSIGNED NOT NULL,
   `creation_date` date NOT NULL,
   `description` varchar(255) COLLATE utf8_hungarian_ci DEFAULT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT '0'
+  `status` tinyint(4) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -278,11 +278,11 @@ CREATE TABLE `users` (
   `login_id` char(4) COLLATE utf8_hungarian_ci NOT NULL,
   `name` varchar(50) COLLATE utf8_hungarian_ci NOT NULL,
   `email` varchar(255) COLLATE utf8_hungarian_ci NOT NULL,
-  `is_subscribed` tinyint(1) NOT NULL DEFAULT '0',
+  `is_subscribed` tinyint(4) NOT NULL DEFAULT '0',
   `pass_hash` char(64) COLLATE utf8_hungarian_ci NOT NULL,
   `pass_salt` char(32) COLLATE utf8_hungarian_ci NOT NULL,
   `avatar` varchar(37) COLLATE utf8_hungarian_ci NOT NULL DEFAULT 'user-default.png',
-  `type` tinyint(1) NOT NULL
+  `type` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -311,7 +311,7 @@ CREATE TABLE `user_answers` (
   `task_option_id` int(10) UNSIGNED NOT NULL,
   `test_instance_id` int(10) UNSIGNED NOT NULL,
   `answer` char(1) COLLATE utf8_hungarian_ci DEFAULT NULL,
-  `is_correct` tinyint(1) NOT NULL
+  `is_correct` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_hungarian_ci;
 
 --
@@ -376,7 +376,9 @@ INSERT INTO `user_text_answers` (`id`, `user_id`, `task_id`, `test_instance_id`,
 -- A tábla indexei `evaluated_tests`
 --
 ALTER TABLE `evaluated_tests`
-  ADD UNIQUE KEY `unqiue_evaluated_test` (`user_id`,`test_instance_id`);
+  ADD UNIQUE KEY `unqiue_evaluated_test` (`user_id`,`test_instance_id`),
+  ADD KEY `test_instance_id` (`test_instance_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- A tábla indexei `groups`
@@ -388,19 +390,26 @@ ALTER TABLE `groups`
 -- A tábla indexei `group_members`
 --
 ALTER TABLE `group_members`
-  ADD UNIQUE KEY `unique_group_member` (`user_id`,`group_id`);
+  ADD UNIQUE KEY `unique_group_member` (`user_id`,`group_id`),
+  ADD KEY `group_id` (`group_id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- A tábla indexei `messages`
 --
 ALTER TABLE `messages`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sender_id` (`sender_id`),
+  ADD KEY `receiver_id` (`receiver_id`);
 
 --
 -- A tábla indexei `notifications`
 --
 ALTER TABLE `notifications`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `author_id` (`author_id`),
+  ADD KEY `group_id` (`group_id`),
+  ADD KEY `subject_id` (`subject_id`);
 
 --
 -- A tábla indexei `subjects`
@@ -412,31 +421,41 @@ ALTER TABLE `subjects`
 -- A tábla indexei `tasks`
 --
 ALTER TABLE `tasks`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `test_id` (`test_id`);
 
 --
 -- A tábla indexei `task_options`
 --
 ALTER TABLE `task_options`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `task_id` (`task_id`);
 
 --
 -- A tábla indexei `task_results`
 --
 ALTER TABLE `task_results`
-  ADD UNIQUE KEY `unique_task_result` (`user_id`,`task_id`,`test_instance_id`);
+  ADD UNIQUE KEY `unique_task_result` (`user_id`,`task_id`,`test_instance_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `task_id` (`task_id`),
+  ADD KEY `test_instance_id` (`test_instance_id`);
 
 --
 -- A tábla indexei `tests`
 --
 ALTER TABLE `tests`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `subject_id` (`subject_id`);
 
 --
 -- A tábla indexei `test_instances`
 --
 ALTER TABLE `test_instances`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `original_author_id` (`original_author_id`),
+  ADD KEY `current_author_id` (`current_author_id`),
+  ADD KEY `group_id` (`group_id`),
+  ADD KEY `test_id` (`test_id`);
 
 --
 -- A tábla indexei `users`
@@ -451,21 +470,30 @@ ALTER TABLE `users`
 --
 ALTER TABLE `user_answers`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_answer` (`user_id`,`test_instance_id`,`task_option_id`);
+  ADD UNIQUE KEY `unique_answer` (`user_id`,`test_instance_id`,`task_option_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `task_option_id` (`task_option_id`),
+  ADD KEY `test_instance_id` (`test_instance_id`);
 
 --
 -- A tábla indexei `user_file_answers`
 --
 ALTER TABLE `user_file_answers`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_file_answer` (`user_id`,`test_instance_id`,`task_id`);
+  ADD UNIQUE KEY `unique_file_answer` (`user_id`,`test_instance_id`,`task_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `task_id` (`task_id`),
+  ADD KEY `test_instance_id` (`test_instance_id`);
 
 --
 -- A tábla indexei `user_text_answers`
 --
 ALTER TABLE `user_text_answers`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_text_answer` (`user_id`,`test_instance_id`,`task_id`);
+  ADD UNIQUE KEY `unique_text_answer` (`user_id`,`test_instance_id`,`task_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `task_id` (`task_id`),
+  ADD KEY `test_instance_id` (`test_instance_id`);
 
 --
 -- A kiírt táblák AUTO_INCREMENT értéke
@@ -530,7 +558,99 @@ ALTER TABLE `user_file_answers`
 -- AUTO_INCREMENT a táblához `user_text_answers`
 --
 ALTER TABLE `user_text_answers`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;COMMIT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- Megkötések a kiírt táblákhoz
+--
+
+--
+-- Megkötések a táblához `evaluated_tests`
+--
+ALTER TABLE `evaluated_tests`
+  ADD CONSTRAINT `evaluated_tests_ibfk_1` FOREIGN KEY (`test_instance_id`) REFERENCES `test_instances` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `evaluated_tests_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Megkötések a táblához `group_members`
+--
+ALTER TABLE `group_members`
+  ADD CONSTRAINT `group_members_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `group_members_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Megkötések a táblához `messages`
+--
+ALTER TABLE `messages`
+  ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Megkötések a táblához `notifications`
+--
+ALTER TABLE `notifications`
+  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`author_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `notifications_ibfk_3` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Megkötések a táblához `tasks`
+--
+ALTER TABLE `tasks`
+  ADD CONSTRAINT `tasks_ibfk_1` FOREIGN KEY (`test_id`) REFERENCES `tests` (`id`);
+
+--
+-- Megkötések a táblához `task_options`
+--
+ALTER TABLE `task_options`
+  ADD CONSTRAINT `task_options_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`);
+
+--
+-- Megkötések a táblához `task_results`
+--
+ALTER TABLE `task_results`
+  ADD CONSTRAINT `task_results_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `task_results_ibfk_2` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `task_results_ibfk_3` FOREIGN KEY (`test_instance_id`) REFERENCES `test_instances` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Megkötések a táblához `tests`
+--
+ALTER TABLE `tests`
+  ADD CONSTRAINT `tests_ibfk_1` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`);
+
+--
+-- Megkötések a táblához `test_instances`
+--
+ALTER TABLE `test_instances`
+  ADD CONSTRAINT `test_instances_ibfk_1` FOREIGN KEY (`original_author_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `test_instances_ibfk_2` FOREIGN KEY (`current_author_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `test_instances_ibfk_3` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `test_instances_ibfk_4` FOREIGN KEY (`test_id`) REFERENCES `tests` (`id`);
+
+--
+-- Megkötések a táblához `user_answers`
+--
+ALTER TABLE `user_answers`
+  ADD CONSTRAINT `user_answers_ibfk_1` FOREIGN KEY (`test_instance_id`) REFERENCES `test_instances` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_answers_ibfk_2` FOREIGN KEY (`task_option_id`) REFERENCES `task_options` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_answers_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Megkötések a táblához `user_file_answers`
+--
+ALTER TABLE `user_file_answers`
+  ADD CONSTRAINT `user_file_answers_ibfk_1` FOREIGN KEY (`test_instance_id`) REFERENCES `test_instances` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_file_answers_ibfk_2` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_file_answers_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Megkötések a táblához `user_text_answers`
+--
+ALTER TABLE `user_text_answers`
+  ADD CONSTRAINT `user_text_answers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_text_answers_ibfk_2` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_text_answers_ibfk_3` FOREIGN KEY (`test_instance_id`) REFERENCES `test_instances` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

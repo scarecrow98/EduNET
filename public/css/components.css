@@ -5,6 +5,7 @@
 .flex-wrap{ display: flex; flex-wrap: wrap; justify-content: space-between; }
 .flex-row{ display: flex; width: 100%; }
 pre{ white-space: pre-wrap; text-align: justify; }
+button a{ text-decoration: none; color: #fff; display: block; }
 
 /* MODALOK */
 .page-overlay{ z-index: 999; position: absolute; top: 0px; bottom: 0px; left: 0px; right: 0px; background: rgba(0, 0, 0, 0.2); display: flex; justify-content: center; align-items: center; }
@@ -103,6 +104,12 @@ li.notification-list-item{ list-style: none; display: flex; border-bottom: 1px s
 .notification-body i{ position: absolute; top: 0px; right: -2px; }
 .notification-body p{ color: var(--theme-grey-dark); margin-top: 4px; font-size: 14px; }
 
+/* frissen javított feladatlapok eredményei */
+#result-box-container{ display: flex; justify-content: space-between; align-items: flex-start; }
+.result-box{ width: 30%; background: var(--theme-background); padding: 15px; }
+.result-box h2{ margin-bottom: 25px; text-align: center; }
+.result-box li{ list-style: none; display: block; padding: 15px 20px; }
+.result-box li span{ display: inline-block; width: 150px; }
 
 /* üzenetek */
 #read-message .msg-bubble{ width: 100%; padding: 5px 15px; }
