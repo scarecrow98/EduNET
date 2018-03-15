@@ -70,35 +70,46 @@
         if( empty($_POST['type']) ) exit('A feladat típusa kötelezően megadandó mező!');
         if( $_POST['max_points'] < 1 || $_POST['max_points'] > 127 ) exit('A feladat maxmiális pontszámának 1 és 127 közé kell esnie !');
 
+        //JSON string visszalakítása tömbbé, és eltárolása
         $option_texts = json_decode($_POST['option_texts']);
         $option_answers = json_decode($_POST['option_answers']);
 
-        foreach( $option_texts as $text ){ if( empty($text) ) exit('Az feladatopciók szövege kötelezően megadandó mező!'); }
-    
-        
-        //ha a opciós típusú a feladat (igazhamis, kvíz, párosítás),
-        //akkor megnézzük, hogy a feladatért járó max pont eloszttható-e az opciókra úgy, hogy csak egész pontok kaphatóak
-        //+ itt ellenőrizzük azt is, hogy minden opciónak van-e megadva válasz (a kvíz feladatoknál azt, hogy legalabb egy meg van-e adva)
-        $quiz_correact_answers = 0;
-        foreach( $option_answers as $answer ) { if( $answer == 1 ) $quiz_correact_answers++; }
-        
-        if( $_POST['type'] == 1 ){ //ha kvíz típusú a feladat, akkor a lehetséges jó válaszok számával osztjuk el a max pontokat
-            if( (int)$_POST['max_points'] % $quiz_correact_answers != 0 ){
-                exit('Az feladatért kapható pontok száma nem megfelelő a lehetséges helyes megoldások számával!');
-            }
+        //0. elemet kitöröljük a tömbböl, mivel az üres,
+        //mert az opciók számozása 1-től kezdődött
+        //-->így a foreach nem akad majd meg az üres elemnél ellenőrzéskor
+        unset($option_texts[0]);
+        unset($option_answers[0]);
 
+        foreach( $option_texts as $text ){ if( empty($text) ) exit('Az feladatopciók szövege kötelezően megadandó mező!'); }
+        
+        //helyes válaszok megléte, max pontok oszétoszhatóságának ellenőrzése
+
+        //ha kvíz típusú a feladat
+        if( $_POST['type'] == 1 ){
             //legalább egy helyes megoldás megléte   
             $answer_counter = 0;
             foreach( $option_answers as $answer ){ if( $answer == 1 ) $answer_counter++; }
             if( $answer_counter == 0 ) exit('Legalább egy helyes megoldásnak kell lennie!');
 
-        } elseif( $_POST['type'] == 3 || $_POST['type'] == 4 ){ //ha igazhamis vagy párosítás, akkor az opciók számával osztjuk el a max pontokat
-            if( (int)$_POST['max_points'] % count($option_answers) != 0 ){
-                exit('Az feladatért kapható pontok száma nem megfelelő a lehetséges helyes megoldások számával!');
+            //lehetséges helyes válaszok megszámolása
+            $quiz_correact_answers = 0;
+            foreach( $option_answers as $answer ) { if( $answer == 1 ) $quiz_correact_answers++; }
+
+            //ha a max pontok száma % lehetséges helyes megodások száma != 0, akkor hiba
+            if( (int)$_POST['max_points'] % $quiz_correact_answers != 0 ){
+                exit('Az feladatért kapható pontok száma nem összeegyeztethető a lehetséges helyes megoldások számával!');
             }
 
-            //összes megoldások megléte
-            foreach( $option_answers as $answer ){ if( !isset($answer) )  exit('Minden feladatopcióra add meg a helyes választ!'); }
+        //ha igazhamis vagy párosítás típusú a feladat, akkor az opciók számával osztjuk el a max pontokat
+        } elseif( $_POST['type'] == 3 || $_POST['type'] == 4 ){
+             //összes megoldások megléte:
+             //ha a helyes válasz üres vagy nem is létezik, akkor hiba
+            foreach( $option_answers as $answer ){ if( !isset($answer) || $answer == '' )  exit('Minden feladatopcióra add meg a helyes választ!'); }
+
+            //ha a max pontok száma % feladatopciók számával != 0, akkor hiba
+            if( (int)$_POST['max_points'] % count($option_answers) != 0 ){
+                exit('Az feladatért kapható pontok száma nem összeegyeztethető a lehetséges helyes megoldások számával!');
+            }
         }
 
         $data = array(
@@ -111,7 +122,7 @@
             'option_answers'    => $option_answers,
         );
         
-		Task::create($data);
+        Task::create($data);
         
         //növeljük a feladatszámot
 		$current_task_number = Session::get('current-task-number');

@@ -20,7 +20,33 @@
     </head>
     <body class="test-body">
         <div class="test-container">
-            <h1><?= $test->title; ?></h1>
+            <!-- feladatlap információi (cím, leírás, szöveg) -->
+            <div class="task-box panel">
+                <header>
+                    <h3 class="ion-compose"><?= $test->title ?></h3>
+                </header>
+                <section>
+                    <label class="label-bold">A feladat leírása</label>
+                    <div style="padding: 25px;">
+                        <?php 
+                        if( !empty($test_instance->description) )
+                            echo '<pre>'.$test_instance->description.'</pre>';
+                        else
+                            echo '<i>A feladatlaphoz nem érhető el leírása.</i>';                            
+                        ?>
+                    </div>
+
+                    <label class="label-bold">A feladathoz kapcsolódó szöveg</label>
+                    <div style="padding: 25px;">
+                        <?php 
+                        if( !empty($test->text) )
+                            echo '<pre class="quote">'.$test->text.'</pre>';
+                        else
+                            echo '<i>A feladatlaphoz nem érhető el szöveg.</i>';                            
+                        ?>
+                    </div>
+                </section>
+            </div>
 
             <?php
                 foreach( $tasks as $task ): /* tasks foreach kezdete */ 
@@ -45,14 +71,14 @@
                                 <img src="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" title="Kattints a nagyobb méretért!">
                             </a>
                         </div>
-                        <?php endif; ?>
+                        <?php endif; ?> 
 
                         <?php if( $task->option_count > 0 ): ?>
                         <table class="options-table">
                             <tr>
                                 <td></td>
-                                <td>Te válaszod</td>
                                 <td>Helyes válasz</td>
+                                <td>Eredményed</td>
                             </tr>
                             <?php
                             foreach( $options as $option ): /* options foreach kezdete */  

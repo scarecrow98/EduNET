@@ -81,12 +81,7 @@
 			$last_insert_id = $db->lastInsertId();
 			
 			//feladatopciók létrehozása
-			for( $i = 1; $i < count($data['option_answers']); $i++ ){
-				$stmt = $db->prepare(
-					"INSERT INTO task_options(task_id, text, correct_ans)".
-					" VALUES(?, ?, ?)"
-				);
-				
+			for( $i = 1; $i <= count($data['option_answers']); $i++ ){				
 				$d = array(
 					'task_id'		=> $last_insert_id,
 					'text'			=> htmlspecialchars($data['option_texts'][$i]),

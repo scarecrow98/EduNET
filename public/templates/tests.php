@@ -45,13 +45,16 @@
             </thead>
         <?php
             foreach($test_instances as $test_instance):
-                $students = $test_instance->getStudents();
-                $test = Test::get($test_instance->test_id);
-				$group = Group::get($test_instance->group_id);
-                $subject = Subject::get($test->subject_id);
+                $students = $test_instance->getStudents(); //diákok lekérése akik a teszt csoportjában vannak
+                $test = Test::get($test_instance->test_id); //bázisfeladatlap lekérése
+				$group = Group::get($test_instance->group_id); //csoport adatainak lekérése
+                $subject = Subject::get($test->subject_id); //tantárgy adatainak lekérése
                 
                 $author_name = '';
-                $is_original_author = false;
+                $is_original_author = false; //ez tárolja, hogy a belépett tanár-e a feladatlap szerzője
+            
+                //ha a az eredeti szerző id-je megegyezik a belépett tanár id-jével, akkor
+                //az eredeti szerzőnek magunkat tűntejük fel, egyébként pedig az eredeti szerző nevét
                 if( $test_instance->original_author_id == Session::get('user-id') ){
                     $author_name = 'Saját';
                     $is_original_author = true;
@@ -60,44 +63,51 @@
                     $author_name = $user->name;
                 }
         ?>
-            <tr>
+            <tr class="<?= $test_instance->status == 1 ? 'is-opened' : '' ?>">
                 <td><h4><?= $test->title;  ?></h4></td>
-                <td><p style="width: <?= $is_admin?'300px':'450px' ?>"><?= !empty($test->description)?$test->description:'Nem érhető el leírás' ?></p></td>
+                
+                <td><p style="width: <?= $is_admin?'300px':'450px' ?>"><?= !empty($test_instance->description)?$test_instance->description:'Nem érhető el leírás' ?></p></td>
+                
                 <td><?= $group->name ?></td>
+                
                 <td><?= $subject->name ?></td>
+                
                 <?php if( IS_ADMIN ): ?>
                 <td><?= $author_name ?></td>
                 <?php endif; ?>
+                
                 <td><?= explode(' ', $test_instance->creation_date)[0]; ?></td>
+                
                 <td class="tool-cell">
                     <i class="ion-arrow-down-b open-test-options" data-test-id="<?= $test->id; ?>"></i>
                     <ul class="table-menu panel">
 
-                        <?php if( IS_ADMIN ): ?>
-                            <?php if( $test_instance->status != 2 ): ?>
-                                <li>
-                                    <a href="evaluate.php?test_instance=<?= $test_instance->id ?>&user=<?= $students[0]->id ?>" target="_blank"><i class="ion-checkmark-circled"></i>Javítás</a>
-                                </li>
-                            <?php endif; ?>
+                        <?php if( IS_ADMIN ): //ha tanári fiók: ?>
+                            <li>
+                                <a href="evaluate.php?test_instance=<?= $test_instance->id ?>&user=<?= $students[0]->id ?>" target="_blank"><i class="ion-checkmark-circled"></i>Javítás</a>
+                            </li>
+
                             <form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" method="POST" class="open-close-test-form">
                                 <input type="hidden" name="test-instance-id" value="<?= $test_instance->id; ?>">
-                            <?php if( $test_instance->status == 0 ): ?>
+                            <?php if( $test_instance->status == 0 ): //ha zárva van a teszt: ?>
                                 <input type="hidden" name="test-status" value="1">
                                 <li class="btn-open-close-test">
                                     <i class="ion-android-unlock"></i>Megnyitás
                                 </li>
-                            <?php else: ?>
+                            <?php elseif( $test_instance->status == 1 ): //ha nyitva van a teszt: ?>
                                 <input type="hidden" name="test-status" value="0">
                                 <li class="btn-open-close-test">
                                     <i class="ion-android-lock"></i>Zárás
                                 </li>
                             <?php endif; ?>
                             </form>
-                            <?php if( $is_original_author ): ?>
+
+                            <?php if( $is_original_author ): //ha az eredeti szerzője a tesztnek: ?>
                                 <li class="modal-opener" data-modal-id="share-test" data-test-id="<?= $test->id; ?>">
                                     <i class="ion-share"></i>Megosztás
                                 </li>
                             <?php endif; ?>
+
                                 <li>
                                     <a href="view_test?test_instance=<?= $test_instance->id; ?>" target="_blank"><i class="ion-eye"></i>Megtekintés</a>
                                 </li>
@@ -106,12 +116,18 @@
                                 </li>
                         <?php endif; ?>
 
-                        <?php if( !IS_ADMIN && $test_instance->status == 1 ): ?>
+                        <?php if( !IS_ADMIN && $test_instance->status == 1 ): //ha a feladatlap nyiva van és a user diák ?>
                             <li>
                                 <a href="test.php?test_instance=<?= $test_instance->id ?>" target="_blank"><i class="ion-eye"></i>Megoldás</a>
                             </li>
                         <?php endif; ?>
 
+                        <?php if( !IS_ADMIN && $test_instance->status == 2 ): //ha a feladatlap már ki van javítva és a user diák ?>
+                            <li>
+                                <a href="check-test.php?test_instance=<?= $test_instance->id ?>" target="_blank"><i class="ion-eye"></i>Megtekintés</a>
+                            </li>
+                        <?php endif; ?>
+                                
                     </ul>
                 </td>
             </tr>

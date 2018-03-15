@@ -4,7 +4,6 @@
 
     if( empty($_GET['test_instance']) ){
         errorRedirect('Érvénytelen paraméterek');
-        exit();
     }
 
     Session::start();
@@ -19,7 +18,6 @@
     //tanár fiókból nem lehet megoldani a tesztet
     if( Session::get('user-type') == 1 ){
         errorRedirect('A feladatlap megoldása csak diákok számára elérhető!');
-        exit();
     }
 
     $test_instance_id = $_GET['test_instance'];
@@ -28,25 +26,21 @@
     //ha üres eredményt ad vissza a lekérdezés
     if( empty($test_instance->id) ){
         errorRedirect('A keresett feladatlap nem található!');
-        exit();
     }
 
     //ha a feladat nem nyitott állapotú
     if( $test_instance->status != 1 ){
         errorRedirect('A feladatlapot jelenleg nem lehet megoldani!');
-        exit();
     }
 
     //diák ellenőrzése, hogy benne van-e a feladatlap csoportjában
     if( !$test_instance->checkCredentials(Session::get('user-id')) ){
         errorRedirect('Nincs jogosultságod a feladatlap megtekintéséhez!');
-        exit();
     }
 
     //ellenőrizzük, hogy meg a feladatlap meg lett-e már oldva a diák által
     if( $test_instance->hasResults(Session::get('user-id')) && Session::get('user-type') == 0 ){
         errorRedirect('Ezt a feladatlapod már megoldottad!');
-        exit();
     }
 
 
@@ -61,17 +55,43 @@
         <title><?= $test->title ?></title>
         <meta charset="utf-8">
         <link rel="icon" href="<?= PUBLIC_ROOT ?>resources/images/favicon.ico">
+        <link rel="icon" href="<?= PUBLIC_ROOT ?>resources/images/favicon.ico">
         <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
         <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/main.css">
         <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/components.css">
         <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/content.css">
-        <style>
-            .test-sheet section{ padding: 15px; }
-        </style>
     </head>
     <body class="test-body">
         <div class="test-container">
-            <h1><?= $test->title; ?></h1>
+
+            <!-- feladatlap információi (cím, leírás, szöveg) -->
+            <div class="task-box panel">
+                <header>
+                    <h3 class="ion-compose"><?= $test->title ?></h3>
+                </header>
+                <section>
+                    <pre class="task-question">A feladat leírása</pre>
+                    <div style="padding: 10px 25px; margin-bottom: 25px;">
+                        <?php 
+                        if( !empty($test_instance->description) )
+                            echo '<pre>'.$test_instance->description.'</pre>';
+                        else
+                            echo '<i>A feladatlaphoz nem érhető el leírása.</i>';                            
+                        ?>
+                    </div>
+
+                    <pre class="task-question">A feladathoz kapcsolódó szöveg</pre>
+                    <div style="padding: 10px 25px;">
+                        <?php 
+                        if( !empty($test->text) )
+                            echo '<pre class="quote">'.$test->text.'</pre>';
+                        else
+                            echo '<i>A feladatlaphoz nem érhető el szöveg.</i>';                            
+                        ?>
+                    </div>
+                </section>
+            </div>
+
             <form action="<?= SERVER_ROOT ?>parsers/test-evaluator.php" method="POST" id="submit-test-form" enctype="multipart/form-data">  
 
             <input type="hidden" name="task-count" id="task-count" value="<?= count($tasks) ?>">
@@ -147,7 +167,7 @@
                                 elseif( $task->type == 5 ):
                             ?>
                                 <td>
-                                    <button class="btn-rounded bg-2 upload-task-file" data-input-id="file-<?= $task->id ?>"><i class="ion-android-upload"></i>ZIP vagy RAR fájl feltöltése</button>
+                                    <button class="btn-rounded bg-1 btn-open-file-dialog" data-input-id="file-<?= $task->id ?>"><i class="ion-android-upload"></i>ZIP vagy RAR fájl feltöltése</button>
                                     <span class="uploaded-file-name"></span>
                                     <input type="file" name="file-<?= $task->id ?>"  id="file-<?= $task->id ?>" style="display: none;">
                                 </td>

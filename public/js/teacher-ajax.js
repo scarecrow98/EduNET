@@ -48,14 +48,13 @@ $('form#create-test-form').submit((e) => {
 $('form#create-task-form').submit((e) => {
     e.preventDefault();
 
-    console.log('asdasd');
-
-    let taskType = $('#task-type').val();
+    let taskType = $('#task-type').val(); //feladat típusa a select mezőből kiválasztva
     let optionNumber = 0;
     let parentContainer = '';
-    let optionTexts = [];
-    let optionAnswers = [];
-    let formData = new FormData();
+    let optionTexts = []; //ebben lesznek eltárolva a feladatopciók szövegei
+    let optionAnswers = []; //ebben lesznek eltárolva a feladatopciók helyes megoldásai
+    let formData = new FormData(); 
+    //inputok értékének hozzáfűzése a formData objektumhoz
     formData.append('create-new-task', true);
     formData.append('question', $('#task-question').val());
     formData.append('text', $('#task-text').val());
@@ -64,22 +63,24 @@ $('form#create-task-form').submit((e) => {
     formData.append('max_points', $('#task-points').val());
 
     //választott feladattípushoz tartozó opciók begyűjtése
+
+    //feladatopciók szövegének és megoldásaink begyűjtése feladattípus alapján
     switch ( taskType ) {
-        case '1':
-            optionNumber = $('section.quiz-options').children().length;
+        case '1': //kvíz
+            optionNumber = $('section.quiz-options').children().length; //opciók száma
             for (let i = 1; i <= optionNumber; i++) {
                 optionTexts[i] = $('section.quiz-options input[name=option-text-' + i + ']').val();
                 optionAnswers[i] = +$('section.quiz-options input[name=option-ans-' + i + ']').is(':checked');
             }
             break;
-        case '3':
+        case '3': //párosítás
             optionNumber = $('section.pairing-options').children().length;
             for (let i = 1; i <= optionNumber; i++) {
                 optionTexts[i] = $('section.pairing-options input[name=option-text-' + i + ']').val();
                 optionAnswers[i] = $('section.pairing-options input[name=option-ans-' + i + ']').val();
             }
             break;
-        case '4':
+        case '4': //igaz/hamis
             optionNumber = $('section.truefalse-options').children().length;
             for (let i = 1; i <= optionNumber; i++) {
                 optionTexts[i] = $('section.truefalse-options input[name=option-text-' + i + ']').val();

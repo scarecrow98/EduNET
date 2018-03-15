@@ -12,28 +12,20 @@
 
     //hiányzó paraméter
     if( empty($_GET['test_instance']) ){
-        errorRedirect('Érvénytelen paraméterek!');
-        exit();
+        errorRedirect('A keresett feladatlap nem található!');
     }
 
+    //feladatlap lekérése
     $test_instance = TestInstance::get($_GET['test_instance']);
 
     //ha nem található a feladatlap
     if( empty($test_instance->id) ){
         errorRedirect('A keresett feladatlap nem található!');
-        exit();
     }
 
-    //teszt státuszának ellenőrzése, hogy a diák ne tudja megnézni, ha még nem volt megnyitva
-    if( $test_instance->status != 2 && Session::get('user-type') == 0 ){
-        errorRedirect('A feladatlap jelenleg nem tekinthető meg!');
-        exit();
-    }
-
-    //diák ellenőrzése, hogy benne van-e a feladatlap csoportjában
-    if( !$test_instance->checkCredentials(Session::get('user-id')) && Session::get('user-type') == 0 ){
+    //diák nem látogathajta az oldalt
+    if( Session::get('user-type') != 1 ){
         errorRedirect('Nincs jogosultságod a feladatlap megtekintéséhez!');
-        exit();
     }
 
     $test = Test::get($test_instance->test_id);
@@ -43,67 +35,87 @@
     <head>
         <title><?= $test->title; ?></title>
         <meta charset="utf-8">
+        <link rel="icon" href="<?= PUBLIC_ROOT ?>resources/images/favicon.ico">
         <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
         <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/main.css">
         <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/components.css">
         <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/content.css">
-        <style>
-            .test-sheet section{ padding: 15px; }
-        </style>
     </head>
     <body class="test-body">
         <div class="test-container">
-            <h1><?= $test->title; ?></h1>
+            <!-- feladatlap információi (cím, leírás, szöveg) -->
+            <div class="task-box panel">
+                <header>
+                    <h3 class="ion-compose"><?= $test->title ?></h3>
+                </header>
+                <section>
+                    <pre class="task-question">A feladat leírása</pre>
+                    <div style="padding: 10px 25px; margin-bottom: 25px;">
+                        <?php 
+                        if( !empty($test_instance->description) )
+                            echo '<pre>'.$test_instance->description.'</pre>';
+                        else
+                            echo '<i>A feladatlaphoz nem érhető el leírása.</i>';                            
+                        ?>
+                    </div>
+
+                    <pre class="task-question">A feladathoz kapcsolódó szöveg</pre>
+                    <div style="padding: 10px 25px;">
+                        <?php 
+                        if( !empty($test->text) )
+                            echo '<pre class="quote">'.$test->text.'</pre>';
+                        else
+                            echo '<i>A feladatlaphoz nem érhető el szöveg.</i>';                            
+                        ?>
+                    </div>
+                </section>
+            </div>    
+
             <?php
                 $tasks = $test->getTasks();
-                foreach( $tasks as $task ): /* tasks foreach kezdete */
-            ?>
-                <div class="test-sheet panel">   
-                    <header class="bg-1">
+                foreach( $tasks as $task ): /* tasks foreach kezdete */ 
+                    $options = $task->getTaskOptions();
+            ?>                
+                <div class="task-box panel">   
+                    <header>
                         <h3 class="ion-compose"><?= $task->task_number; ?>. feladat</h3>
                     </header>
+
                     <section>
-                        <label for="" style="width: auto; font-weight: 600;"><?= $task->question; ?></label>
-                        <small>( <?= $task->max_points; ?> pont )</small>
+                        <pre class="task-question"><?= $task->question; ?></pre>
 
-                        <pre><?php if( !empty($task->text) ) echo $task->text; ?></pre>
-
-                        <?php if( !empty($task->image) ): ?>
-                            <a href="<?= SERVER_ROOT; ?>uploads/images/<?= $task->image; ?>" target="_blank">
-                                <img src="<?= SERVER_ROOT; ?>uploads/images/<?= $task->image; ?>" alt="" style="width: 300px; display: block; margin-bottom: 20px;">
-                            </a>
+                        <?php if( !empty($task->text) ): ?>
+                            <pre class="task-text"><?= $task->text ?></pre>
                         <?php endif; ?>
 
-                        <table>
+                        <?php if( !empty($task->image) ): ?>
+                        <div class="task-image">
+                            <a  href="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" target="_blank">
+                                <img src="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" title="Kattints a nagyobb méretért!">
+                            </a>
+                        </div>
+                        <?php endif; ?>
+
+                        <table class="options-table">
                         <?php
-                            $options = $task->getTaskOptions();
-                            //ha tartoznak opciók a feladatlaphoz, megjelenítjük őket
-                            if( !empty( $options ) ): 
+                        foreach( $options as $option ): /* options foreach kezdete */  
                         ?>
-                            <?php
-                            foreach( $options as $option ): 
-                                $answer = Answer::getByOptionId(Session::get('user-id'), $test_instance->id, $option->id);
-                                $html = $answer->is_correct==1?'<i style="color: green;">'.$answer->answer.'</i>':'<i style="color: red;">'.$answer->answer.'</i>';
-                            ?>
-                            <tr>
-                                <td>
-                                    <li>
-                                        <label class="label-small" style="display: inline-block; width: auto;"><?= $option->text; ?></label>
-                                        <span style="width: 20px; height: 20px; border: 1px solid #000; display: inline-block;"><?= $html; ?></span>
-                                    </li>
-                                </td>
-                            </tr>
-                            <?php endforeach; /* options foreach vége */ ?>                           
-                            <?php
-                            else:
-                                $text_answer = Answer::getTextAnswer(Session::get('user-id'), $test_instance->id, $task->id);
-                            ?>
-                            <p><?= empty($text_answer->answer)?'<span style="color: red;">'.$text_answer->answer.'</p>':$text_answer->answer ?></span>
-                            <?php endif; ?>
+                        <tr>
+                            <td style="width: 550px;" valign="top">
+                                <label class="option-text"><?= $option->text ?></label>
+                            </td>
+                        </tr>
+                        <?php endforeach; /* options foreach vége */ ?> 
                         </table>
+
+                        <p style="text-align: right; margin-top: 30px;">
+                            Elérhető pontszám:<strong class="task-points"><?= $task->max_points ?>p</strong>
+                        </p>
                     </section>
-                </div> 
-                <?php endforeach; /* tasks foreach vége */ ?>
+                </div> <!-- test-sheet vege -->
+                <?php
+                    endforeach; /* tasks foreach vége */
+                ?>            
         </div>
     </body>
 </html>

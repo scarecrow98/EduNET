@@ -13,7 +13,7 @@
 ?>
 
 
-<section id="top-bar" class="clear">
+<section id="top-bar" class="clear" style="position: relative;">
 
     <!-- keresés mező -->
 	<?php if( isset($_GET['page']) && $_GET['page'] == 'tests' ): ?>

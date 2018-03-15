@@ -61,7 +61,33 @@
 		
 		header('Location: home');
         exit();
-    }
+	}
+	
+	//elfelejtett jelszó kérelem feldolgozása
+	if( !empty($_POST['forgotten-password']) ){
+		$email = $_POST['email'];
+
+		//megnézzük, hogy létezik-e az email
+		if( !User::emailExists($email) ){
+			Session::set('error-message', 'A megadott emailcím nem létezik a rendszerben!');
+			header('Location: login?form=forgotten_password');
+			exit();
+		}	
+
+		//felhasználó adatainak lekérése az emailje alapján
+		$user = User::getByEmail($email);
+		//új jelszó generálása
+		$new_password = Security::generatePassword();
+		//jelszó frissítése az adatbázisban
+		User::updatePassword($user->id, $new_password);
+
+		//keresztnév kinyerése
+		$name = explode(' ', $user->name)[1];
+
+		//email kiküldése
+		Mailer::newPassword($name, $user->email, $new_password);
+		echo '<script>alert("A jelszavad megváltoztattuk. Nézd meg az email címedet!");</script>';
+	}
 ?>
 <html>
     <head>
@@ -79,10 +105,29 @@
 		<section class="page-bg" id="p-2" style="display: none;"></section>
 		
         <div class="overlay">
-
-            <div id="login-window">
+			<?php if( !empty($_GET['form']) && $_GET['form'] == 'forgotten_password' ): ?>			
+			<div class="form-container">
 				<form action="" method="POST">
 					<li>
+						<h1>Elfelejtett jelszó</h1>
+						<small><?= empty(Session::get('error-message')) ? '' : Session::get('error-message') ?></small>
+					</li>	
+					<li>
+						<input type="email" name="email" placeholder="Fiókod email címe" class="input-field" required>
+					</li>
+					<li>
+						<input type="submit" name="forgotten-password" value="Jelszó igénylése" class="button">
+					</li>
+					<li>
+						<a href="login" class="cta">Bejelentkezés</a>
+					</li>
+				</form>
+			</div>
+			<?php else: ?>
+            <div class="form-container">
+				<form action="" method="POST">
+					<li>
+						<img src="<?= PUBLIC_ROOT ?>resources/images/edunet-logo-black.png" alt="">
 						<h1>Bejelentkezés</h1>
 						<small><?= empty(Session::get('error-message')) ? '' : Session::get('error-message') ?></small>
 					</li>
@@ -96,25 +141,14 @@
 						<input type="hidden" name="form-token" value="">
 					</li>
 					<li>
-						<input type="submit" name="login-submit" value="Bejelentkezés" class="login-button">
+						<input type="submit" name="login-submit" value="Bejelentkezés" class="button">
 					</li>
 					<li>
-						<a href="#" id="cta-forgotten-pass">Elfelejtett jelszó</a>
+						<a href="?form=forgotten_password" class="cta">Elfelejtett jelszó</a>
 					</li>
 				</form>
             </div>
-			
-			<div id="forgotten-pass-window" style="display: none;">
-				<form>
-					<li>
-						<input type="email" name="email">
-					</li>
-					<li>
-						<input type="submit" name="get-new" value="Bejelentkezés" class="login-button">
-					</li>
-				</form>
-			</div>
-
+			<?php endif; ?>
         </div>
 
     </body>
@@ -133,14 +167,6 @@
 		
 		$('section#p-'+cnt).fadeIn(3000).delay(5000).siblings('section.page-bg').fadeOut(3000).delay(5000);
 	}, 1000);
-	
-	//elfelejtett jelszó ablak mutatása
-	$('a#cta-forgotten-pass').click((e) => {
-		e.preventDefault();
-		
-		$('#login-window').hide();
-		$('#forgotten-pass-window').show();
-	});
-
 
 </script>
+<?php Session::unset('error-message'); ?>

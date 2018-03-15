@@ -44,7 +44,7 @@
                 $stmt = $db->prepare(
                     "SELECT * FROM test_instances".
 					" WHERE current_author_id = ?".
-					" ORDER BY creation_date DESC"
+					" ORDER BY FIELD(status, 1) DESC, creation_date DESC"
                 );
 			//ha diák, akkor azokat a feladatlapokat választjuk ki,
 			//amelyik csoportja megegyezik a diák csoportjaival
@@ -52,7 +52,7 @@
                 $stmt = $db->prepare(
                     "SELECT * FROM test_instances".
 					" WHERE group_id IN (SELECT group_id FROM group_members WHERE user_id = ?)".
-					" ORDER BY creation_date DESC"
+					" ORDER BY FIELD(status, 1) DESC, creation_date DESC"
                 );
             }
 

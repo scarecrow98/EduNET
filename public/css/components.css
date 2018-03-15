@@ -27,6 +27,7 @@ table.main-table{ background: #fff; width: 100%; border-collapse: collapse; }
 .main-table thead i:before{ color: #fff; font-size: 20px; }
 .main-table td{ padding: 20px; text-align: center; color: #444; }
 .main-table tr:nth-child(even){ background: #f3f3f3; }
+.main-table tr.is-opened{ background: #b9ddd1 }
 .main-table p{ white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
 .main-table .tool-cell{ position: relative; }
 .main-table .tool-cell i{ padding: 3px; cursor: pointer; display: inline-block }
@@ -58,10 +59,11 @@ li.input-container{ list-style: none; display: flex; padding: 20px; }
 /* keresés form */
 
 /* CSOPORTBOXOK */
-.group-box{ width: 30%; background: #fff; align-self: flex-start; margin-bottom: 30px; }
-.group-box section{ height: 210px; background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; }
-.group-box section .overlay{ position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; background: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; }
+.group-box{ width: 370px; background: #fff; margin-bottom: 30px; align-self: flex-start  }
+.group-box section{height: 210px; background-size: cover; background-position: center; background-repeat: no-repeat; position: relative; }
+.group-box section .overlay{ position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; background: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; flex-direction: column; }
 .group-box section h3{ color: #fff; }
+.group-box section span{ color: #fff; }
 .group-box .group-buttons{ display: flex; }
 .group-box button{ flex: 1; padding: 15px; font-weight: 600; }
 .group-box button:first-child{ color: #0282bf; background: #fff; }
@@ -123,7 +125,7 @@ span.missing-icon{ background: url('../resources/images/icon-missing.png'); }
 
 /* FELADATLAP, FELADATOK */
 body.test-body{ background: var(--theme-background); overflow: auto; }
-.test-container{ width: 900px; margin: 0px auto; padding-bottom: 25px; }
+.test-container{ width: 900px; margin: 35px auto; }
 .test-container .task-box{ background: #fff; border-radius: 6px; margin-bottom: 25px; overflow: hidden; }
 .task-box header{ background: #39a8b1; color: #fff; padding: 8px 16px; }
 .task-box header h3:before{ margin-right: 8px; }

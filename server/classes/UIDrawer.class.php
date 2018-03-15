@@ -13,37 +13,37 @@
         //kvizopciok eredményeit jeleníti meg
         public static function quizResult($correct_ans, $user_ans){
             if( $correct_ans == 1 && $user_ans == 1 ){ //ha be kellett pipálni, és be is pipálta --> jó = zöld
-                return '<td>'.UIDrawer::$span_correct.'</td><td>'.UIDrawer::$span_correct.'</td>';
+                return '<td>jelölendő</td><td>'.UIDrawer::$span_correct.'</td>';
             } else if( $correct_ans == 0 && $user_ans == 1 ){ // ha nem kellett bepipálni, de bepipálta --> nem jó = piros
-                return '<td>'.UIDrawer::$span_wrong.'</td><td>&nbsp;</td>';
+                return '<td>nem jelölendő</td><td>'.UIDrawer::$span_wrong.'</td>';
             } else if( $correct_ans == 1 && $user_ans == 0 ){ //ha be kellett pipálni, de nem pipálta be --> nem válaszolt = sárga
-                return '<td>'.UIDrawer::$span_missing.'</td><td>'.UIDrawer::$span_correct.'</td>';
+                return '<td>jelölendő</td><td>'.UIDrawer::$span_correct.'</td>';
             } else {
-                return '<td>&nbsp;</td><td>&nbsp;</td>';
+                return '<td>nem jelölendő</td><td>&nbsp;</td>';
             }
         } 
         
         // igaz/hamis opciók eredményeit jeleníti meg
         public static function trueFalseResult($correct_ans, $user_ans){
-            if( $correct_ans === $user_ans ){
-                return '<td>'.UIDrawer::$span_correct.'</td><td>'.UIDrawer::$span_correct.'</td>';
-            } else if( $correct_ans == 1 && $user_ans === 0 ){
-                return '<td>'.UIDrawer::$span_wrong.'</td><td>'.UIDrawer::$span_true.'</td>';
-            } else if( $correct_ans == 0 && $user_ans == 1 ){
-                return '<td>'.UIDrawer::$span_wrong.'</td><td>'.UIDrawer::$span_wrong.'</td>';
-            } else{
-                return '<td>'.UIDrawer::$span_missing.'</td><td>'.($correct_ans == 0 ? UIDrawer::$span_wrong : UIDrawer::$span_correct).'</td>';
+            if( $correct_ans === $user_ans ){ //ha jó a válasz
+                return '<td>'.($correct_ans == 1 ? 'igaz' : 'hamis').'</td><td>'.UIDrawer::$span_correct.'</td>';
+            } else if( $correct_ans == 1 && $user_ans === 0 ){ //ha a megoldás igaz, de a válasz hamis
+                return '<td>igaz</td><td>'.UIDrawer::$span_wrong.'</td>';
+            } else if( $correct_ans == 0 && $user_ans == 1 ){ //ha a megoldás hamis, de a válasz igaz
+                return '<td>hamis</td><td>'.UIDrawer::$span_wrong.'</td>';
+            } else{ //egyéb eset, ha nincs megadva válasz
+                return '<td>'.($correct_ans == 1 ? 'igaz' : 'hamis').'</td><td>'.UIDrawer::$span_missing.'.</td>';
             }
         }
 
         // párosítós feladatok eredményeit jeleníti meg
         public static function pairingResult($correct_ans, $user_ans){
-            if( !isset($user_ans) ){
-                return '<td>'.UIDrawer::$span_missing.'</td><td><strong>'.$correct_ans.'<strong></td>';
-            } else if( $correct_ans == $user_ans ){
-                return '<td>'.UIDrawer::$span_correct.'</td><td><strong>'.$correct_ans.'<strong></td>';
-            } else{
-                return '<td>'.UIDrawer::$span_wrong.'</td><td><strong>'.$correct_ans.'<strong></td>';
+            if( empty($user_ans) ){
+                return '<td>'.$correct_ans.'</td><td>'.UIDrawer::$span_missing.'</td>';//ha hiányzik a válasz
+            } else if( $correct_ans == $user_ans ){ //ha jó a válasz
+                return '<td>'.UIDrawer::$span_correct.'</td><td>'.UIDrawer::$span_correct.'</td>';
+            } else{//ha nem jó a válasz
+                return '<td>'.$correct_ans.'</td><td>'.UIDrawer::$span_wrong.'</td>';
             }
         }
 

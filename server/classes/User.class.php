@@ -46,6 +46,17 @@
 			
 			return new User($stmt->fetch());
 		}
+
+		public static function getByEmail($email){
+			$db = Database::getInstance();
+
+			$stmt = $db->prepare(
+				"SELECT * FROM users WHERE email = ?"
+			);
+			$stmt->execute(array($email));
+			
+			return new User($stmt->fetch());
+		}
 		
 		
 		public static function getByType($user_type){
