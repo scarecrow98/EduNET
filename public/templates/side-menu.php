@@ -28,10 +28,5 @@
                 <span class="ion-person-stalker">Csoportok</span>
             </a>
         </li>
-        <li <?php if(isset($_GET['page']) && $_GET['page'] == 'stats'){ echo 'class="active-item"'; } ?>>
-            <a href="stats">
-                <span class="ion-arrow-graph-up-right">Eredmények</span>
-            </a>
-        </li>
     </ul>
 </section>

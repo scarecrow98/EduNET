@@ -1,17 +1,15 @@
 <?php
-    error_reporting(E_ALL);
-
     //adatbázis
     DEFINE('HOST', 'localhost');
     DEFINE('DB_NAME', 'edunet');
-    DEFINE('DB_USER', 'root');
-    DEFINE('DB_PASSWORD', '');
+    DEFINE('DB_USER', 'edunet_admin');
+    DEFINE('DB_PASSWORD', 'CyrwQsqbykKNgDRE');
 
     //könyvtárak
     DEFINE('PUBLIC_ROOT', 'http://localhost/EduNET/public/');
     DEFINE('SERVER_ROOT', 'http://localhost/EduNET/server/');
 
-    //hónapok
+    //hónapok magyarul, rövidítéssel
     $months = array(
         '1'     => 'Jan.',
         '2'     => 'Febr.',

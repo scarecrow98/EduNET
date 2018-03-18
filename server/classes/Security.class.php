@@ -1,7 +1,8 @@
 <?php
 
     class Security{
-		
+		private function __construct(){  }
+        private function __clone(){  }
 
 		//jelszavakhoz sót generáló függvény
         public static function passwordSalt(){

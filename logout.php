@@ -1,10 +1,7 @@
 <?php
     require_once 'config.php';
-
-    Session::start();
-    Session::destroy();
-    
+    Session::start();    
     Security::destroyAccessToken();
-
-    header('Location: login');
+	Session::destroy();
+    header('Location: http://localhost/edunet/login');
 ?>

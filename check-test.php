@@ -14,9 +14,7 @@
         <meta charset="utf-8">
         <link rel="icon" href="<?= PUBLIC_ROOT ?>resources/images/favicon.ico">
         <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/main.css">
-        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/components.css">
-        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/content.css">
+        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/style.css">
     </head>
     <body class="test-body">
         <div class="test-container">

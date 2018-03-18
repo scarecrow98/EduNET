@@ -2,12 +2,14 @@
 
     class Test{
 
+		//adattagok
         public $id;
         public $title;
         public $text;
         public $subject_id;
         public $task_count;
 
+		//konstruktor
         public function __construct($data){
             $this->id = $data['id'];
             $this->title = $data['title'];
@@ -16,6 +18,7 @@
 			$this->task_count = $data['task_count'];
 		}
 		
+		//visszaad egy bázisfeladatlapot id alapján
 		public static function get($test_id){
             $db = Database::getInstance();
             $stmt = $db->prepare(
@@ -25,8 +28,9 @@
             $stmt->execute(array($test_id));
             
             return new Test($stmt->fetch());
-        }
+		}
 		
+		//visszaadja a bázisfeladatlaphoz tartozó feladatokat
 		public function getTasks(){
 			$db = Database::getInstance();
 
@@ -39,7 +43,7 @@
 
             $list = array();
             foreach( $data as $d ){
-                array_push($list, new Task($d));
+                $list[] = new Task($d);
             }
 
             return $list;
@@ -84,6 +88,7 @@
 			
 		}
 
+		//visszaadja, hogy a bázisfeladatlapnak vannak-e szöveges vagy fájl típusú feladatai
 		public function hasFileOrTextTypeTask(){
 			$db = Database::getInstance();
 
@@ -93,11 +98,7 @@
 			$stmt->execute(array(2, 5, $this->id));
 			$data = $stmt->fetch();
 
-			if( $data['count'] > 0 ){
-				return true;
-			}
-
-			return false;
+			return $data['count'] > 0;
 		}
 
     }

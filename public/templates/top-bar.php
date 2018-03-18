@@ -30,6 +30,7 @@
     <!-- jobb oldali gombok -->
     <div id="top-bar-buttons-right">
 
+		<!--  -->
         <button id="btn-settings" data-modal-id="user-settings" class="modal-opener">
             <img src="<?= SERVER_ROOT ?>/uploads/avatars/<?= Session::get('user-avatar') ?>">
             <strong>Profil</strong>

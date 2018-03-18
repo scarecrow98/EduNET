@@ -229,23 +229,22 @@ $('form#create-group-form').submit((e) => {
 // ====================
 // diákok keresése és listázása
 // ====================
+//függvény, amely a keresőmezőben történt billentyűzetfelengedésekkor lefut
 $('input#student-name').keyup((e) => {
-    let studentName = $(e.currentTarget).val();
+	//kereső mező értékének tárolása
+    let studentName = $(e.currentTarget).val().trim();
 
     //ha a mező értéke üres, akkor ne küldjünk AJAX kérést feleslegesen
     if (studentName.length < 1) {
-        $('ul.student-results').empty();
+        $('#student-results').empty();
         return false;
     }
 
-    //ha a tanuló hozzá lett már adva a csoporthoz, ne lehessen mégegyszer megtenni
-    if ($(e.currentTarget).html() == 'Hozzáadva') {
-        return false;
-    }
-
+	//ajax kérés a main-parser.php-nak
     $.ajax({
         type: 'POST',
         url: SERVER_ROOT + 'parsers/main-parser.php',
+		//adatként a keresőmező tartalmát és a csoportazonosítót küldjük
         data: { 'student-name': studentName, 'group-id': sessionStorage.getItem('group-id') },
         success: (resp, status, xhr) => {
             //szerver válaszának visszalakítása JS tömbbé
@@ -254,26 +253,26 @@ $('input#student-name').keyup((e) => {
 
             //ha a tömb üres, akkor nem volt találat
             if (results.length < 1) {
-                $('ul#student-results').html('<li>Nincs eredmény</li>');
+                $('#student-results').html('<li>Nincs eredmény</li>');
             }
             //ha nem üres, akkor felsoroljuk a találatokat egy listába
+			//és behelyezzük a DOM-ba
             else {
-                $('ul#student-results').empty();
+                $('#student-results').empty();
                 for (student of results) {
-                    let li = $('<li>', {});
+                    let li = $('<li>', { class: 'clear' });
 
                     $('<img>', { src: SERVER_ROOT + 'uploads/avatars/' + student.avatar }).appendTo(li);
-
-                    $('<h4>', { html: student.name }).appendTo(li);
+                    $('<strong>', { html: student.name }).appendTo(li);
 
                     $('<button>', {
                         'data-student-id': student.id,
                         'data-student-name': student.name,
-                        html: '<i class="ion-checkmark-round"></i> Tanuló felvétele',
+                        html: '<i class="ion-plus-round"></i>Felvétel',
                         class: 'btn-add-student btn-rect bg-1',
                     }).appendTo(li);
 
-                    li.appendTo('ul#student-results');
+                    li.appendTo('#student-results');
                 }
             }
         },

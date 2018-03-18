@@ -21,6 +21,3 @@ header#page-header{ width: 100%; background: #354052; }
 #registrate-user-form label{ display: block; }
 #registrate-user-form input{ padding: 8px; width: 200px; }
 #registrate-user-form input[type="radio"]{ width: 40px;  }
-
-#users li{ padding: 10px 0px; border-bottom: 1px solid #c6c6c6; position: relative; }
-#users li i{ float: right; font-size: 26px; padding: 4px; position: absolute; right: 6px; top: 14px; cursor: pointer; }

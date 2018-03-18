@@ -2,6 +2,7 @@
 
 	class Group{
 		
+		//adattagok
 		public $author_id;
 		public $name;
 		public $id;
@@ -9,6 +10,7 @@
 		public $avatar;
 		public $member_count;
 		
+		// konstruktor
 		public function __construct($data){
 			$this->id = $data['id'];
 			$this->name = $data['name'];
@@ -19,6 +21,7 @@
 			$this->member_count = count($this->members);
 		}
 		
+		// visszaad egy csoportobjektumot id alapján
 		public static function get($group_id){
 			$db = Database::getInstance();
 			
@@ -30,6 +33,7 @@
 			return new Group($stmt->fetch());
 		}
 		
+		// visszaadja a felhasználó csoportjait
 		public static function getAll($user_id, $user_type){
 			$db = Database::getInstance();
             $stmt;
@@ -49,12 +53,13 @@
 
             $list = array();
             foreach( $data as $d ){
-                array_push($list, new Group($d));
+                $list[] = new Group($d);
             }
 
             return $list;
 		}
 		
+		// visszaadja az alkalmazás összes csoportját
 		public static function all(){
 			$db = Database::getInstance();
 
@@ -66,12 +71,13 @@
 
             $list = array();
             foreach( $data as $d ){
-                array_push($list, new Group($d));
+                $list[] = new Group($d);
             }
 
             return $list;
 		}
 		
+		// létrehoz egy csoportot
 		public static function create($data){
 			$db = Database::getInstance();
 			
@@ -86,24 +92,8 @@
 				$data['avatar']
 			));
 		}
-		
-		/*public function members(){
-			$db = Database::getInstance();
-			
-			$stmt = $db->prepare(
-				"SELECT * FROM group_members".
-				" INNER JOIN users ON users.id = group_members.user_id".
-				" WHERE group_id = ?"
-			);
-			$stmt->execute(array($this->id));
-			$data = $stmt->fetchAll();
-			
-			$list = array();
-            foreach( $data as $d ){
-                array_push($list, new User($d));
-            }
-		}*/
 
+		// lekéri a csoport tagjait
 		public function getMembers(){
 			$db = Database::getInstance();
 			
@@ -116,10 +106,10 @@
 			return $stmt->fetchAll();
 		}
 		
+		//visszaadja a kereséi értéknek megfelelő diákokat, akik még nem a megadott csoport tagjai
 		public static function searchUsers($student_name, $group_id){
 			$db = Database::getInstance();
 
-			// csak azokat a tanulókat adjuk vissza, amik nem tagjai még a csoportnak
 			$stmt = $db->prepare(
 				"SELECT * FROM users".
 				" WHERE users.name LIKE ?".
@@ -131,6 +121,7 @@
 			return $stmt->fetchAll();
 		}
 
+		// felvesz egy tagot a csoportba
 		public static function addMember($group_id, $user_id){
 			$db = Database::getInstance();
 			
@@ -141,6 +132,7 @@
 			$stmt->execute(array($group_id, $user_id));
 		}
 
+		// töröl egy tagot a csoportból
 		public static function deleteMember($group_id, $user_id){
 			$db = Database::getInstance();
 			

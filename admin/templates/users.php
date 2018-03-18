@@ -111,20 +111,5 @@
     </section>
 </div>
 <div id="right">
-    <div id="search-section">
-        <input type="text" placeholder="keresés..." id="search-user">
-    </div>
 
-    <div id="users">
-    <?php
-        $users = Admin::getAllUsers();
-        foreach( $users as $user ):
-    ?>
-        <li class="clear">
-            <h4><?php echo $user->name; echo $user->type==0?' (diák)':' (tanár)'; echo ' - '.$user->login_id; ?></h4>
-            <span><?= empty($user->email)?'nincs megadva email cím':$user->email ?></span>
-            <i class="ion-trash-a"></i>
-        </li>
-    <?php endforeach; ?>
-    </div>
 </div>

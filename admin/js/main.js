@@ -13,18 +13,4 @@ $(document).ready(function() {
         $('input[name="user-password"]').val(pass);
     });
 
-    //felhasználó keresése
-    $('input#search-user').keyup((e) => {
-        let q = $(e.currentTarget).val().trim();
-
-        if (q == '') {
-            $('#users li').css('background', 'transparent')
-            return false;
-        }
-
-        $('#users li').css('background', 'transparent')
-        $('#users li:contains(' + q + ')').css('background', '#c7c7c7');
-    });
-
-
 });

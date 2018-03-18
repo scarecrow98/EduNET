@@ -5,6 +5,7 @@
         private function __construct(){  }
         private function __clone(){  }
 
+		//gyakran használt html szerkezetek
         private static $span_wrong = '<span class="option-result-icon wrong-icon"></span>';
         private static $span_correct = '<span class="option-result-icon correct-icon"></span>';
         private static $span_missing = '<span class="option-result-icon missing-icon"></span>';
@@ -23,7 +24,7 @@
             }
         } 
         
-        // igaz/hamis opciók eredményeit jeleníti meg
+        //igaz/hamis opciók eredményeit jeleníti meg
         public static function trueFalseResult($correct_ans, $user_ans){
             if( $correct_ans === $user_ans ){ //ha jó a válasz
                 return '<td>'.($correct_ans == 1 ? 'igaz' : 'hamis').'</td><td>'.UIDrawer::$span_correct.'</td>';
@@ -36,7 +37,7 @@
             }
         }
 
-        // párosítós feladatok eredményeit jeleníti meg
+        //párosítós feladatok eredményeit jeleníti meg
         public static function pairingResult($correct_ans, $user_ans){
             if( empty($user_ans) ){
                 return '<td>'.$correct_ans.'</td><td>'.UIDrawer::$span_missing.'</td>';//ha hiányzik a válasz
@@ -47,11 +48,16 @@
             }
         }
 
+		//a függvény egy listaelemet csinál a lenyíló üzenetek ablakban
         public static function messageItem($message){
-            $partner_id = $message->sender_id==Session::get('user-id') ? $message->receiver_id : $message->sender_id;
-            $partner = User::get($partner_id);
+			//partnerazonosító meghatározása-->ha a sender_id azonos a saját azonosítónkkal, akkor a partner azonosító a receiver_id-lesz
+            $partner_id = $message->sender_id == Session::get('user-id') ? $message->receiver_id : $message->sender_id;
+            //partner adatainak lekérése
+			$partner = User::get($partner_id);
+			//változóba eltároljuk, hogy az üzenetet MI elolvastuk-e már
             $is_unread = ( $message->is_seen == 0 && $message->sender_id != Session::get('user-id') ) ? true : false;
 
+			//html generálása
             return '
                 <li class="message-item'.($is_unread ? ' unread-message' : '').'" data-message-id="'.$message->id.'" data-partner-id="'.$partner_id.'" id="partner-'.$partner_id.'">
                     <div>
@@ -64,6 +70,7 @@
             ';
         }
 
+		//megjeleníti a diák fájlválaszának letöltési linkjét, ha létezik
         public static function fileAnswer($file_name){
             if( empty($file_name) ){
                 return '<p class="no-answer">Erre a feladatra nem érkezett válasz.</p>';
@@ -74,6 +81,7 @@
             }
         }
 
+		//megjeleníti a diák szöveges válaszát, ha létezik
         public static function textAnswer($text_answer){
             if( empty($text_answer) ){
                 return '<p class="no-answer">Erre a feladatra nem érkezett válasz.</p>';

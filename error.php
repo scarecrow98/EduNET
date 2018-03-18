@@ -11,8 +11,7 @@
         <title>Valami nincs rendben!</title>
         <link rel="icon" href="<?php echo PUBLIC_ROOT; ?>resources/images/favicon.ico">
         <style>
-            @import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,600,700&subset=latin-ext');
-            *{ padding: 0px; margin: 0px; font-family: 'Montserrat'; }
+            *{ padding: 0px; margin: 0px; font-family: Arial; }
             body{ background-image: url('public/resources/images/bg2.jpeg'); background-position: center; background-size: cover; height: 100vh; display: flex; justify-content: center; color: #fff; }
             #overlay{ position: absolute; background-color: #354052; top: 0px; left: 0px; bottom: 0px; right: 0px; z-index: 1; opacity: 0.8; }
             #container{ text-align: center; max-width: 60%; position: relative; z-index: 2; }

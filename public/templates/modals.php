@@ -94,17 +94,17 @@
     <!-- CSOPORTTAGOK FELVÉTELE -->
     <div class="modal" style="width: 500px; height: 400px; display: none;" id="add-members">
         <header>
-            <h3>Csoport kezelése</h3>
+            <h3>Csoportagok felvétele</h3>
             <i class="ion-close-round close-modal"></i>
         </header>
         <section class="modal-body" id="adding-members">
             <form action="<?= SERVER_ROOT; ?>parsers/main-parser.php" name="add-group-member-form" id="add-group-member-form">
                 <li class="input-container">
 					<input type="text" name="student-name" id="student-name" placeholder="Diák neve">
-                <li>
-				<ul id="student-results">
+                </li>
+				<section id="student-results" class="student-list-container">
                     <!-- ide töltődnek a találatok -->
-                </ul>
+                </section>
             </form>
         </section>
     </div>
@@ -194,7 +194,6 @@
                             <option value="1">Szóbeli felelet</option>
                             <option value="2">Dolgozat</option>
                             <option value="3">Témazáró dolgozat</option>
-                            <option value="4">Egyéb esmemény</option>
                     </select>
                 </li>
                 <li class="input-container">
@@ -336,9 +335,9 @@
             <i class="ion-close-round close-modal"></i>
         </header>
         <section class="modal-body">
-            <div id="group-members">
+            <section id="group-members" class="student-list-container">
                 <!-- csoport tagjainak lilstája -->
-            </div>
+            </section>
         </section>
     </div>
 

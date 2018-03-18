@@ -1,5 +1,13 @@
 <?php
-    require_once('../config.php');
+    require_once '../config.php';
+    Session::start();
+
+    if( Security::checkAccessToken() == false || Session::get('user-type') != 2 ){
+        header('Location: ../logout');
+        exit();
+    }
+
+    Security::setAccessToken();
 ?>
 <html>
     <head>
@@ -14,9 +22,6 @@
             <ul class="clear">
                 <li>
                     <a href="users" class="ion-person-add">Felhasználók kezelése</a>
-                </li>
-                <li>
-                    <a href="uploads" class="ion-android-upload">Feltöltések</a>
                 </li>
                 <li style="float: right;" title="Kijelentkezés">
                     <a href="../logout"><i class="ion-log-out" style="font-size: 22px;"></i></a>

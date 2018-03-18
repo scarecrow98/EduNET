@@ -95,16 +95,16 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" href="<?= PUBLIC_ROOT ?>resources/images/favicon.ico">
-        <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
         <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/welcome.css">
     </head>
     <body>
 
-		
+		<!-- oldal hátterei -->
 		<section class="page-bg" id="p-1"></section>
 		<section class="page-bg" id="p-2" style="display: none;"></section>
 		
         <div class="overlay">
+			<!-- ha a form paraméterünk a GET tömbben = 'forgotten_password', akkor azt a formot jelenítjük meg -->
 			<?php if( !empty($_GET['form']) && $_GET['form'] == 'forgotten_password' ): ?>			
 			<div class="form-container">
 				<form action="" method="POST">
@@ -113,7 +113,7 @@
 						<small><?= empty(Session::get('error-message')) ? '' : Session::get('error-message') ?></small>
 					</li>	
 					<li>
-						<input type="email" name="email" placeholder="Fiókod email címe" class="input-field" required>
+						<input type="email" name="email" placeholder="Fiókod email címe" class="input-field" required autocomplete="off">
 					</li>
 					<li>
 						<input type="submit" name="forgotten-password" value="Jelszó igénylése" class="button">
@@ -132,7 +132,7 @@
 						<small><?= empty(Session::get('error-message')) ? '' : Session::get('error-message') ?></small>
 					</li>
 					<li>
-						<input type="text" name="login-id" placeholder="Felhasználónév" class="input-field">
+						<input type="text" name="login-id" placeholder="Felhasználónév" class="input-field" autocomplete="off">
 					</li>
 					<li>
 						<input type="password" name="login-password" placeholder="Jelszó" class="input-field">
@@ -161,9 +161,7 @@
 	window.setInterval(function(){
 		cnt++;
 		
-		if( cnt > 2 ){
-			cnt = 1;
-		}
+		if( cnt > 2 ) cnt = 1;
 		
 		$('section#p-'+cnt).fadeIn(3000).delay(5000).siblings('section.page-bg').fadeOut(3000).delay(5000);
 	}, 1000);

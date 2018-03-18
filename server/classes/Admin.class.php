@@ -1,26 +1,8 @@
 <?php
 
     class Admin{
-
-
-        //visszaadja az összes usert, amely nem admin
-        public static function getAllUsers(){
-            $db = Database::getInstance();
-
-            $stmt = $db->prepare(
-                "SELECT * FROM users WHERE type != ? ORDER BY type DESC, name ASC"
-            );
-            $stmt->execute(array(2));
-
-            $data = $stmt->fetchAll();
-
-            $list = array();
-            foreach( $data as $d ){
-                array_push($list, new User($d));
-            }
-
-            return $list;
-        }
+        private function __construct(){  }
+        private function __clone(){  }
 
         //visszaadja, hogy létezik e-már ilyen email
         public static function emailExists($email){
@@ -48,6 +30,7 @@
             else
                 $password = Security::generatePassword();
 
+            //jelszó hashelése
             $pass_hash = Security::hashPassword($password, $pass_salt);
 
             $stmt = $db->prepare(

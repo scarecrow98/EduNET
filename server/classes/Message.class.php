@@ -1,7 +1,7 @@
 <?php
 
 	class Message{
-		
+		//adattagok
 		public $id;
 		public $text;
 		public $date;
@@ -10,6 +10,7 @@
 		public $is_delivered;
 		public $is_seen;
 		
+		// konstruktor
 		public function __construct($data){
 			$this->id = $data['id'];
 			$this->text = $data['text'];
@@ -19,24 +20,31 @@
 			$this->is_delivered = $data['is_delivered'];
 			$this->is_seen = $data['is_seen'];
 			
-			if( $this->is_seen == 0 ){
+			// ha az üzenet még nem lett kiküldve, akkor az üzenetobjektum létrehozásakor
+			// legyen az is_delivered mező 1
+			if( $this->is_delivered == 0 ){
 				$this->setToDelivered();
 			}
 		}
 		
+		// visszaadja az utolsó küldött üzenetet beszélgetésenként
 		public static function getPreviews($user_id){
+			//lekérjük, hogy a felhasználó kikkel beszélgetett eddig már
 			$ids = Message::getPartnerIds($user_id);
 			
+			//végigmegyünk a partnerazonosítókon, és lekérjük a felhasználó és a partner közti utolsó üzenetet
 			$msgs = array();
 			foreach( $ids as $partner_id ){
 				$msgs[] = Message::getLastConversationMessage($user_id, $partner_id);
 			}
 
+			//rendezzük az üzeneteket dátum szerint
 			$list = Message::orderByDate($msgs);
 
             return $list;
 		}
 		
+		//visszaadja az összes üzenetet egy beszélgetésben
 		public static function getConversation($user_id, $partner_id){
 			$db = Database::getInstance();
 			
@@ -49,13 +57,14 @@
 
             $list = array();
             foreach( $data as $d ){
-                array_push($list, new Message($d));
+                $list[] = new Message($d);
             }
 
             return $list;
 		}
 		
 
+		//lekéri az új, bejövő üzeneteket, amik még nem lettek kiküldve
 		public static function getNews($user_id){
 			$db = Database::getInstance();
 			
@@ -68,12 +77,13 @@
 
             $list = array();
             foreach( $data as $d ){
-                array_push($list, new Message($d));
+                $list[] = new Message($d);
             }
 
             return $list;
 		}
 		
+		//1-re állítja az is_delivered mezőjét az üzenetnek példányosításkor
 		private function setToDelivered(){
 			$db = Database::getInstance();
 			
@@ -83,6 +93,7 @@
 			$stmt->execute(array(1, $this->receiver_id));
 		}
 		
+		//1-re állítja az is_seen mezőjét egy üzenetnek
 		public static function setToSeen($user_id, $partner_id){
 			$db = Database::getInstance();
 			
@@ -98,6 +109,7 @@
 			return $stmt->rowCount();
 		}
 		
+		//létrehoz egy üzenetet az adatbázisban, és visszaadja a létrehozott üzenet azonosítóját
 		public static function create($data){
 			$db = Database::getInstance();
 
@@ -115,6 +127,7 @@
 			return $db->lastInsertId();
 		}
 
+		//visszaadja azon partnerek azonosítóját, akikkel a tanár beszélgetést folytatott eddig
 		public static function getPartnerIds($user_id){
 			$db = Database::getInstance();
 
@@ -134,6 +147,7 @@
 			return $arr;
 		}
 		
+		//visszaadja, hogy egy beszélgetésben mi volt az utolsó üzenet
 		public static function getLastConversationMessage($user_id, $partner_id){
 			$db = Database::getInstance();
 
@@ -147,6 +161,7 @@
 			return new Message($stmt->fetch());	
 		}
 
+		//az átadott üzenettömböt rendezi dátum szerint
 		public static function orderByDate($arr){
 			for($i = 0; $i < count($arr) - 1; $i++){
 				for($j = $i + 1; $j < count($arr); $j++){
@@ -159,7 +174,6 @@
 					}
 				}
 			}
-
 			return $arr;
 		}
 			

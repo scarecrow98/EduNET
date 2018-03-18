@@ -2,6 +2,7 @@
 
     class TestInstance{
 
+        //adattagok
         public $id;
         public $test_id;
         public $current_author_id;
@@ -11,6 +12,7 @@
         public $status;
 		public $description;
 
+        //konstruktor
         public function __construct($data){
             $this->id                   = $data['id'];
             $this->test_id              = $data['test_id'];
@@ -22,6 +24,7 @@
 			$this->description			= empty($data['description']) ? null : $data['description'];
         }
 
+        //visszaad egy feladatlappéldányt id alapján
         public static function get($test_instance_id){
             $db = Database::getInstance();
 
@@ -33,7 +36,7 @@
             return new TestInstance($stmt->fetch());
         }
 
-		//felhasználók feladatlapjait lekérő függvény
+		//visszaadja egy felhasználó feladatlapjait
         public static function getAll($user_id, $user_type){
             $db = Database::getInstance();
             $stmt;
@@ -44,7 +47,7 @@
                 $stmt = $db->prepare(
                     "SELECT * FROM test_instances".
 					" WHERE current_author_id = ?".
-					" ORDER BY FIELD(status, 1) DESC, creation_date DESC"
+					" ORDER BY FIELD(status, 1) DESC, creation_date ASC"
                 );
 			//ha diák, akkor azokat a feladatlapokat választjuk ki,
 			//amelyik csoportja megegyezik a diák csoportjaival
@@ -52,7 +55,7 @@
                 $stmt = $db->prepare(
                     "SELECT * FROM test_instances".
 					" WHERE group_id IN (SELECT group_id FROM group_members WHERE user_id = ?)".
-					" ORDER BY FIELD(status, 1) DESC, creation_date DESC"
+					" ORDER BY FIELD(status, 1) DESC, creation_date ASC"
                 );
             }
 
@@ -62,7 +65,7 @@
 			//lekért adatokból objektumok készítése
             $list = array();
             foreach( $data as $d ){
-                array_push($list, new TestInstance($d));
+                $list[] = new TestInstance($d);
             }
 
             return $list;
@@ -87,6 +90,7 @@
 			));
         }
 
+        //feladatlapszűrő függvény
         public static function filter($data, $user_type){
             $db = Database::getInstance();
             $stmt;
@@ -124,13 +128,13 @@
 
             $list = array();
             foreach( $data as $d ){
-                array_push($list, new TestInstance($d));
+                $list[] = new TestInstance($d);
             }
 
             return $list;
-			
         }
 
+        //beállítja a feladatlap státuszát a megadott értékre (0, 1, 2)
         public static function setStatus($test_instance_id, $status){
             $db = Database::getInstance();
 
@@ -140,6 +144,7 @@
             $stmt->execute(array($status, $test_instance_id));
         }
         
+        //duplikál egy feladatlappéldányt megosztáskor
         public static function duplicate($data){
             $db = Database::getInstance();
 
@@ -157,6 +162,7 @@
             ));
         }
 
+        //visszaadja azon diákokat, akik benne vannak a feladatlap csoportjában (akik megírták)
         public function getStudents(){
             $db = Database::getInstance();
 
@@ -169,12 +175,13 @@
 
             $list = array();
             foreach( $data as $d ){
-                array_push($list, new User($d));
+                $list[] = new User($d);
             }
 
             return $list;
         }
 
+        //eltárolja a feladatlap végleges kijavítának idejét diákonként
         public function storeEvaluation($user_id, $date){
 			$db = Database::getInstance();
 			
@@ -185,6 +192,7 @@
 			$stmt->execute(array($user_id, $this->id, $date));
         }
 
+        //visszaadja a diák 3 legfrissebben kijavított feladatlapját az evaluated_tests táblából
         public static function getEvaluatedInstances($user_id){
             $db = Database::getInstance();
 
@@ -196,6 +204,7 @@
             return $stmt->fetchAll();
         }
 
+        //ellenőrzi, hogy a diáknak van-e jogosultsága a feladatlap megnyitásához
         public function checkCredentials($user_id){
             $students = $this->getStudents();
             foreach( $students as $student ){ 
@@ -206,6 +215,7 @@
             return false;
         }
 
+        //visszaadja hogy egy diáknak ki lett-e már javítva a megadott feladatlapja
         public function hasEvaluatedInstance($user_id){
             $db = Database::getInstance();
 
@@ -217,6 +227,7 @@
             return !empty($stmt->fetch());
         }
 
+        //ellenprzi, hogy a diáknak tartoznak-e már eredményei a feladatlaphoz (hogy megírta-e már)
         public function hasResults($user_id){
             $db = Database::getInstance();
 

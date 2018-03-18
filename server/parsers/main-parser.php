@@ -135,7 +135,7 @@
 		exit('success');
     }
 
-    //függvény, amely létrehoz egy új üzenetet az adatbázisban, és visszaadja létrehozott üzenet azonosítóját
+    //függvény, amely létrehoz egy új üzenetet az adatbázisban
     function newMessage($receiver_id, $text){
 		$data = array(
 			'sender_id'		=> Session::get('user-id'),
@@ -165,8 +165,9 @@
         $partner_id = (int)$_POST['partner-id'];
         $text = htmlspecialchars($_POST['text']);
         
+		//üzenet létrehozása az adatbázisban
         newMessage($partner_id, $text);
-
+		//válasz a kliensnek
         $resp = array(
             'status'    => 'success',
             'message'   => $text
@@ -203,9 +204,7 @@
             'partner_avatar'    => $partner->avatar,
             'message'           => $text
         );
-
 		exit(json_encode($resp));
-		
 	}
 	
 	// ===========================
@@ -216,11 +215,12 @@
 		$messages = Message::getNews(Session::get('user-id'));
 		$resp = array();
 		
+		//végigmegyünk az új üzeneteken
 		foreach( $messages as $message ){
             //üzenetet küldő felhasználó adatainak lekérése
 			$sender = User::get($message->sender_id);
             
-            //2d tömb készítése a bejövő üzenetekből, amit visszaküldünk a felhasználónak
+            //tömb készítése a bejövő üzenetekből, amit visszaküldünk a felhasználónak
 			$resp[] = array(
 				'sender_name'	=> $sender->name,
                 'sender_avatar'	=> $sender->avatar,
@@ -228,10 +228,8 @@
 				'text'			=> $message->text,
 				'date'			=> $message->date
 			);
-		}
-		
+		}	
 		exit(json_encode($resp));
-		
 	}
 	
 	// ===========================
@@ -448,7 +446,7 @@
 
         $description = empty($_POST['description']) ? null : $_POST['description'];
         $group_id = (int)$_POST['group-id'];
-
+		//csoport adatainak lekérés, hogy tudjuk, ki a csoport létrehozója
         $group = Group::get($group_id);
 
         $data = array(
@@ -469,9 +467,12 @@
     // DIÁKOK KERESÉSE
     // =========================== 
     if( !empty($_POST['student-name']) ){
+		//adatok tárolása
         $student_name = $_POST['student-name'];
         $group_id = (int)$_POST['group-id'];
 
+		//diákok lekérése az adatbázisból,
+		//majd adattömb küldése a kliensnek
         $results = Group::searchUsers($student_name, $group_id);
         echo json_encode($results);
     }

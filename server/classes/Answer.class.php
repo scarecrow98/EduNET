@@ -12,6 +12,7 @@
         public $task_option_id;
         public $file_name;
 
+        //konstruktor
         public function __construct($data){
             $this->id               = $data['id'];
             $this->user_id          = $data['user_id'];
@@ -36,7 +37,7 @@
             return new Answer($stmt->fetch());     
         }
 
-        //user szöveges válaszának lekérése feladat alapján
+        //diák szöveges válaszának lekérése feladat alapján
         public static function getTextAnswer($user_id, $test_instance_id, $task_id){
             $db = Database::getInstance();
 
@@ -48,7 +49,7 @@
             return new Answer($stmt->fetch());
         }
 
-        //user fájl válaszának lekérése feladat alapján
+        //diák fájl válaszának lekérése feladat alapján
         public static function getFileAnswer($user_id, $test_instance_id, $task_id){
             $db = Database::getInstance();
 
@@ -60,44 +61,7 @@
             return new Answer($stmt->fetch());
         }
 
-        // //user összes fájl válaszának lekérése feladatlap alapján
-        // public static function getFileAnswers($user_id, $test_instance_id){
-        //     $db = Database::getInstance();
-
-        //     $stmt = $db->prepare(
-        //         "SELECT * FROM user_file_answers WHERE user_id = ? AND test_instance_id = ?"
-        //     );
-        //     $stmt->execute(array($user_id, $test_instance_id));
-
-        //     $data = $stmt->fetchAll();
-
-        //     $list = array();
-        //     foreach( $data as $d ){
-        //         array_push($list, new Answer($d));
-        //     }
-
-        //     return $list;
-        // }
-
-        // //user összes szöevegs válaszának lekérése feladatlap alapján
-        // public static function getTextAnswers($user_id, $test_instance_id){
-        //     $db = Database::getInstance();
-
-        //     $stmt = $db->prepare(
-        //         "SELECT * FROM user_text_answers WHERE user_id = ? AND test_instance_id = ?"
-        //     );
-        //     $stmt->execute(array($user_id, $test_instance_id));
-
-        //     $data = $stmt->fetchAll();
-
-        //     $list = array();
-        //     foreach( $data as $d ){
-        //         array_push($list, new Answer($d));
-        //     }
-
-        //     return $list;
-        // }
-
+        //a diák egy feladatlaphoz tartozó összes szöveges és fájlválaszának lekérése
         public static function getFileAndTextAnswers($user_id, $test_instance_id){
             $db = Database::getInstance();
 
@@ -112,13 +76,13 @@
 
             $list = array();
             foreach( $data as $d ){
-                array_push($list, new Answer($d));
+                $list[] = new Answer($d);
             }
 
             return $list;
         }
 
-        //opcióra adott válasz eltárolása
+        //feladatopcióra adott válasz eltárolása
         public static function store($data){
 			$db = Database::getInstance();
 			

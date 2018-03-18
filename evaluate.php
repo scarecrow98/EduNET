@@ -48,8 +48,7 @@
         <meta charset="utf-8">
         <link rel="icon" href="<?= PUBLIC_ROOT; ?>resources/images/favicon.ico">
         <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-        <link rel="stylesheet" href="<?= PUBLIC_ROOT; ?>css/main.css">
-        <link rel="stylesheet" href="<?= PUBLIC_ROOT; ?>css/components.css">
+        <link rel="stylesheet" href="<?= PUBLIC_ROOT; ?>css/style.css">
         <style>
             body{ height: 100vh; width: auto; margin: 10px; overflow-y: scroll; }
         </style>

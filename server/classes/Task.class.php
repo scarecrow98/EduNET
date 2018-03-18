@@ -40,7 +40,7 @@
 
             $list = array();
             foreach( $data as $d ){
-                array_push($list, new TaskOption($d));
+                $list[] = new TaskOption($d);
             }
 
             return $list;
@@ -77,7 +77,7 @@
 				$data['type'],
 			));
 			
-			//létrhozott feladat id-je, amit felhasználunk a feladatopciók létrehozásakor
+			//a létrehozott feladat id-je, amit felhasználunk a feladatopciók létrehozásakor
 			$last_insert_id = $db->lastInsertId();
 			
 			//feladatopciók létrehozása
@@ -105,7 +105,7 @@
 			return $data['option_count'];
 		}
 
-		//eltárolja egy diák feladatra adott válaszát
+		//eltárolja a diák feladatban elért eredményét
 		public function storeResult($data){
 			$db = Database::getInstance();
 			
@@ -122,7 +122,7 @@
 			));
 		}
 
-		//visszaadja egy diák feladatra adott válaszát
+		//visszaadja a diák egy feladatban elért eredményét
 		public static function getResult($user_id, $test_instance_id, $task_id){
 			$db = Database::getInstance();
 			

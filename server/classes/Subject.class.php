@@ -2,14 +2,17 @@
 
 	class Subject{
 		
+		//adattagok
 		public $id;
 		public $name;
 		
+		//konstruktor
 		public function __construct($data){
 			$this->id = $data['id'];
 			$this->name = $data['name'];
 		}
 		
+		//visszaad egy tantárgyobjektumot azonosító alapján
 		public static function get($subject_id){
 			$db = Database::getInstance();
 			
@@ -20,7 +23,8 @@
 			
 			return new Subject($stmt->fetch());
 		}
-		
+
+		//visszaadja az összes tantárgyat
 		public static function all(){
 			$db = Database::getInstance();
 			
@@ -33,7 +37,7 @@
 
             $list = array();
             foreach( $data as $d ){
-                array_push($list, new Subject($d));
+                $list[] = new Subject($d);
             }
 
             return $list;

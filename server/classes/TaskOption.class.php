@@ -2,11 +2,13 @@
 
 	class TaskOption{
 		
+		//adattagok
 		public $id;
 		public $task_id;
 		public $text;
 		public $correct_ans;
 
+		//konstruktor
 		public function __construct($data){
 			$this->id 			= $data['id'];
 			$this->task_id 		= $data['task_id'];
@@ -14,7 +16,7 @@
 			$this->correct_ans 	= $data['correct_ans'];
 		}
 
-		
+		//visszaad egy feladatopciót id alapján
 		public static function get($option_id){
 			$db = Database::getInstance();
 			
@@ -26,6 +28,7 @@
 			return new TaskOption($stmt->fetch());
 		}
 
+		//létrehoz egy feladatopciót
 		public static function create($data){
 			$db = Database::getInstance();
 			

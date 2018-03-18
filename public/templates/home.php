@@ -10,32 +10,42 @@
 </header>
 <section class="content-body" id="stats">
 
-    <div class="home-box panel">
+    <div class="content-box panel">
         <header>
             <h4 class="ion-calendar">Közelgő dolgozatok</h4>
             <small>Ez elkövetkezendő 30 nap eseményei</small>
         </header>
         <div id="event-calendar">
         <?php
-
+			//mai nap lekérése
             $today = new DateTime(date('Y-m-d'));    
 			
+			//for ciklus, 1-től 30-ig --> ebben rajzoljuk ki a naptár napjait + értesítések megjelenítése
             for( $i = 1; $i <= 30; $i++ ){
-                $date = $today->modify('+1 day');
-				
+                //a mindig egy nappal növelt dátum
+				$date = $today->modify('+1 day');
+		
+				//a dátumhoz tartozó értesítések lekérése felhasználó szerint
 				$notifications = Notification::getAllByDate(Session::get('user-id'), Session::get('user-type'), $date->format('Y-m-d'));
 
-				
+				//dátum hónapja (számmal)
                 $month = $date->format('m');
+				
+				//dátum napja (számmal)
                 $day = $date->format('d');
 
+				//generált html ebben lesz tárolva
 				$html = '';
+				//értesítés típusa szövegesen ebbe lesz tárolva
                 $type = '';
 				
+				//lekért értesítéseken végigiterálunk
                 foreach( $notifications as $nt ){
+					//tantárgy és a csoport adatainak lekérése
 					$subject = Subject::get($nt->subject_id);
 					$group = Group::get($nt->group_id);
 					
+					//értesítés típusának meghatározása
                     switch( $nt->type ){
                         case 1: $type = 'Szóbeli felelet';
                             break;
@@ -43,9 +53,8 @@
                             break;
                         case 3: $type = 'Témazáró dolgozat';
                             break;
-                        case 4: $type = 'Egyéb esemény';
-                            break;
                     }
+					//html listaelem generálása
                     $html .= '
                         <li class="event">
                             <strong>'.$nt->title.'</strong>
@@ -56,22 +65,23 @@
                     ';
                 }
         ?>            
-            <div class="day <?= empty($html) ? '' : 'has-event' ?>" >
-                <i class="ion-chevron-down"></i>
-                <span class="month-name"><?= $months[(int)$month].' '; ?></span><span class="month-day"><?= $day; ?></span>
-                <?php if( $html != '' ): ?>
-                <section class="panel">
-                    <?= $html; ?>
-                </section>
-                <?php endif; ?>
-            </div>
+		<!--  -->
+		<div class="day <?= empty($html) ? '' : 'has-event' ?>" >
+			<i class="ion-chevron-down"></i>
+			<span class="month-name"><?= $months[(int)$month].' '; ?></span><span class="month-day"><?= $day; ?></span>
+			<?php if( $html != '' ): ?>
+			<section class="panel">
+				<?= $html; ?>
+			</section>
+			<?php endif; ?>
+		</div>
         <?php } ?> <!-- dátum for vége -->
         </div>
     </div>
 
     <!-- ha nem tanár a felhaszáló, akkor megjelenítjük az utolsó 3 kijavított dolgozat eredményeit -->
     <?php if( !IS_ADMIN ): ?>
-    <div class="home-box panel">
+    <div class="content-box panel">
         <header>
             <h4 class="ion-android-checkmark-circle">Kijavított dolgozatok</h4>
             <small>Legutóbb kijavított dolgozataid és eredményeik</small>

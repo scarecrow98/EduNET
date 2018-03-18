@@ -2,6 +2,7 @@
 
 	class Notification{
 	
+		//adattagok
 		public $id;
 		public $title;
 		public $date;
@@ -10,6 +11,7 @@
 		public $subject_id;
 		public $type;
 		
+		//konstruktor
 		public function __construct($data){
 			$this->id = $data['id'];
 			$this->title = $data['text'];
@@ -20,6 +22,7 @@
 			$this->type = $data['type'];
 		}
 		
+		//visszaad egy értesítést id alapján
 		public static function get($notification_id){
 			$db = Database::getInstance();
 			
@@ -30,7 +33,8 @@
 			
 			return new Notification($stmt->fetch());
 		}
-		
+
+		//visszaadja a felhasználó értesítéseit
 		public static function getAll($user_id, $user_type){
 			$db = Database::getInstance();
 			
@@ -49,12 +53,13 @@
 
             $list = array();
             foreach( $data as $d ){
-                array_push($list, new Notification($d));
+                $list[] = new Notification($d);
             }
 
             return $list;
 		}
 		
+		//létrehoz egy értesítést az adattbázisban
 		public static function create($data){
 			$db = Database::getInstance();
 			
@@ -72,6 +77,7 @@
 			));
 		}
 		
+		//felhasználó alapján kivalasztja a megadott dátummal egyező értesítéseket
 		public static function getAllByDate($user_id, $user_type, $date){
 			$db = Database::getInstance();
 			
@@ -90,12 +96,12 @@
 
             $list = array();
             foreach( $data as $d ){
-                array_push($list, new Notification($d));
+                $list[] = new Notification($d);
             }
-
             return $list;
 		}
 
+		//törli a megadott értesítést
 		public static function delete($notification_id){
 			$db = Database::getInstance();
 

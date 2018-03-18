@@ -17,10 +17,9 @@
     <head>
         <title>Feladatok létrehozása</title>
         <meta charset="utf-8">
+		<link rel="icon" href="<?= PUBLIC_ROOT ?>resources/images/favicon.ico">
         <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-        <link rel="stylesheet" href="<?= PUBLIC_ROOT; ?>css/main.css">
-        <link rel="stylesheet" href="<?= PUBLIC_ROOT; ?>css/components.css">
-		<link rel="stylesheet" href="<?= PUBLIC_ROOT; ?>css/content.css">
+        <link rel="stylesheet" href="<?= PUBLIC_ROOT; ?>css/style.css">
     </head>
     <body class="test-body">
 
@@ -58,8 +57,10 @@
 							<option value="5">Fájlfeltöltés</option>
 						</select>
 					</li>
+					
 					<!-- ide jön a szekció, amiben a feladatopciókat lehet kezelni  -->
 					<?php require_once 'public/templates/task-options.php'; ?>
+					
 					<li class="input-container" style="justify-content: right;">
 						<button class="btn-add-option btn-rounded bg-1" onclick="return false;"><i class="ion-plus-round"></i>Opció hozzáadása</button>
 					</li>
@@ -78,5 +79,4 @@
 <script src="<?= PUBLIC_ROOT; ?>js/jquery.js"></script>
 <script src="<?= PUBLIC_ROOT; ?>js/ajax-settings.js"></script>
 <script src="<?= PUBLIC_ROOT; ?>js/main.js"></script>
-<script src="<?= PUBLIC_ROOT; ?>js/ajax.js"></script>
 <script src="<?= PUBLIC_ROOT; ?>js/teacher-ajax.js"></script>

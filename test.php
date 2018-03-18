@@ -22,7 +22,8 @@
 
     $test_instance_id = $_GET['test_instance'];
     $test_instance = TestInstance::get($test_instance_id);
-        
+    
+    //ha üres eredményt ad vissza a lekérdezés
     //ha üres eredményt ad vissza a lekérdezés
     if( empty($test_instance->id) ){
         errorRedirect('A keresett feladatlap nem található!');
@@ -55,11 +56,8 @@
         <title><?= $test->title ?></title>
         <meta charset="utf-8">
         <link rel="icon" href="<?= PUBLIC_ROOT ?>resources/images/favicon.ico">
-        <link rel="icon" href="<?= PUBLIC_ROOT ?>resources/images/favicon.ico">
         <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/main.css">
-        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/components.css">
-        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/content.css">
+        <link rel="stylesheet" href="<?= PUBLIC_ROOT ?>css/style.css">
     </head>
     <body class="test-body">
         <div class="test-container">
@@ -94,23 +92,29 @@
 
             <form action="<?= SERVER_ROOT ?>parsers/test-evaluator.php" method="POST" id="submit-test-form" enctype="multipart/form-data">  
 
+			<!-- ebben az inputban van, hogy hány feladat adatait kell majd összegyűjtenünk JavaScriptben -->
             <input type="hidden" name="task-count" id="task-count" value="<?= count($tasks) ?>">
             
             <?php
-                $task_counter = 0;
+                $task_counter = 0; //ez számolja majd, hogy hányadik feladatnál járunk
                 foreach( $tasks as $task ): /* tasks foreach kezdete */ 
-                    $task_counter++;
+                    $task_counter++; //feladatszámlálót növeljük
 
-                    $options = $task->getTaskOptions();
+                    $options = $task->getTaskOptions(); //feladatopciók lékérése
+					
+					//készítünk egy adatszerkezetet, hogy a szerver tudja, hogy az aktuális feladathoz
+					//milyen azonosítójú feladatopciók tartoznak majd, illetve a feladatról is tárolunk
+					//adatokat
                     $option_data = array();
                     foreach( $options as $option ){ $option_data[] = $option->id; }
 
                     $task_data = array(
-                        'task-id'       => $task->id,
-                        'task-type'     => $task->type,
-                        'task-options'  => $option_data
+                        'task-id'       => $task->id,//feladat azonosítója
+                        'task-type'     => $task->type,//feladat típusa
+                        'task-options'  => $option_data //a feladathoz tartozó feladatopciók azonosítói egy tömbben
                     );
             ?>
+				<!-- az ímént elkészített adatszerkezetet elhelyezzük egy rejtett inputban, JSON stringként, aminek a neve task-[feladat száma]-data -->
                 <input type="hidden" name="task-<?= $task_counter ?>-data" id="task-<?= $task_counter ?>-data" value='<?= json_encode($task_data) ?>'>
                 
                 <div class="task-box panel">   
@@ -122,11 +126,11 @@
                     <section>
                         <pre class="task-question"><?= $task->question; ?></pre>
 
-                        <?php if( !empty($task->text) ): ?>
+                        <?php if( !empty($task->text) ): //feladathoz tartozó szöveg, ha van ?>
                         <pre class="task-text"><?= $task->text ?></pre>
                         <?php endif; ?>
 
-                        <?php if( !empty($task->image) ): ?>
+                        <?php if( !empty($task->image) ): //feladat képét megjelenítjük, ha van ?>
                         <div class="task-image">
                             <a  href="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" target="_blank">
                                 <img src="<?= SERVER_ROOT ?>uploads/images/<?= $task->image; ?>" title="Kattints a nagyobb méretért!">
@@ -136,6 +140,8 @@
 
                         <table class="options-table">
                         <?php
+							//végigmegyünk a feladatopciókon és listázzuk őket 
+							//+ a feladattípustól függően inputokat jelenítünk meg
                             foreach( $options as $option ): /* options foreach kezdete */  
                         ?>
                             <tr>
