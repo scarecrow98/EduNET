@@ -3,5 +3,5 @@
     Session::start();    
     Security::destroyAccessToken();
 	Session::destroy();
-    header('Location: http://localhost/edunet/login');
+    header('Location: login');
 ?>

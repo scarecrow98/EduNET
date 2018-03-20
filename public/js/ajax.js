@@ -206,12 +206,15 @@ $('input#btn-submit-test').click((e) => {
         contentType: false,
         data: formData,
         success: (resp, xhr, status) => {
-            if ( resp == 'success' ) {
+            if ( resp.trim() == 'success' ) {
                 alert('A feladatlapod megoldásait sikeresen mentettük, ezennel nincs más dolgod ezzel a dolgozattal!');
                 window.location.assign('home');
             } else {
                 alert(resp);
             }
-        }
+        },
+		error: (status, xhr, error) => {
+			//hiba
+		}
     });
 });

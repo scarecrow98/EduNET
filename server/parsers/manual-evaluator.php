@@ -10,7 +10,7 @@
         $test_instance = TestInstance::get($test_instance_id);
 
         for( $i = 1; $i <= $task_count; $i++ ){
-            $task_id = $_POST['task-'.$i.'-id'];
+            $task_id = $_POST['task-'.$i.'-id'];			
             $points = $_POST['points-'.$i];
             $comment = empty($_POST['comment-'.$i]) ? null : $_POST['comment-'.$i];
 

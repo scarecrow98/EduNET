@@ -16,7 +16,7 @@
             $html .= '<p><a href="http://localhost/EduNET/login">Lépj be</a>, és változtasd meg minél előbb a jelszavad!</p><br>';
             $html .= '<p>További szép időtöltést és jó tanulást kíván az EduNET csapata! :)</p>';
             $html .= '</body></html>';
-
+			//email küldés: cím, tárgy, html kód, fejlécadatok
             return mail($email, 'EduNET - Elfelejtett jelszó', $html, Mailer::$headers);
         }
 

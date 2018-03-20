@@ -360,14 +360,18 @@
     }
 
     // ===========================
-    // FELADATLAP NYITÁSA/ZÁRÁSA
+    // FELADATLAP STÁTUSZÁNAK ÁLLÍTÁSA
     // =========================== 
     if( !empty($_POST['test-instance-id']) && isset($_POST['test-status']) ){
         $test_instance_id = $_POST['test-instance-id'];
         $test_status = $_POST['test-status'];
 
         TestInstance::setStatus($test_instance_id, $test_status);
-        header('Location: '.$_SERVER['HTTP_REFERER']);
+
+        if( $test_status == 2 )
+            header('Location: http://edunet/home');
+        else
+            header('Location: '.$_SERVER['HTTP_REFERER']);
     }
 
 

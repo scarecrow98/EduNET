@@ -1,10 +1,11 @@
 <?php
-    //üzenetek lekérése
+    //üzenet előnézetek lekérése
     $messages = Message::getPreviews(Session::get('user-id'));
 
     //megnézzük, hogy van-e olvasatlan üzenet
     $has_new = false;
     foreach( $messages as $msg ){
+        //ha az üzenet még olvasatlan és mi vagyunk a fogadók, akkor a $has_new = true
         if( $msg->is_seen == 0 && $msg->sender_id != Session::get('user-id') ){
             $has_new = true;
             break;
@@ -29,37 +30,36 @@
 
     <!-- jobb oldali gombok -->
     <div id="top-bar-buttons-right">
-
-		<!--  -->
+        <!-- profil gomb -->
         <button id="btn-settings" data-modal-id="user-settings" class="modal-opener">
             <img src="<?= SERVER_ROOT ?>/uploads/avatars/<?= Session::get('user-avatar') ?>">
             <strong>Profil</strong>
         </button>
 
-
-        <?php if( IS_ADMIN ): ?>
+        <!-- üzentek gomb és panel -->
+        <?php if( IS_ADMIN ): //üzenetek panelt csak tanároknak jelenítjük meg ?>
         <button id="btn-messages" class="<?= $has_new ? 'has-new-message' : '' ?>" >
             <i class="ion-ios-chatboxes-outline"></i>
         </button>
-        <?php endif; ?>
 
-        <a href="logout.php">
-            <button id="btn-logout">
-                <i class="ion-log-out"></i>
-            </button>
-        </a>
-
-        <?php if( IS_ADMIN ): ?>
         <div class="messages-popup panel" style="display: none;">
             <section>
-                <?php 
-                    foreach( $messages as $message ){
-                        echo UIDrawer::messageItem($message);
-                    }
-                ?>
+            <?php 
+                //beszélgetés előnézetek listázása
+                foreach( $messages as $message ){
+                    echo UIDrawer::messageItem($message);
+                }
+            ?>
             </section>
             <button id="create-new-message" class="modal-opener" data-modal-id="create-message">Új üzenet írása</button>
         </div>
         <?php endif; ?>
+
+        <!-- kijelentkezés gomb -->
+        <a href="logout">
+            <button id="btn-logout">
+                <i class="ion-log-out"></i>
+            </button>
+        </a>
     </div> <!-- jobb oldali gombok vége -->
 </section>

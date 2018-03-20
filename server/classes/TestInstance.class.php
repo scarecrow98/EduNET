@@ -97,7 +97,15 @@
 
             if( $user_type == 1 ){
                 $stmt = $db->prepare(
-                    "SELECT * FROM test_instances INNER JOIN tests ON test_instances.test_id = tests.id WHERE".
+                    "SELECT test_instances.id AS 'id',".
+                    " test_instances.test_id AS 'test_id',".
+                    " test_instances.original_author_id AS 'original_author_id',".
+                    " test_instances.current_author_id AS 'current_author_id',".
+                    " test_instances.group_id AS 'group_id',".
+                    " test_instances.creation_date AS 'creation_date',".
+                    " test_instances.description AS 'description',".
+                    " test_instances.status AS 'status'".
+                    " FROM test_instances INNER JOIN tests ON test_instances.test_id = tests.id WHERE".
                     " (tests.title LIKE :title OR :title IS NULL) AND".
                     " (tests.subject_id = :subjectid OR :subjectid IS NULL) AND".
                     " (test_instances.group_id = :groupid OR :groupid IS NULL) AND".
@@ -107,7 +115,15 @@
                 );
             } else {
                 $stmt = $db->prepare(
-                    "SELECT * FROM test_instances INNER JOIN tests ON test_instances.test_id = tests.id WHERE".
+                    "SELECT test_instances.id AS 'id',".
+                    " test_instances.test_id AS 'test_id',".
+                    " test_instances.original_author_id AS 'original_author_id',".
+                    " test_instances.current_author_id AS 'current_author_id',".
+                    " test_instances.group_id AS 'group_id',".
+                    " test_instances.creation_date AS 'creation_date',".
+                    " test_instances.description AS 'description',".
+                    " test_instances.status AS 'status'". 
+                    " FROM test_instances INNER JOIN tests ON test_instances.test_id = tests.id WHERE".
                     " (tests.title LIKE :title OR :title IS NULL) AND".
                     " (tests.subject_id = :subjectid OR :subjectid IS NULL) AND".
                     " (test_instances.group_id = :groupid OR :groupid IS NULL) AND".
@@ -224,7 +240,7 @@
             );
             $stmt->execute(array($user_id, $this->id)); 
 
-            return !empty($stmt->fetch());
+            return ($stmt->rowCount() == 1);
         }
 
         //ellenprzi, hogy a diáknak tartoznak-e már eredményei a feladatlaphoz (hogy megírta-e már)

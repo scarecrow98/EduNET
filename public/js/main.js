@@ -1,11 +1,14 @@
 $(document).ready(() => {
 
+	//minden inputnak kikapcsoljuk az autocomplete-ját
 	$('body input').attr('autocomplete', 'off');
 
 	//modalok megnyitása
     $('.modal-opener').click((e) => {
+		//a kattintott gomb data-modal-id-jének megszerzése
         let modalId = $(e.currentTarget).data('modal-id');
 
+		//a megfelelő id-jű modal megnyitása
         $('.page-overlay').fadeIn(300);
         $('.page-overlay #'+modalId).show();
     });
@@ -148,7 +151,7 @@ $(document).ready(() => {
         });
 
     });
-
+	
 });
 
 //paraméterek --> szülő elem, opciószöveg input neve, opcióválasz neve, input típusa

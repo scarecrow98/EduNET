@@ -1,5 +1,5 @@
-const SERVER_ROOT = 'http://localhost/EduNET/server/';
-const PUBLIC_ROOT = 'http://localhost/EduNET/public/';
+const SERVER_ROOT = 'http://edunet/server/';
+const PUBLIC_ROOT = 'http://edunet/public/';
 
 $.ajaxSetup({
     headers: {

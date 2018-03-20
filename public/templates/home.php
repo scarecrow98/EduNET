@@ -116,7 +116,7 @@
             </li>
             <li>
                 <button class="btn-wide bg-5">
-                    <a href="check-test.php?test_instance=<?= $test_instance->id ?>" target="_blank">Feladatlap megtekintése &raquo;</a>
+                    <a href="check_test?test_instance=<?= $test_instance->id ?>" target="_blank">Feladatlap megtekintése &raquo;</a>
                 </button>
             </li>
         <?php endforeach; ?>

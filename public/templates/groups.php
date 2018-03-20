@@ -1,6 +1,6 @@
 <header class="content-header">
     <h2>Csoportok</h2>
-    <?php if( IS_ADMIN ): ?>
+    <?php if( IS_ADMIN ): //gomb megjelenítése csak tanároknak ?>
     <button class="btn-rounded bg-2 modal-opener" data-modal-id="create-group" style="float: right;">
         <i class="ion-plus-round"></i>Csoport létrehozása
     </button>
@@ -9,9 +9,8 @@
 <section class="content-body flex-wrap">
 
         <?php
-			$groups = Group::getAll(Session::get('user-id'), Session::get('user-type'));
-
-            foreach($groups as $group):
+        $groups = Group::getAll(Session::get('user-id'), Session::get('user-type'));
+        foreach($groups as $group):
         ?>
         <div class="group-box panel">
             <section style="background-image: url('<?php echo SERVER_ROOT.'uploads/avatars/'.$group->avatar ?>')">

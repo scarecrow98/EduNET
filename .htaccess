@@ -3,16 +3,16 @@ Options -Indexes
 RewriteEngine on
 
 RewriteRule ^home/?$ index.php?page=home [L]
-RewriteRule ^groups/?$ index.php?page=groups [L]
-RewriteRule ^stats/?$ index.php?page=stats [L]
 RewriteRule ^tests/?$ index.php?page=tests [QSA,L]
-RewriteRule ^settings/?$ index.php?page=settings [L]
+RewriteRule ^groups/?$ index.php?page=groups [L]
 RewriteRule ^add_task/?$ add-task.php [L]
-RewriteRule ^add_members/?$ add-members.php [L]
 RewriteRule ^login/?$ login.php [QSA,L]
 RewriteRule ^logout/?$ logout.php [L]
-RewriteRule ^view_test/?$ view-test.php [L]
+RewriteRule ^view_test/?$ view-test.php [QSA,L]
+RewriteRule ^check_test/?$ check-test.php [QSA,L]
+RewriteRule ^evaluate/?$ evaluate.php [QSA,L]
+RewriteRule ^pdf_renderer/?$ pdf-renderer.php [QSA,L]
 
-ErrorDocument 404 http://localhost/EduNET/404.php
-ErrorDocument 403 http://localhost/EduNET/403.php
+ErrorDocument 404 http://edunet/404.php
+ErrorDocument 403 http://edunet/403.php
 

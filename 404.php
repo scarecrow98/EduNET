@@ -10,6 +10,6 @@
     </style>
     <body>
         <h1>Az általad keresett oldal nem található! :(</h1>
-        <a href="/edunet/home">&laquo; Vissza a főoldalra</a>
+        <a href="/home">&laquo; Vissza a főoldalra</a>
     </body>
 </html>

@@ -8,7 +8,6 @@
         header('Location: logout');
         exit();
     }
-
     //token újragenerálása
     Security::setAccessToken();
 
@@ -19,21 +18,23 @@
         exit();
     }
 
+	//azonosítók lekérése az URL-ből
     $user_id = $_GET['user'];
     $test_instance_id = $_GET['test_instance'];
 
+	//feladatlappéldány lekérése azonosító alapján
     $test_instance = TestInstance::get($test_instance_id);
+	//bázisfeladatlap lekérése
     $test = Test::get($test_instance->test_id);
+	//kiválasztott diák válaszai
     $answers = Answer::getFileAndTextAnswers($user_id, $test_instance_id);
+	//diákok aki megírták ezt a feladatlapot
     $students = $test_instance->getStudents();
 
 
-    define('IS_EVALUATED', $test_instance->hasEvaluatedInstance($user_id));
-    //létező eredmények ellenőrzése
-    // if( empty($answers) && empty($file_answers) ){
-    //     errorRedirect('Helytelen feladatlap azonosító!');
-    //     exit();
-    // }
+	//konstansba eltároljuk, hogy ki lett-e már javítva a diák feladatlapja,
+	//mert ha igen, akkor az eredményt jelenítjük meg a tanárnak, nem a javítást szolgáló űrlapot
+    define('IS_EVALUATED', $test_instance->hasEvaluatedInstance($user_id) == 1 ? true : false);
 
     //tanár ellenőrzése, hogy valóban az ő feladatlapja-e
     if( $test_instance->current_author_id != Session::get('user-id') ){
@@ -55,11 +56,20 @@
     </head>
     <body class="test-body">
         
+        <!-- feladatlap javítását lezáró űrlap -->
+        <form method="POST" action="<?= SERVER_ROOT ?>parsers/main-parser.php" style="position: fixed; top: 30px; right: 30px;">
+            <input type="hidden" name="test-instance-id" value="<?= $test_instance->id ?>">
+            <input type="hidden" name="test-status" value="2">
+            <button type="submit" class="btn-rounded bg-1" onclick="if( confirm('Biztosan befejezted a feladatlapok ellenőrzését, és lezárod a javítást?') == false ) return false;">
+                <i class="ion-locked"></i>Javítás lezárás
+            </button>
+        </form>
+
         <!-- diák választó -->
         <div id="student-selector">
-            <?php foreach( $students as $student ): ?>
+            <?php foreach( $students as $student ): //dolgozatot megírt diákok kilistázása ?>
             <li class="panel">
-                <a href="evaluate.php?test_instance=<?= $test_instance_id ?>&user=<?= $student->id ?>">
+                <a href="evaluate?test_instance=<?= $test_instance_id ?>&user=<?= $student->id ?>">
                     <img src="<?= SERVER_ROOT ?>uploads/avatars/<?= $student->avatar ?>">
                     <strong for=""><?= $student->name ?></strong>
                 </a>
@@ -102,6 +112,9 @@
                 <input type="hidden" name="test-instance-id" value="<?= $test_instance_id; ?>">
 
                 <?php
+					//ha üres az $answers tömb, akkor még nem oldottta meg a diák a feladatlapot
+					if( empty($answers) ) echo '<p>A diák még nem oldotta meg a feladatlapot!</p>';
+				
                     // foreach ciklussal végigmegyünk a diák válaszain
                     $task_count = 0;
                     foreach($answers as $answer):
@@ -162,9 +175,9 @@
                         <p style="text-align: right; margin-top: 30px;">
                             Elérhető pontszám:<strong class="task-points"><?= $task->max_points ?>p</strong>
                         </p>
-                        <?php else: //ha már ki lett javítva a feladatlap, akkor csak a diák elért pontszámát mutatjuk ?>
-                        <?php
-                            $result = Task::getResult($user_id, $test_instance->id, $task->id);
+                        <?php 
+                        else: //ha már ki lett javítva a feladatlap, akkor csak a diák elért pontszámát mutatjuk
+                        $result = Task::getResult($user_id, $test_instance->id, $task->id);
                         ?>
                         <p style="text-align: right; margin-top: 30px;">
                             Elért pontszám:<strong class="task-points"><?= $result['result']; ?>p</strong>
@@ -177,6 +190,7 @@
                 <!-- input, amiben eltároltuk, hogy hány feladatot javítottunk -->
                 <input type="hidden" name="task-count" value="<?= $task_count ?>">
 
+				<!-- a küldés gombot csak akkir mutatjuk, hogyha nincs még kijavítva  -->
                 <?php if( !IS_EVALUATED ): ?><button type="submit" class="btn-wide bg-1">Értékelés</button><?php endif; ?>
             </form>
         </div>

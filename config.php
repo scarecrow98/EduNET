@@ -6,8 +6,8 @@
     DEFINE('DB_PASSWORD', 'CyrwQsqbykKNgDRE');
 
     //könyvtárak
-    DEFINE('PUBLIC_ROOT', 'http://localhost/EduNET/public/');
-    DEFINE('SERVER_ROOT', 'http://localhost/EduNET/server/');
+    DEFINE('PUBLIC_ROOT', 'http://edunet/public/');
+    DEFINE('SERVER_ROOT', 'http://edunet/server/');
 
     //hónapok magyarul, rövidítéssel
     $months = array(
@@ -27,7 +27,7 @@
 
     //osztály autoloader
     spl_autoload_register(function($class_name){
-        $file = $_SERVER['DOCUMENT_ROOT'].'/EduNET/server/classes/'.$class_name.'.class.php';
+        $file = 'C:xampp/htdocs/EduNET/server/classes/'.$class_name.'.class.php';
         //ha létezik az osztály fájl, akkor behúzzuk
         //azért van erre szükség, mert a Dompdf könyvtár saját loaderrel rendelkezik
         //de a mi loaderünk a Dompdf-et is be akarja húzni a classes mappából, ám az nem ott van elhelyezve
@@ -41,7 +41,7 @@
     //hiba oldalra irányítás
     function errorRedirect($message){
         $_SESSION['error-message'] = $message;
-        header('Location: http://'.$_SERVER['SERVER_NAME'].'/EduNET/error.php');
+        header('Location: http://edunet/error.php');
 		exit();
     }
 ?>

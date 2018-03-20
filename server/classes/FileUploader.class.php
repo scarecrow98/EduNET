@@ -118,3 +118,9 @@
 	}
 
 ?>
+
+
+<?php if( Session::get('user-type') === 1 ): ?>
+	<button class="btn-rect bg-2">Feladatlap létrehozása</button>
+<?php endif; ?>
+

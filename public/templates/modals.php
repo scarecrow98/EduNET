@@ -1,7 +1,7 @@
 
 <div class="page-overlay" style="display: none;">
 
-    <?php if( IS_ADMIN ): ?>
+    <?php if( IS_ADMIN ): //az alábbi modalokat csak tanári fiókban adjuk hozzá a HTML szerkezethez ?>
 
     <!-- FELADATLAP LÉTREHOZÁSA -->
     <div class="modal" style="width: 700px; height: 600px; display: none;" id="create-test">

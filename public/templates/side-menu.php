@@ -3,12 +3,12 @@
         <img src="<?php echo PUBLIC_ROOT ?>/resources/images/edunet-logo-white.png" alt="">
     </div>
     <div id="profile-container">
-        <div id="profile-picture" style="background-image: url(<?php echo SERVER_ROOT.'uploads/avatars/'.Session::get('user-avatar');?>)">
+        <div id="profile-picture" style="background-image: url(<?= SERVER_ROOT.'uploads/avatars/'.Session::get('user-avatar') ?>)">
             <div class="overlay"></div>
         </div>
-        <span><?php echo Session::get('user-name'); ?></span>
+        <span><?= Session::get('user-name') ?></span>
         <small>
-            <?php echo IS_ADMIN?'mint tanár':'mint diák';?>
+            <?= IS_ADMIN ? 'mint tanár' : 'mint diák' ?>
         </small>
     </div>
 
@@ -23,7 +23,7 @@
                 <span class="ion-document-text">Feladatlapok</span>
             </a>
         </li>
-        <li <?php if(isset($_GET['page']) && $_GET['page'] == 'groups' || isset($_GET['page']) && $_GET['page'] == 'create-group'){ echo 'class="active-item"'; } ?>>
+        <li <?php if(isset($_GET['page']) && $_GET['page'] == 'groups'){ echo 'class="active-item"'; } ?>>
             <a href="groups">
                 <span class="ion-person-stalker">Csoportok</span>
             </a>

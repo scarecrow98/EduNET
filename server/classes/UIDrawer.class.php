@@ -76,7 +76,11 @@
                 return '<p class="no-answer">Erre a feladatra nem érkezett válasz.</p>';
             } else {
                 return '
-                    <a href="'.SERVER_ROOT.'uploads/files/'.$file_name.'">Megoldás letöltése</a>
+                    <a href="'.SERVER_ROOT.'uploads/files/'.$file_name.'">
+                        <button class="btn-rounded bg-1">
+                            <i class="ion-android-download"></i>Megoldás letöltése
+                        </button>
+                    </a>
                 ';
             }
         }

@@ -1,11 +1,8 @@
 <?php
-
     require_once '../../config.php';
     Session::start();
 
-    if( empty( $_POST['test-submission'] ) ){
-        exit();
-    }
+    if( empty( $_POST['test-submission'] ) ) exit();
     
     $user_id = Session::get('user-id');
 	//az aktuálisan megoldásra kerülő feladatlappéldány azonosítója
@@ -62,7 +59,7 @@
             );
             Answer::storeFile($data); //fájl válasz eltárolása
         }
-        //egyébként opciókat tartalmaz a feladat, tehát megvizsgáljuk az opciókat
+        //egyébként feladatopciókat tartalmaz a feladat, tehát megvizsgáljuk az opciókat
         else{
 
             $total_correct_answers = 0; /* ebben tároljuk majd, hogy egy feladathoz hány helyes válasz lehetséges maximum  */
@@ -70,7 +67,8 @@
             $correct_user_answers = 0; /* ebbe tároljuk, hogy igaz/hamis vagy párosítás feladatokban mennyit talált el a diák */
 
             for( $i = 0; $i < count($answer['task-options']); $i++ ){
-                $option = TaskOption::get($answer['task-options'][$i]['option-id']); /* az opció helyes válaszának lekérése */
+				//feladatopció lekérése az adatbázisból
+                $option = TaskOption::get($answer['task-options'][$i]['option-id']);
 
                 //feladattíustól függően diák válaszainak kialakítása
                 //pl.: a nem bepipált checkboxoknak 0 lesz az értéke, a bebipáltnak 1
@@ -99,7 +97,7 @@
                 //kvíznél változó lehet a maximális helyes megoldások száma, míg a többinél akár az összes opció lehet helyes
                 
 				//ez tárolja, hogy a feladatopcióra helyesen válaszolt-e
-				$is_correct = 0
+				$is_correct = 0;
 				//ha a diák válasza megegyezik az adatbázisban lévő helyes értékkel
                 if( $option->correct_ans == $user_answer ){
 					//1-re állítjuk
@@ -151,7 +149,7 @@
                 'result'            => $task->max_points.'/'.$user_task_points,
                 'comment'           => null
             );
-            $task->storeResult($data); /* egy feladatra vonatkozó eredmény rögzítése */
+            $task->storeResult($data); /* a feladatban elért eredmény eltárolása */
 
         }
     }
@@ -163,9 +161,7 @@
     }
 
 	//session adatok törlése
-    Session::unset('task-data');
     Session::unset('test-instance-id');
 
-    echo 'success';
-	
+    exit('success');
 ?>
